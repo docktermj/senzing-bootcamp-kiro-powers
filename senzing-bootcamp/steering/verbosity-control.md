@@ -1,5 +1,5 @@
 ---
-inclusion: auto
+inclusion: manual
 description: "Verbosity control system — output categories, presets, adjustment instructions, and content rules by level"
 ---
 
@@ -80,6 +80,8 @@ On session start, read the `verbosity` key from the preferences file:
 - If the key exists, apply the stored preset and category levels.
 - If the key does not exist, apply the `standard` preset as the default.
 - If the key exists but is malformed, apply `standard` and inform the bootcamper that preferences were reset.
+
+> **Load-time fallback — not an unanswered-question path.** The `standard` fallback above applies only when there is no usable stored `verbosity` preference at session load (the key is absent or malformed). It is a *stored-preference-absent-at-load* fallback, **not** the resolution of an outstanding 👉 question, and it never authorizes advancing past an unanswered question. The onboarding Detail_Level_Step 👉 question is still governed by the Answer_Required_Rule (see `conversation-protocol.md` and `onboarding-phase1b-intro-language.md`) and requires a Real_Answer — including an Explicit_Default_Choice the bootcamper actively selects. This load-time fallback is the one legitimate "apply `standard` default" path and is allowlisted by the corpus-sweep test.
 
 ## Content Rules by Level
 

@@ -11,7 +11,7 @@ For critical hooks (created during onboarding), see `hook-registry-critical.md`.
 
 ## Module 4 Hooks
 
-**validate-data-files** (fileCreated → askAgent, filePatterns: `data/raw/*.*`)
+**validate-data-files** (PostFileCreate → agent, matcher: `^(?:data/raw/[^/]*\.[^/]*)$`)
 
 Prompt:
 
@@ -21,4 +21,6 @@ A new data file was added to data/raw/. Before proceeding, do a quick sanity che
 
 - id: `validate-data-files`
 - name: `to validate data files`
-- description: `When new data files are added to data/raw/, checks file format, encoding, and basic readability to catch issues early.`
+- trigger: `PostFileCreate`
+- matcher: `^(?:data/raw/[^/]*\.[^/]*)$`
+- action: `agent`

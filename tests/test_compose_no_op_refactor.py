@@ -103,8 +103,9 @@ def _templates_referencing(name: str) -> list[str]:
 
 
 def _composed_prompt(hook_id: str) -> str:
-    """Compose *hook_id*'s ``then.prompt`` from the REAL hooks dir (read-only)."""
-    return compose_hook(hook_id, FRAGMENTS, hooks_dir=_HOOKS_DIR)["then"]["prompt"]
+    """Compose *hook_id*'s ``action.prompt`` from the REAL hooks dir (read-only)."""
+    wrapper = compose_hook(hook_id, FRAGMENTS, hooks_dir=_HOOKS_DIR)
+    return wrapper["hooks"][0]["action"]["prompt"]
 
 
 def _run_main_silently(argv: list[str]) -> tuple[int, str, str]:
@@ -239,10 +240,10 @@ class TestNoOpRefactor:
         composed = serialize_hook(
             compose_hook(hook_id, FRAGMENTS, hooks_dir=_HOOKS_DIR)
         )
-        on_disk = (_HOOKS_DIR / f"{hook_id}.kiro.hook").read_text(encoding="utf-8")
+        on_disk = (_HOOKS_DIR / f"{hook_id}.json").read_text(encoding="utf-8")
         assert composed == on_disk, (
             f"composer output for '{hook_id}' is not byte-identical to the "
-            "on-disk .kiro.hook file"
+            "on-disk .json file"
         )
 
     def test_all_three_gate_hooks_compose_byte_identically(self) -> None:
@@ -251,7 +252,7 @@ class TestNoOpRefactor:
             composed = serialize_hook(
                 compose_hook(hook_id, FRAGMENTS, hooks_dir=_HOOKS_DIR)
             )
-            on_disk = (_HOOKS_DIR / f"{hook_id}.kiro.hook").read_text(
+            on_disk = (_HOOKS_DIR / f"{hook_id}.json").read_text(
                 encoding="utf-8"
             )
             assert composed == on_disk, f"{hook_id} drifted from composed source"
@@ -293,8 +294,8 @@ class TestDriftDetection:
         dest.mkdir(parents=True, exist_ok=True)
         for hook_id in GATE_HOOK_IDS:
             shutil.copy2(
-                _HOOKS_DIR / f"{hook_id}.kiro.hook",
-                dest / f"{hook_id}.kiro.hook",
+                _HOOKS_DIR / f"{hook_id}.json",
+                dest / f"{hook_id}.json",
             )
         return dest
 
@@ -318,9 +319,11 @@ class TestDriftDetection:
 
             # Mutate the target hook's prompt, re-serializing with the canonical
             # formatter so only then.prompt differs from the composed source.
-            target_path = hooks_dir / f"{target_id}.kiro.hook"
+            target_path = hooks_dir / f"{target_id}.json"
             hook = compose_hook(target_id, FRAGMENTS, hooks_dir=hooks_dir)
-            hook["then"]["prompt"] = hook["then"]["prompt"] + suffix
+            hook["hooks"][0]["action"]["prompt"] = (
+                hook["hooks"][0]["action"]["prompt"] + suffix
+            )
             target_path.write_text(
                 serialize_hook(hook), encoding="utf-8", newline=""
             )

@@ -11,19 +11,7 @@ For critical hooks (created during onboarding), see `hook-registry-critical.md`.
 
 ## any module Hooks
 
-**backup-project-on-request** (userTriggered → askAgent)
-
-Prompt:
-
-````text
-The user wants to back up their project. Run the backup script: python3 scripts/backup_project.py (on Linux/macOS) or python scripts/backup_project.py (on Windows). Create the backups/ directory first if it doesn't exist.
-````
-
-- id: `backup-project-on-request`
-- name: `to back up your project`
-- description: `Run project backup when user clicks the hook button. Avoids firing on every prompt — use the manual trigger button in the Agent Hooks panel instead.`
-
-**enforce-critical-artifacts** (agentStop → askAgent)
+**enforce-critical-artifacts** (Stop → agent)
 
 Prompt:
 
@@ -55,9 +43,10 @@ BLOCK ON FAILURE — If the report's `all_satisfied` field is `false`, one or mo
 
 - id: `enforce-critical-artifacts`
 - name: `to enforce critical graduation artifacts on agent stop`
-- description: `At a track-completion or graduation stopping point, guarantees the three crown-jewel artifacts (Q&A transcript, recap Markdown, rendered recap) exist and are non-empty by running ensure_graduation_artifacts.py, and blocks the 'done' state until all three are present. Silent when the invariant already holds.`
+- trigger: `Stop`
+- action: `agent`
 
-**error-recovery-context** (postToolUse → askAgent, toolTypes: shell)
+**error-recovery-context** (PostToolUse → agent, matcher: `execute_bash`)
 
 Prompt:
 
@@ -83,21 +72,11 @@ For non-zero exit codes with a valid bootcamp session:
 
 - id: `error-recovery-context`
 - name: `to help recover from errors`
-- description: `Detects shell command failures and consults common-pitfalls.md and recovery-from-mistakes.md to provide targeted error recovery guidance during bootcamp modules.`
+- trigger: `PostToolUse`
+- matcher: `execute_bash`
+- action: `agent`
 
-**git-commit-reminder** (userTriggered → askAgent)
-
-Prompt:
-
-````text
-The user wants to commit their bootcamp progress. Check config/bootcamp_progress.json for the current module number and list of completed modules. Then suggest a git commit with a descriptive message like: git add . && git commit -m "Complete Module [N]: [Module Name]". Show the user the command and ask if they'd like you to run it.
-````
-
-- id: `git-commit-reminder`
-- name: `to remind you to commit`
-- description: `Reminds the user to commit their work after completing a module. Triggered manually via button click.`
-
-**module-completion-celebration** (agentStop → askAgent)
+**module-completion-celebration** (Stop → agent)
 
 Prompt:
 
@@ -127,113 +106,13 @@ CONSTRAINTS:
 
 - id: `module-completion-celebration`
 - name: `to celebrate module completion`
-- description: `Detects module completion boundaries and displays a brief celebration with next-step guidance.`
+- trigger: `Stop`
+- action: `agent`
 
-**module-recap-append** (agentStop → askAgent)
-
-Prompt:
-
-````text
-If `config/.question_pending` exists, produce no output at all — defer to `ask-bootcamper`.
-
-You are checking whether the bootcamper just completed a module and, if so, appending a structured recap section to docs/bootcamp_recap.md. Follow these steps exactly:
-
-1. BOUNDARY DETECTION: Read `config/bootcamp_progress.json` and examine the `modules_completed` array. If `modules_completed` has not changed (no new module number was added since the previous state), produce no output at all — do nothing, do not acknowledge, do not explain. Let the conversation continue normally. This boundary detection fires for EVERY new entry added to `modules_completed`, INCLUDING the final module of a track. Track completion (graduation or celebration) MUST NOT suppress the per-module recap section: if the newly completed module is the last module of the bootcamper's track, still append its recap section exactly as for any other module.
-
-2. IDENTIFY COMPLETED MODULE: If a new module number appears in `modules_completed`, identify that module number. Read `config/module-dependencies.yaml` to find the module name corresponding to that number.
-
-3. GATHER SESSION CONTENT: Review the current session context to collect:
-   - Information Shared: key concepts, explanations, and reference material presented to the bootcamper during this module
-   - Questions & Responses: an ORDERED LIST OF PAIRS, one pair per substantive question the agent posed to the bootcamper (exclude rhetorical or transitional prompts), each pair holding the question and the bootcamper's response to that question. Preserve the ascending sequence in which the questions were asked during the module. A substantive question is one whose text contains at least one non-whitespace character after leading and trailing whitespace is removed. Keep each question adjacent to its own response — do NOT collect questions and responses as two separate parallel lists.
-   - Actions Taken: all file creations, modifications, code generation, configuration changes, and commands executed during the module
-
-4. COMPUTE DURATION (no placeholders): Obtain the per-module Duration and the cumulative Total Duration from the deterministic planner instead of from session context. Run:
-
-   ```
-   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --journal docs/bootcamp_journal.md --progress-dir docs/progress --plan
-   ```
-
-   Parse the emitted JSON. Use `module_durations["N"]` (where N is the completed module number) as that module's Duration, and `total_duration` as the cumulative Total Duration. These values are computed from the ISO 8601 timestamps stored in `step_history` and the top-level `started_at` in `config/bootcamp_progress.json`. If the planner does not return a value for this module (the key is absent or null), OMIT the `### Duration` field for this module entirely — do NOT write a placeholder such as "Module N session". If `total_duration` is null, OMIT the **Total Duration** value in the header rather than writing a placeholder. If the planner cannot be run (file-system error or timeout), log a warning and continue, omitting the Duration fields rather than fabricating a value.
-
-5. GET BOOTCAMPER NAME: Read `config/bootcamp_preferences.yaml` and extract the bootcamper's name. If the file does not exist or the name field is missing, use "Bootcamper" as the default.
-
-6. CREATE OR VERIFY FILE: Check if `docs/bootcamp_recap.md` exists.
-   - If it does NOT exist, create it with this header (include the **Total Duration** line only when the planner returned a non-null `total_duration`; otherwise omit that line entirely):
-     ```
-     # Senzing Bootcamp Recap
-
-     **Bootcamper:** [Name]
-     **Started:** [ISO 8601 timestamp with timezone of current time]
-     **Total Duration:** [total_duration from planner]
-
-     ---
-     ```
-   - If it already exists, do NOT overwrite or modify any existing content.
-
-7. APPEND RECAP SECTION: Append the following structured section to the end of `docs/bootcamp_recap.md`. Include the `### Duration` heading and value ONLY when the planner returned a value for this module; when no reliable duration was computed, omit the `### Duration` heading and its value entirely:
-   ```
-
-   ## Module N: [Module Name] — [ISO 8601 timestamp with timezone]
-
-   ### Information Shared
-   - [Concept or explanation presented]
-   - [Reference material shared]
-
-   ### Questions & Responses
-   - **Q:** [Agent question to bootcamper]
-       - **R:** [Bootcamper response to that question]
-   - **Q:** [Next agent question to bootcamper]
-       - **R:** [Bootcamper response to that question]
-
-   ### Actions Taken
-   - Created `[file path]`
-   - Modified `[file path]`
-   - Ran `[command]`
-
-   ### Duration
-   [module_durations["N"] from planner]
-
-   ---
-   ```
-
-   QUESTIONS & RESPONSES FORMAT (follow exactly — this must match what `format_qr_section` produces):
-   - Emit exactly ONE `### Questions & Responses` heading per module. NEVER emit a `### Questions Asked` heading or an `### Answers Given` heading.
-   - For each pair, in ascending ask order, write the question on its own line beginning with the literal prefix `- **Q:**` (zero leading spaces), immediately followed on the next line by its response beginning with exactly four leading space characters (ASCII 0x20, no tabs) and the literal prefix `- **R:**`. The response line is nested four spaces beneath its question so the Response_Item Indent_Depth is exactly 4 and the Question_Item Indent_Depth is exactly 0.
-   - Keep each response immediately after its own question — never group all questions then all responses.
-   - If a question's response is absent or contains only whitespace, write the response line as `    - **R:** (no response recorded)`.
-   - If a response spans more than one line, prefix every continuation line with at least four leading spaces so it stays nested beneath the question.
-   - If the module has zero substantive questions, write the `### Questions & Responses` heading followed by exactly one list item consisting of the literal text `- None` and no question/response pairs.
-
-8. UPDATE TOTAL DURATION: If the file header contains a **Total Duration** line and the planner returned a non-null `total_duration`, update it to that value. The total duration is rolled up from the real per-module elapsed times and must be monotonically non-decreasing. If the planner returned null for `total_duration`, leave the header without a Total Duration value rather than writing a placeholder.
-
-9. VERIFY AND BACKFILL (synchronous, before reporting success): The append is not complete until you confirm it persisted. Re-read `docs/bootcamp_recap.md` and check for a `## Module N:` heading for the module you just completed. If the heading is present, proceed. If it is ABSENT (the write did not persist, this is the final module of a track, or the section was never written), do NOT report success: run the deterministic backfill applier, which appends a `## Module N:` section for every completed module missing one (append-around, preserving existing bytes; idempotent when nothing is missing):
-
-   ```
-   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --journal docs/bootcamp_journal.md --progress-dir docs/progress --backfill
-   ```
-
-   The applier exits non-zero and names any modules still missing if verification fails after the write. Re-read the file and confirm the `## Module N:` heading is now present before continuing. If the applier cannot be run (file-system error or timeout), log a warning and continue without blocking module completion — the track-completion reconciliation pass is the final safety net.
-
-10. CONFIRMATION: Display a single brief line confirming the recap was updated, for example: "Recap updated for Module N: [Module Name]."
-
-CONSTRAINTS:
-- All timestamps MUST use ISO 8601 format with timezone offset (e.g., 2026-05-23T10:30:00-05:00).
-- Preserve all existing file content byte-for-byte when appending.
-- Duration and Total Duration values come ONLY from `completion_artifacts.py`; never derive them from session context and never write a placeholder such as "Module N session". When the planner omits a value, omit the corresponding field.
-- If any section has no content (e.g., no actions were taken), include the subsection heading with a single item "None" or "N/A". This does NOT apply to the `### Duration` field, which is omitted entirely when the planner returns no value, and it does NOT apply to the `### Questions & Responses` section, which follows its own rule above (heading followed by exactly `- None` when there are zero substantive questions).
-- If the file cannot be written due to a file system error, log a warning message and continue without blocking the module completion flow. Do NOT raise an error or halt execution.
-- Do NOT alter the behavior of any other hooks (celebration, journal entry, etc.).
-- Keep the recap factual and concise — summarize rather than reproduce entire conversations.
-- Do NOT include secrets, credentials, environment variable values, or connection strings in the recap content.
-- Module sections must appear in chronological order of completion timestamps.
-````
-
-- id: `module-recap-append`
-- name: `to append module recap on completion`
-- description: `Appends a structured recap section to docs/bootcamp_recap.md when a module is completed, then verifies the section persisted and backfills it if absent.`
-
-**session-log-events** (postToolUse → runCommand, toolTypes: write)
+**session-log-events** (PostToolUse → command, matcher: `fs_write|str_replace|fs_append`)
 
 - id: `session-log-events`
 - name: `to log session events after write operations`
-- description: `Logs a session event after write operations complete. The IDE appends the log line directly via a runCommand (no agent round-trip). When the bundled senzing-bootcamp/scripts/log_write_event.py is present it is invoked unchanged; when it is absent a self-contained inline stdlib appender records an equivalent generic write action (timestamp + current module) to config/session_log.jsonl, so logging never emits a file-not-found error and always exits 0.`
+- trigger: `PostToolUse`
+- matcher: `fs_write|str_replace|fs_append`
+- action: `command`

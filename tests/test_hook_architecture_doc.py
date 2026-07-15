@@ -29,19 +29,21 @@ _DOC_PATH: Path = (
     / "hook-architecture.md"
 )
 
-# The exactly-five agentStop hook ids, highest precedence first.
+# The exactly-five Stop-trigger hook ids, highest precedence first. The
+# stop-hook-ux bugfix folded the former ``module-recap-append`` Stop hook into
+# ``ask-bootcamper`` (Phase 0), and ``enforce-critical-artifacts`` is the
+# graduation-artifact safety net that runs last.
 _AGENTSTOP_HOOKS: tuple[str, ...] = (
     "ask-bootcamper",
-    "module-recap-append",
     "module-completion-celebration",
     "enforce-gate-on-stop",
     "enforce-visualization-offers",
+    "enforce-critical-artifacts",
 )
 
-# The three capture-critical hooks.
+# The two capture-critical hooks (recap capture moved into ask-bootcamper Phase 0).
 _CAPTURE_CRITICAL: tuple[str, ...] = (
     "session-log-events",
-    "module-recap-append",
     "ask-bootcamper",
 )
 

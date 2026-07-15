@@ -36,13 +36,26 @@ def st_hook_id():
     return st.from_regex(r"[a-z][a-z0-9\-]{2,15}", fullmatch=True)
 
 
-# Event types from the real hook files
+# 1.0 trigger names from the migrated v1 hook files (replaces the legacy
+# trigger vocabulary). ``userTriggered`` is intentionally absent — 1.0 has no
+# manual trigger, so those hooks became slash-command steering files.
 EVENT_TYPES = [
-    "promptSubmit", "agentStop", "fileEdited", "fileCreated",
-    "preToolUse", "postTaskExecution", "userTriggered",
+    "PostFileSave", "PostFileCreate", "PostFileDelete",
+    "Stop", "UserPromptSubmit", "PostTaskExec",
+    "PreToolUse", "PostToolUse",
 ]
 
-ACTION_TYPES = ["askAgent", "runCommand"]
+# 1.0 action types (replaces the legacy askAgent/runCommand).
+ACTION_TYPES = ["agent", "command"]
+
+# Representative 1.0 matchers: file-path regexes (from when.patterns) and
+# tool-name regexes (from when.toolTypes). ``None`` models an unscoped trigger.
+MATCHERS = [
+    r"^(?:src/(?:.*/)?[^/]*\.py)$",
+    r"^(?:data/transformed/[^/]*\.jsonl)$",
+    "fs_write|str_replace|fs_append",
+    "execute_bash",
+]
 
 
 def st_event_type():
@@ -65,8 +78,13 @@ def st_safe_text():
     )
 
 
+def st_matcher():
+    """Generate a single 1.0 matcher regex, or None for an unscoped trigger."""
+    return st.one_of(st.none(), st.sampled_from(MATCHERS))
+
+
 def st_hook_entry():
-    """Generate a random HookEntry."""
+    """Generate a random v1 HookEntry."""
     return st.builds(
         HookEntry,
         hook_id=st_hook_id(),
@@ -75,8 +93,7 @@ def st_hook_entry():
         event_type=st_event_type(),
         action_type=st_action_type(),
         prompt=st.one_of(st.none(), st_safe_text()),
-        file_patterns=st.one_of(st.none(), st.just("*.py"), st.just("src/*.ts, src/*.js")),
-        tool_types=st.one_of(st.none(), st.just("write"), st.just("read, write")),
+        matcher=st_matcher(),
     )
 
 
@@ -124,42 +141,51 @@ def st_category_mapping(draw, hooks):
 @given(
     hook_id=st_hook_id(),
     name=st_safe_text(),
-    description=st_safe_text(),
+    description=st.one_of(st.none(), st_safe_text()),
     event_type=st_event_type(),
     action_type=st_action_type(),
     prompt=st.one_of(st.none(), st_safe_text()),
-    file_patterns=st.one_of(st.none(), st.just(["*.py"]), st.just(["src/*.ts", "src/*.js"])),
-    tool_types=st.one_of(st.none(), st.just(["write"]), st.just(["read", "write"])),
+    matcher=st_matcher(),
 )
 @settings(max_examples=100, suppress_health_check=[HealthCheck.too_slow])
 def test_property_1_hook_field_extraction_completeness(
-    hook_id, name, description, event_type, action_type, prompt, file_patterns, tool_types,
+    hook_id, name, description, event_type, action_type, prompt, matcher,
 ):
     """Feature: hook-registry-source-of-truth, Property 1: Hook Field Extraction Completeness
 
-    For any valid hook JSON dict with required and optional fields, the parser
-    extracts all present fields correctly and hook_id equals the filename stem.
+    For any valid v1 hook file (a ``{"version": "v1", "hooks": [...]}`` wrapper),
+    the parser extracts the 1.0 trigger, action type, matcher, and prompt, and
+    hook_id equals the ``.json`` filename stem. The 1.0 schema has no
+    ``description`` field, so ``description`` falls back to the hook ``name``
+    when the entry omits it.
 
     **Validates: Requirements 1.2, 1.3, 1.4, 1.5**
     """
-    # Build the JSON structure
-    hook_data = {
-        "name": name,
-        "description": description,
-        "when": {"type": event_type},
-        "then": {"type": action_type},
-    }
+    # Build the v1 entry: name + trigger + action, with an optional matcher and
+    # an optional description (the parser tolerates a description key even though
+    # shipped v1 files omit it).
+    action = {"type": action_type}
     if prompt is not None:
-        hook_data["then"]["prompt"] = prompt
-    if file_patterns is not None:
-        hook_data["when"]["patterns"] = file_patterns
-    if tool_types is not None:
-        hook_data["when"]["toolTypes"] = tool_types
+        # The parser reads action.get("prompt") regardless of type, so exercise
+        # the prompt path via the agent action's prompt key; command actions
+        # carry their payload under "command".
+        if action_type == "agent":
+            action["prompt"] = prompt
+        else:
+            action["command"] = prompt
 
-    # Write to a temp file
+    entry_obj = {"name": name, "trigger": event_type, "action": action}
+    if matcher is not None:
+        entry_obj["matcher"] = matcher
+    if description is not None:
+        entry_obj["description"] = description
+
+    wrapper = {"version": "v1", "hooks": [entry_obj]}
+
+    # Write to a temp file with the v1 ``.json`` extension.
     with tempfile.TemporaryDirectory() as tmp_dir:
-        hook_file = Path(tmp_dir) / f"{hook_id}.kiro.hook"
-        hook_file.write_text(json.dumps(hook_data), encoding="utf-8")
+        hook_file = Path(tmp_dir) / f"{hook_id}.json"
+        hook_file.write_text(json.dumps(wrapper), encoding="utf-8")
 
         # Parse
         entry = parse_hook_file(hook_file)
@@ -167,24 +193,25 @@ def test_property_1_hook_field_extraction_completeness(
     # Verify all fields
     assert entry.hook_id == hook_id
     assert entry.name == name
-    assert entry.description == description
     assert entry.event_type == event_type
     assert entry.action_type == action_type
 
-    if prompt is not None:
+    # Description falls back to the name when the entry omits it.
+    if description:
+        assert entry.description == description
+    else:
+        assert entry.description == name
+
+    # prompt is only extracted from action.prompt (the agent path).
+    if prompt is not None and action_type == "agent":
         assert entry.prompt == prompt
     else:
         assert entry.prompt is None
 
-    if file_patterns is not None:
-        assert entry.file_patterns == ", ".join(file_patterns)
+    if matcher is not None:
+        assert entry.matcher == matcher
     else:
-        assert entry.file_patterns is None
-
-    if tool_types is not None:
-        assert entry.tool_types == ", ".join(tool_types)
-    else:
-        assert entry.tool_types is None
+        assert entry.matcher is None
 
 
 # ---------------------------------------------------------------------------
@@ -324,9 +351,10 @@ def test_property_4_registry_frontmatter_and_structure(data):
 def test_property_5_hook_entry_format_correctness(entry):
     """Feature: hook-registry-source-of-truth, Property 5: Hook Entry Format Correctness
 
-    For any HookEntry, formatted markdown contains bold hook_id, event flow,
-    and bullet list with id/name/description; filePatterns and toolTypes appear
-    when present.
+    For any v1 HookEntry, formatted markdown contains the bold hook_id, the 1.0
+    event flow (trigger → action), and the 1.0 createHook bullet list with
+    id/name/trigger/action; the single matcher appears in the flow and bullets
+    when present, and the full prompt text is rendered for agent actions.
 
     **Validates: Requirements 3.5, 3.6**
     """
@@ -335,25 +363,27 @@ def test_property_5_hook_entry_format_correctness(entry):
     # Bold hook_id
     assert f"**{entry.hook_id}**" in md
 
-    # Event flow
+    # 1.0 event flow (trigger → action type)
     assert f"{entry.event_type} → {entry.action_type}" in md
 
-    # Bullet list
+    # 1.0 createHook bullet list
     assert f"- id: `{entry.hook_id}`" in md
     assert f"- name: `{entry.name}`" in md
-    assert f"- description: `{entry.description}`" in md
+    assert f"- trigger: `{entry.event_type}`" in md
+    assert f"- action: `{entry.action_type}`" in md
 
-    # filePatterns when present
-    if entry.file_patterns:
-        assert f"filePatterns: `{entry.file_patterns}`" in md
+    # The single 1.0 matcher appears in the flow and the bullets when present.
+    # Generated name/prompt/matcher text carries no backticks, so a backtick
+    # right after "- matcher: " uniquely identifies the real matcher bullet.
+    if entry.matcher:
+        assert f", matcher: `{entry.matcher}`" in md
+        assert f"- matcher: `{entry.matcher}`" in md
     else:
-        assert "filePatterns:" not in md
+        assert "- matcher: `" not in md
 
-    # toolTypes when present
-    if entry.tool_types:
-        assert f"toolTypes: {entry.tool_types}" in md
-    else:
-        assert "toolTypes:" not in md
+    # The full prompt text is rendered verbatim for agent actions that carry one.
+    if entry.prompt:
+        assert entry.prompt in md
 
 
 # ---------------------------------------------------------------------------
@@ -515,8 +545,8 @@ class TestSliceFrontmatterAndContentIntegrity:
     Validates that ``generate_module_slice`` renders a well-formed slice for any
     non-empty module bucket: ``inclusion: manual`` frontmatter, the module label
     heading, and — for every member hook — its bold ID, event flow, full prompt
-    text (when present), and id/name/description bullets, with only ``\\n`` line
-    endings.
+    text (when present), and id/name/trigger/action bullets, with only ``\\n``
+    line endings.
 
     **Validates: Requirements 8.2, 3.1, 8.4**
     """
@@ -529,7 +559,8 @@ class TestSliceFrontmatterAndContentIntegrity:
         For any non-empty bucket, the slice begins with the ``inclusion: manual``
         frontmatter block, contains the module label heading, and for each member
         hook contains its bold ID, event flow, full prompt text (when present),
-        and the id/name/description bullet lines, with only ``\\n`` line endings.
+        and the id/name/trigger/action bullet lines, with only ``\\n`` line
+        endings.
 
         **Validates: Requirements 8.2, 3.1, 8.4**
         """
@@ -558,7 +589,7 @@ class TestSliceFrontmatterAndContentIntegrity:
             assert f"**{hook.hook_id}**" in content, (
                 f"Slice must contain bold ID for {hook.hook_id}"
             )
-            # Event flow.
+            # 1.0 event flow (trigger → action type).
             assert f"{hook.event_type} → {hook.action_type}" in content, (
                 f"Slice must contain event flow for {hook.hook_id}"
             )
@@ -567,15 +598,18 @@ class TestSliceFrontmatterAndContentIntegrity:
                 assert hook.prompt in content, (
                     f"Slice must contain full prompt text for {hook.hook_id}"
                 )
-            # id / name / description bullets.
+            # id / name / trigger / action bullets (1.0 createHook parameters).
             assert f"- id: `{hook.hook_id}`" in content, (
                 f"Slice must contain id bullet for {hook.hook_id}"
             )
             assert f"- name: `{hook.name}`" in content, (
                 f"Slice must contain name bullet for {hook.hook_id}"
             )
-            assert f"- description: `{hook.description}`" in content, (
-                f"Slice must contain description bullet for {hook.hook_id}"
+            assert f"- trigger: `{hook.event_type}`" in content, (
+                f"Slice must contain trigger bullet for {hook.hook_id}"
+            )
+            assert f"- action: `{hook.action_type}`" in content, (
+                f"Slice must contain action bullet for {hook.hook_id}"
             )
 
 
@@ -1112,32 +1146,32 @@ class TestSummaryRoutingInstruction:
                 hook_id="alpha-critical",
                 name="Alpha Critical",
                 description="Critical onboarding hook alpha.",
-                event_type="promptSubmit",
-                action_type="askAgent",
+                event_type="UserPromptSubmit",
+                action_type="agent",
                 prompt="Do the alpha critical thing.",
             ),
             HookEntry(
                 hook_id="beta-critical",
                 name="Beta Critical",
                 description="Critical onboarding hook beta.",
-                event_type="agentStop",
-                action_type="askAgent",
+                event_type="Stop",
+                action_type="agent",
                 prompt="Do the beta critical thing.",
             ),
             HookEntry(
                 hook_id="gamma-module",
                 name="Gamma Module",
                 description="Module 3 hook gamma.",
-                event_type="fileEdited",
-                action_type="runCommand",
+                event_type="PostFileSave",
+                action_type="command",
                 prompt="Do the gamma module thing.",
             ),
             HookEntry(
                 hook_id="delta-any",
                 name="Delta Any",
                 description="Any-module hook delta.",
-                event_type="userTriggered",
-                action_type="askAgent",
+                event_type="Stop",
+                action_type="agent",
                 prompt="Do the delta any thing.",
             ),
         ]
@@ -1197,44 +1231,45 @@ import sync_hook_registry as _shr
 from sync_hook_registry import main as _sync_main
 
 
-def _hook_entry_to_hook_json(entry: HookEntry) -> dict:
-    """Build a ``.kiro.hook`` JSON dict from a :class:`HookEntry`.
+def _hook_entry_to_v1_wrapper(entry: HookEntry) -> dict:
+    """Build a ``v1`` hook wrapper dict from a :class:`HookEntry`.
 
-    Reconstructs the on-disk JSON shape ``parse_hook_file`` consumes: ``name`` /
-    ``description`` top-level, ``when.type`` / ``then.type``, and the optional
-    ``then.prompt``, ``when.patterns`` and ``when.toolTypes`` fields. The
-    comma-joined display strings on the entry (``file_patterns`` / ``tool_types``)
-    are split back into the JSON arrays they came from so the round trip is exact.
+    Reconstructs the on-disk JSON shape the 1.0 ``parse_hook_file`` consumes: the
+    ``{"version": "v1", "hooks": [...]}`` wrapper with a single entry carrying
+    ``name`` / ``trigger`` / ``action`` and an optional ``matcher``. Agent
+    actions carry the prompt under ``action.prompt``; command actions carry it
+    under ``action.command`` (the entry only tracks a single ``prompt`` field, so
+    a command entry reuses it as the command text — the generator round trip
+    depends only on the on-disk bytes, not on re-deriving the original field).
 
     Args:
         entry: The hook entry to serialise.
 
     Returns:
-        A JSON-serialisable dict for a single ``*.kiro.hook`` file.
+        A JSON-serialisable ``v1`` wrapper dict for a single ``<id>.json`` file.
     """
-    data: dict = {
-        "name": entry.name,
-        "description": entry.description,
-        "version": "1.0.0",
-        "when": {"type": entry.event_type},
-        "then": {"type": entry.action_type},
-    }
+    action: dict = {"type": entry.action_type}
     if entry.prompt is not None:
-        data["then"]["prompt"] = entry.prompt
-    if entry.file_patterns is not None:
-        data["when"]["patterns"] = entry.file_patterns.split(", ")
-    if entry.tool_types is not None:
-        data["when"]["toolTypes"] = entry.tool_types.split(", ")
-    return data
+        if entry.action_type == "command":
+            action["command"] = entry.prompt
+        else:
+            action["prompt"] = entry.prompt
+
+    hook: dict = {"name": entry.name, "trigger": entry.event_type}
+    if entry.matcher is not None:
+        hook["matcher"] = entry.matcher
+    hook["action"] = action
+
+    return {"version": "v1", "hooks": [hook]}
 
 
 def _write_synthetic_hooks(hooks: list[HookEntry], hooks_dir: Path) -> None:
-    """Write *hooks* as ``{hook_id}.kiro.hook`` JSON files under *hooks_dir*."""
+    """Write *hooks* as ``{hook_id}.json`` v1 hook files under *hooks_dir*."""
     hooks_dir.mkdir(parents=True, exist_ok=True)
     for entry in hooks:
-        hook_file = hooks_dir / f"{entry.hook_id}.kiro.hook"
+        hook_file = hooks_dir / f"{entry.hook_id}.json"
         hook_file.write_text(
-            json.dumps(_hook_entry_to_hook_json(entry)), encoding="utf-8"
+            json.dumps(_hook_entry_to_v1_wrapper(entry)), encoding="utf-8"
         )
 
 
@@ -1461,24 +1496,24 @@ class TestDeprecatedMonolithHandling:
                 hook_id="alpha-critical",
                 name="Alpha Critical",
                 description="Critical onboarding hook alpha.",
-                event_type="promptSubmit",
-                action_type="askAgent",
+                event_type="UserPromptSubmit",
+                action_type="agent",
                 prompt="Do the alpha critical thing.",
             ),
             HookEntry(
                 hook_id="gamma-module",
                 name="Gamma Module",
                 description="Module 3 hook gamma.",
-                event_type="fileEdited",
-                action_type="runCommand",
+                event_type="PostFileSave",
+                action_type="command",
                 prompt="Do the gamma module thing.",
             ),
             HookEntry(
                 hook_id="delta-any",
                 name="Delta Any",
                 description="Any-module hook delta.",
-                event_type="userTriggered",
-                action_type="askAgent",
+                event_type="Stop",
+                action_type="agent",
                 prompt="Do the delta any thing.",
             ),
         ]

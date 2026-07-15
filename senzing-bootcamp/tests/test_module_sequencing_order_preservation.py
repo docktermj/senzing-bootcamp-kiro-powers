@@ -86,8 +86,40 @@ _BASELINE_GRAPH_REGIONS_SHA256: str = (
 # and the HTML fallback (preserving reconcile-then-render ordering). That edit is
 # unrelated to the module-sequencing-order fix this suite guards, so the baseline
 # is moved observation-first to the current file contents.
+#
+# Re-baselined observation-first for the Kiro 1.0 hook migration: the steering
+# sweep renamed the `enforce-critical-artifacts` hook trigger reference in the
+# "enforced guarantee" note from the legacy `agentStop` to the 1.0 `Stop`
+# trigger (a one-word rename, unrelated to module sequencing). The digest is
+# moved forward to the current file contents.
+# Re-baselined again observation-first for the journal-recap-consolidation spec
+# (Task 8.5): module-completion-track.md was updated to replace the retired
+# `docs/bootcamp_journal.md` references with the Consolidated_Log and to remove
+# the `--journal` args from the example commands. That edit is unrelated to the
+# module-sequencing-order fix this suite guards, so the baseline is moved
+# observation-first to the current file contents to keep the preservation
+# snapshot honest.
 _BASELINE_COMPLETION_TRACK_SHA256: str = (
-    "70a512d0003abe93e65308a9578c985c1407fe671cb1c467128ed73447d9569c"
+    # Re-baselined observation-first for the question-format-consistency bugfix
+    # (Task 3.2): module-completion-track.md gained the "Bootcamp-Completion
+    # Closing Question" subsection (an unconditional 👉 + bold closing question).
+    # That edit is unrelated to the module-sequencing-order fix this suite guards.
+    #
+    # Re-baselined again observation-first for the guaranteed-recap-pdf spec
+    # (Task 5.2): module-completion-track.md was updated to replace the "degrades
+    # to HTML/Markdown when fpdf2 absent" language with the guaranteed-PDF tiered
+    # behavior (rich fpdf2 -> guarded autoinstall -> stdlib-only writer), while
+    # preserving the reconcile-then-render ordering and the non-blocking posture.
+    # That edit is unrelated to the module-sequencing-order fix this suite guards,
+    # so the baseline is moved observation-first to the current file contents.
+    #
+    # Re-baselined again observation-first for the preface-flow-and-banners spec
+    # (Task 3.2): module-completion-track.md gained the Graduation_Banner
+    # (🎓🎓🎓  GRADUATION  🎓🎓🎓 in a fenced text block) at the start of the Path
+    # Completion Celebration, so a bootcamper who declines graduation still sees
+    # it. That edit is unrelated to the module-sequencing-order fix this suite
+    # guards, so the baseline is moved observation-first to the current contents.
+    "fe9eb07a4548f253c0dff6e5c3ac8f90a6911e519a6f4d3e2c9a3c951982d17c"
 )
 
 

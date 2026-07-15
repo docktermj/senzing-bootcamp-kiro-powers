@@ -298,7 +298,7 @@ the URL is accessible:
 
 ---
 
-   👉 Take your time exploring the visualization. Let me know when you're ready and I'll continue with cleanup.
+   👉 **Take your time exploring the visualization. Let me know when you're ready and I'll continue with cleanup.**
 
    🛑 STOP — End your response here and wait for the bootcamper to confirm they are done exploring.
 

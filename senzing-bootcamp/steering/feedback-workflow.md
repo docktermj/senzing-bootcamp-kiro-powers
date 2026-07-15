@@ -21,7 +21,7 @@ When user says any of these, the feedback workflow starts automatically via the 
 
 - One question per turn — never combine two questions in a single response.
 - Use the 👉 prefix on every question directed at the bootcamper.
-- 🛑 STOP after each question — end your response immediately.
+- End your turn on each 👉 question and wait for the bootcamper's answer before asking the next one. The stop-and-wait boundary is an internal directive — never emit a `🛑 STOP` marker line to the bootcamper.
 - Do not combine confirmation questions and priority questions in the same turn.
 
 ## Feedback Workflow Steps
@@ -45,39 +45,24 @@ Check if `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists in the projec
 
 ### Step 2: Gather Feedback (One Question at a Time)
 
-1. 👉 "What would you like to provide feedback about?" (present categories)
+_Internal directive (not shown to the bootcamper): ask these one at a time. End your turn on each 👉 question and wait for the bootcamper's answer before asking the next — do not emit a stop marker._
 
-   🛑 STOP — End your response here.
-
-2. 👉 "Which module is this related to?" (0-12, or general) — pre-fill from captured context
-
-   🛑 STOP — End your response here.
-
-3. 👉 "What happened or what issue did you encounter?"
-
-   🛑 STOP — End your response here.
-
-4. 👉 "Why is this a problem? What was the impact?"
-
-   🛑 STOP — End your response here.
-
-5. 👉 "Do you have a suggested fix or improvement?"
-
-   🛑 STOP — End your response here.
-
-6. 👉 "What priority would you assign?" (High/Medium/Low)
-
-   🛑 STOP — End your response here.
+1. 👉 **"What would you like to provide feedback about?" (present categories)**
+2. 👉 **"Which module is this related to?" (0-12, or general) — pre-fill from captured context**
+3. 👉 **"What happened or what issue did you encounter?"**
+4. 👉 **"Why is this a problem? What was the impact?"**
+5. 👉 **"Do you have a suggested fix or improvement?"**
+6. 👉 **"What priority would you assign?" (High/Medium/Low)**
 
 ### Step 3: Format Feedback Entry
 
 ```markdown
 ## Improvement: [Brief title based on user's description]
 
-**Date**: YYYY-MM-DD
-**Module**: [Module number or "General"]
-**Priority**: [High/Medium/Low]
-**Category**: [Documentation/Workflow/Tools/UX/Bug/Performance/Security]
+**Date:** YYYY-MM-DD
+**Module:** [Module number or "General"]
+**Priority:** [High/Medium/Low]
+**Category:** [Documentation/Workflow/Tools/UX/Bug/Performance/Security]
 
 ### What Happened
 [User's description of the issue]
@@ -92,9 +77,9 @@ Check if `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists in the projec
 [If user found a workaround, or "None"]
 
 ### Context When Reported
-- **Current Module**: [From bootcamp_progress.json, or "Unknown"]
-- **What You Were Doing**: [Summary from recent conversation]
-- **Open Files**: [List of files open in editor]
+- **Current Module:** [From bootcamp_progress.json, or "Unknown"]
+- **What You Were Doing:** [Summary from recent conversation]
+- **Open Files:** [List of files open in editor]
 ```
 
 ### Step 4: Append to Feedback File

@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """Generate a PDF from the bootcamp recap markdown document.
 
-Converts docs/bootcamp_recap.md into a formatted PDF suitable for sharing
-at bootcamp graduation. Uses stdlib for markdown parsing and fpdf2 for
-PDF rendering.
+Converts docs/bootcamp_recap.md into a formatted PDF suitable for sharing at
+bootcamp graduation. Markdown parsing uses only the standard library; the PDF is
+produced through the guaranteed three-tier strategy
+(``pdf_render_strategy.ensure_recap_pdf``) so a valid PDF is ALWAYS written:
+Tier 1 renders with the professional fpdf2 renderer (``render_pdf``) when fpdf2
+is importable, Tier 2 attempts a best-effort autoinstall, and Tier 3 falls back
+to the stdlib-only writer. fpdf2 remains an optional, lazily imported dependency
+— it is never imported at module top level.
 
 Usage:
     python senzing-bootcamp/scripts/generate_recap_pdf.py
@@ -547,57 +552,145 @@ def format_recap_document(doc: RecapDocument) -> str:
 # ---------------------------------------------------------------------------
 
 
-def _render_cover_page(pdf: "FPDF", doc: RecapDocument) -> None:  # noqa: F821
-    """Render the cover page with title, bootcamper name, dates, and duration.
+# Font size for the optional labeled Cover_Page fields (Started / Total
+# Duration). Sized between the bootcamper name and the body text so the fields
+# read as supporting detail beneath the name.
+_COVER_FIELD_FONT_SIZE = 14
+
+
+def _render_cover_field(pdf: "FPDF", label: str, value: str) -> None:  # noqa: F821
+    """Render one optional labeled Cover_Page field, skipping empty or failed.
+
+    Renders ``"{label}: {value}"`` centered in the body color when ``value`` is
+    non-empty. An empty or whitespace-only value is skipped silently. Any
+    exception raised while rendering the field is caught so a single field
+    failure skips that field rather than aborting the rest of the Cover_Page
+    (Requirement 2.8).
 
     Args:
         pdf: The FPDF instance to render into.
-        doc: Parsed recap document.
+        label: The field label (for example ``"Started"``).
+        value: The field value; skipped when empty or whitespace-only.
     """
-    pdf.add_page()
-    pdf.ln(40)
+    if not value or not value.strip():
+        return
+    try:
+        # Plain layout constant (no fpdf dependency), imported lazily to keep
+        # this generator's top-level import surface unchanged.
+        from recap_pdf_render import BODY_COLOR  # noqa: PLC0415
 
-    # Title
-    pdf.set_font("Helvetica", "B", 28)
-    pdf.cell(0, 14, "Senzing Bootcamp Recap", new_x="LMARGIN", new_y="NEXT", align="C")
-    pdf.ln(20)
-
-    # Bootcamper name
-    pdf.set_font("Helvetica", "", 18)
-    pdf.cell(
-        0,
-        10,
-        safe_text(doc.header.bootcamper),
-        new_x="LMARGIN",
-        new_y="NEXT",
-        align="C",
-    )
-    pdf.ln(10)
-
-    # Started date
-    if doc.header.started:
-        pdf.set_font("Helvetica", "", 14)
+        pdf.set_font("Helvetica", "", _COVER_FIELD_FONT_SIZE)
+        pdf.set_text_color(*BODY_COLOR)
         pdf.cell(
             0,
             8,
-            f"Started: {safe_text(doc.header.started)}",
+            safe_text(f"{label}: {value}"),
             new_x="LMARGIN",
             new_y="NEXT",
             align="C",
         )
         pdf.ln(4)
+    except Exception:  # noqa: BLE001 - Req 2.8: a field failure must not abort the cover.
+        return
 
-    # Total duration
-    if doc.header.total_duration:
-        pdf.set_font("Helvetica", "", 14)
+
+def _render_cover_page(pdf: "FPDF", doc: RecapDocument) -> None:  # noqa: F821
+    """Render a professional cover page with title, subtitle, name, and stats.
+
+    Renders the document title (accent color), a completion-recap subtitle, the
+    bootcamper name, the optional Started and Total Duration fields, and a
+    Headline_Stats line showing the count of module sections present in the
+    recap. Every field is optional: an empty value is simply skipped without
+    aborting. The Started and Total Duration fields are rendered through
+    :func:`_render_cover_field`, which skips a field whose rendering fails rather
+    than aborting the Cover_Page (Requirement 2.8).
+
+    Args:
+        pdf: The FPDF instance to render into.
+        doc: Parsed recap document.
+    """
+    # Plain layout constants (no fpdf dependency) imported lazily to keep this
+    # generator's top-level import surface unchanged.
+    from recap_pdf_render import (  # noqa: PLC0415
+        ACCENT_COLOR,
+        BODY_COLOR,
+        BOOTCAMPER_FONT_SIZE,
+        COVER_BANNER_HEIGHT_MM,
+        PRIMARY_BLUE,
+        SUBTITLE_FONT_SIZE,
+        TITLE_FONT_SIZE,
+    )
+
+    pdf.add_page()
+
+    # Colored banner — a full-width primary-blue band anchored at the top edge
+    # of the Cover_Page, drawn before the title so it reads as a professional
+    # visual anchor with the title and metadata rendered below it (Req 2.1). The
+    # banner spans the full page width edge-to-edge (x=0 to pdf.w, y=0) and uses
+    # primary blue (31,78,121), which is intentionally distinct from the accent
+    # color (0,90,156) used for the title and headings.
+    pdf.set_fill_color(*PRIMARY_BLUE)
+    pdf.rect(0, 0, pdf.w, COVER_BANNER_HEIGHT_MM, style="F")
+
+    # Position the title below the banner (previously a fixed ln(40) offset).
+    pdf.set_y(COVER_BANNER_HEIGHT_MM + 15)
+
+    # Title — large, bold, accent color, centered.
+    pdf.set_font("Helvetica", "B", TITLE_FONT_SIZE)
+    pdf.set_text_color(*ACCENT_COLOR)
+    pdf.cell(
+        0,
+        16,
+        safe_text("Senzing Bootcamp Recap"),
+        new_x="LMARGIN",
+        new_y="NEXT",
+        align="C",
+    )
+    pdf.ln(4)
+
+    # Subtitle — identifies the document as a bootcamp completion recap.
+    pdf.set_font("Helvetica", "", SUBTITLE_FONT_SIZE)
+    pdf.set_text_color(*BODY_COLOR)
+    pdf.cell(
+        0,
+        10,
+        safe_text("Bootcamp Completion Recap"),
+        new_x="LMARGIN",
+        new_y="NEXT",
+        align="C",
+    )
+    pdf.ln(16)
+
+    # Bootcamper name — optional, skipped when empty.
+    if doc.header.bootcamper and doc.header.bootcamper.strip():
+        pdf.set_font("Helvetica", "", BOOTCAMPER_FONT_SIZE)
+        pdf.set_text_color(*BODY_COLOR)
         pdf.cell(
             0,
-            8,
-            f"Total Duration: {safe_text(doc.header.total_duration)}",
+            12,
+            safe_text(doc.header.bootcamper),
             new_x="LMARGIN",
             new_y="NEXT",
             align="C",
         )
+        pdf.ln(10)
+
+    # Optional labeled fields — each skips on empty value or render failure.
+    _render_cover_field(pdf, "Started", doc.header.started)
+    _render_cover_field(pdf, "Total Duration", doc.header.total_duration)
+
+    # Headline_Stats — the count of module sections present in the recap.
+    pdf.ln(6)
+    pdf.set_font("Helvetica", "", SUBTITLE_FONT_SIZE)
+    pdf.set_text_color(*BODY_COLOR)
+    pdf.cell(
+        0,
+        10,
+        safe_text(f"Modules completed: {len(doc.sections)}"),
+        new_x="LMARGIN",
+        new_y="NEXT",
+        align="C",
+    )
 
 
 def _build_qa_lines(questions: list[str], answers: list[str]) -> list[str]:
@@ -798,10 +891,21 @@ def render_pdf(doc: RecapDocument, output_path: str, body_text: str = "") -> Non
         ImportError: If fpdf2 is not installed.
         OSError: If the PDF cannot be written to the output path.
     """
-    from fpdf import FPDF  # noqa: PLC0415
+    # RecapPDF is a professional-layout FPDF subclass whose base class is
+    # fpdf.FPDF. Build it via _build_recap_pdf_class() (imported here, never at
+    # module top level) rather than importing the cached RecapPDF attribute:
+    # the factory runs `from fpdf import FPDF` on EVERY call, so a genuine — or
+    # test-simulated — absence of fpdf2 always raises ImportError here and the
+    # caller degrades gracefully with the `pip install fpdf2` hint (Req 11.1,
+    # 11.2). Importing the module-level RecapPDF attribute would instead serve a
+    # class cached on first access, silently skipping the fpdf re-import once the
+    # class had been built earlier in the process.
+    from recap_pdf_render import _build_recap_pdf_class  # noqa: PLC0415
 
-    pdf = FPDF()
-    pdf.set_auto_page_break(auto=True, margin=20)
+    # RecapPDF.__init__ sets generous all-sides margins and auto page break, so
+    # no manual set_auto_page_break call is needed here.
+    recap_pdf_cls = _build_recap_pdf_class()
+    pdf = recap_pdf_cls()
 
     # Cover page
     _render_cover_page(pdf, doc)
@@ -931,6 +1035,100 @@ def identify_unrendered_content(pdf_path: str, doc: RecapDocument) -> str | None
 
 
 # ---------------------------------------------------------------------------
+# Placeholder-stub / legacy-heading verification (Requirements 4.5, 5.5, 5.6)
+# ---------------------------------------------------------------------------
+
+# Unambiguous forbidden strings that must never survive into a published recap
+# PDF. "backfilled at track completion" is a Backfill_Stub (Req 4.5, 5.5), and
+# "Questions Asked" / "Answers Given" are the legacy split-schema subsection
+# headings the Generator must never surface — it renders only the merged
+# "Questions & Responses" / "Questions and responses" heading (Req 5.6). Each is
+# scanned for as a contiguous substring of the extracted PDF text: empirically
+# fpdf2 emits each list item and heading as its own text-show operator, so these
+# short phrases survive round-trip extraction intact.
+_FORBIDDEN_PDF_STRINGS = (
+    "backfilled at track completion",
+    "Questions Asked",
+    "Answers Given",
+)
+
+# The "N/A" stub (Req 4.5) is checked separately from the strings above: it is
+# scanned against the SOURCE Required_Subsection content, NOT the rendered PDF
+# text. The Generator legitimately renders a bare "N/A" as the empty-Duration
+# fallback (`safe_text(section.duration) or "N/A"` in `_render_module_page`),
+# and Duration is not one of the three Required_Subsections (Information Shared,
+# Questions & Responses, Actions Taken), so scanning the rendered text for "N/A"
+# would false-positive on that legitimate output. Scanning the source subsection
+# content instead flags only an "N/A" a bootcamper — or a lossy backfill —
+# actually placed in a Required_Subsection, exactly what Requirement 4.5 forbids.
+_NA_STUB = "N/A"
+
+
+def _required_subsection_items(
+    section: RecapSection,
+) -> list[tuple[str, str]]:
+    """Return a section's Required_Subsection items as ``(subsection, text)``.
+
+    Gathers only the three Required_Subsections (Requirement 4.5 glossary):
+    Information Shared, Questions & Responses (the Paired_Schema QR_Pair question
+    and response texts, or the legacy Split_List_Schema questions/answers),
+    and Actions Taken. Duration and Generic_Content are deliberately excluded —
+    they are not Required_Subsections, so the empty-Duration "N/A" fallback and
+    free-form notes never contribute to the stub scan.
+
+    Args:
+        section: The parsed module section to collect items from.
+
+    Returns:
+        ``(subsection_name, item_text)`` pairs in render order.
+    """
+    items: list[tuple[str, str]] = [
+        ("Information Shared", text) for text in section.information_shared
+    ]
+    if section.schema == "paired":
+        for pair in section.qr_pairs:
+            items.append(("Questions & Responses", pair.question))
+            items.append(("Questions & Responses", pair.response))
+    else:
+        items.extend(("Questions & Responses", q) for q in section.questions_asked)
+        items.extend(("Questions & Responses", a) for a in section.answers_given)
+    items.extend(("Actions Taken", text) for text in section.actions_taken)
+    return items
+
+
+def find_placeholder_stub(pdf_text: str, doc: RecapDocument) -> str | None:
+    """Return a description of the first placeholder stub / legacy heading found.
+
+    Enforces Requirements 4.5, 5.5, and 5.6: a recap PDF must never be published
+    while it still carries placeholder-stub or legacy-heading content. The three
+    unambiguous strings in :data:`_FORBIDDEN_PDF_STRINGS` are scanned for in the
+    extracted PDF text; the ``"N/A"`` stub is scanned for in the source
+    Required_Subsection content (see :data:`_NA_STUB`) so the Generator's
+    legitimate empty-Duration ``"N/A"`` fallback never trips verification.
+
+    Args:
+        pdf_text: Text extracted from the rendered PDF via ``extract_pdf_text``.
+        doc: The parsed recap document that was rendered.
+
+    Returns:
+        A human-readable description of the first forbidden occurrence, or
+        ``None`` when the PDF is free of placeholder stubs and legacy headings.
+    """
+    for forbidden in _FORBIDDEN_PDF_STRINGS:
+        if forbidden in pdf_text:
+            return f"legacy/placeholder text {forbidden!r} present in rendered PDF"
+
+    for section in doc.sections:
+        for subsection_name, text in _required_subsection_items(section):
+            if _NA_STUB in text:
+                return (
+                    f"Module {section.module_number} {subsection_name!r} "
+                    f"contains the {_NA_STUB!r} stub: {text!r}"
+                )
+    return None
+
+
+# ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
 
@@ -957,11 +1155,39 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default="docs/bootcamp_recap.pdf",
         help="Path for output PDF (default: docs/bootcamp_recap.pdf)",
     )
+    parser.add_argument(
+        "--no-autoinstall",
+        action="store_true",
+        help=(
+            "Disable the best-effort 'pip install fpdf2' and go straight to the "
+            "stdlib writer when fpdf2 is absent (overrides env/preferences)."
+        ),
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=None,
+        help=(
+            "Bounded timeout in seconds for the guarded fpdf2 autoinstall "
+            "(default: the tier strategy's built-in bounded timeout)."
+        ),
+    )
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Entry point for recap PDF generation.
+    """Entry point for recap PDF generation via the guaranteed tier strategy.
+
+    Produces the recap PDF through :func:`pdf_render_strategy.ensure_recap_pdf`
+    so a valid PDF is ALWAYS produced: Tier 1 uses the professional fpdf2
+    ``render_pdf`` when fpdf2 is importable (or after a best-effort autoinstall),
+    and Tier 3 falls back to the stdlib-only writer otherwise (Requirements 1.1,
+    2.1, 2.5, 6.1). fpdf2 stays optional and lazily imported — it is never a
+    top-level import here (Requirement 5.1). The render still happens into a
+    temporary file that is round-trip verified and guarded against
+    placeholder/legacy content before an atomic ``os.replace`` publish; on any
+    verification or write failure the temp file is removed and no existing
+    output is overwritten.
 
     Args:
         argv: Command-line arguments. Defaults to sys.argv[1:].
@@ -994,14 +1220,34 @@ def main(argv: list[str] | None = None) -> int:
     detected_headings = len(_MODULE_HEADING_LOOSE_RE.findall(content))
     parsed_sections = len(doc.sections)
 
+    # The tier strategy is imported lazily (inside main, never at module top
+    # level) to avoid a circular import: pdf_render_strategy imports names from
+    # this module at its top level, so importing it here — after this module has
+    # finished loading — resolves cleanly. It is stdlib-safe to import (fpdf is
+    # imported lazily inside the render functions), so this never makes fpdf2 a
+    # hard dependency (Requirement 5.1).
+    from pdf_render_strategy import (  # noqa: PLC0415
+        DEFAULT_AUTOINSTALL_TIMEOUT_S,
+        ensure_recap_pdf,
+        resolve_allow_autoinstall,
+    )
+
+    # --no-autoinstall forces the opt-out; otherwise resolve from env/preferences
+    # (Requirement 3.3). Timeout falls back to the strategy's bounded default.
+    allow_autoinstall = False if args.no_autoinstall else resolve_allow_autoinstall()
+    timeout_s = (
+        args.timeout if args.timeout is not None else DEFAULT_AUTOINSTALL_TIMEOUT_S
+    )
+
     # Render + verify + publish atomically. Render into a temporary file in the
     # same directory as the output, run round-trip verification against that
     # temp file, and only move it into place on success (os.replace is atomic on
     # the same filesystem). On verification failure the temp file is removed so
     # NO recap PDF is written or overwritten, an error identifying the offending
     # QR_Pair / numbered item is printed to stderr, and we return 1
-    # (Requirements 4.1, 4.2, 5.1, 5.2). Degrade gracefully when fpdf2 is absent
-    # (leave the Markdown intact) and report genuine write/move failures.
+    # (Requirements 4.1, 4.2, 5.1, 5.2). The tier strategy guarantees a PDF is
+    # always produced (rich fpdf2 or stdlib fallback), so a missing fpdf2 is no
+    # longer an error path here; only genuine write/verification failures are.
     module_numbers, expected_body_lines = collect_verification_targets(doc, content)
     output_path = Path(args.output)
     directory = output_path.parent if str(output_path.parent) else Path(".")
@@ -1014,16 +1260,36 @@ def main(argv: list[str] | None = None) -> int:
             dir=str(directory), prefix=f"{output_path.name}.", suffix=".tmp"
         )
         os.close(fd)
-        render_pdf(doc, tmp_path, body_text=content)
+        # Produce the PDF via the tier strategy so a valid PDF is always written
+        # to the temp file (Tier 1 rich fpdf2 when available, else autoinstall,
+        # else the stdlib writer). The strategy reports the chosen tier to
+        # stderr (Requirement 2.4).
+        ensure_recap_pdf(
+            doc,
+            tmp_path,
+            allow_autoinstall=allow_autoinstall,
+            timeout_s=timeout_s,
+            body_text=content,
+        )
         verify_rendered_pdf(tmp_path, module_numbers, expected_body_lines)
+        # Placeholder-stub / legacy-heading guard (Req 4.5, 5.5, 5.6): after the
+        # round-trip content verification passes but BEFORE the os.replace
+        # publish, re-extract the rendered text and reject any recap PDF that
+        # still carries a placeholder stub or a legacy split-schema heading. Both
+        # tiers render from the same parsed model, so this guard stays valid
+        # regardless of which tier produced the PDF. Raising PdfVerificationError
+        # here routes through the same except/finally handling below, so the temp
+        # file is removed and any existing output is left untouched — preserving
+        # the atomic guarantee (Req 8.3).
+        stub = find_placeholder_stub(
+            extract_pdf_text(Path(tmp_path).read_bytes()), doc
+        )
+        if stub is not None:
+            raise PdfVerificationError(
+                f"rendered PDF contains placeholder/legacy content: {stub}"
+            )
         os.replace(tmp_path, str(output_path))
         tmp_path = None  # Published — nothing left to clean up.
-    except ImportError:
-        print(
-            "fpdf2 is required. Install with: pip install fpdf2",
-            file=sys.stderr,
-        )
-        return 1
     except PdfVerificationError as exc:
         offending = (
             identify_unrendered_content(tmp_path, doc) if tmp_path else None

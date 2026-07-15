@@ -4,7 +4,7 @@ inclusion: manual
 
 ## Next-Step Options
 
-After the journal entry, present 3-4 concrete options based on the module just completed. Don't just say "proceed to Module N" — give the user choices:
+After the consolidated recap append, present 3-4 concrete options based on the module just completed. Don't just say "proceed to Module N" — give the user choices:
 
 - **Proceed:** "Ready to move on to Module [N] ([name])?"
 - **Iterate:** "Would you like to improve anything from this module first?"

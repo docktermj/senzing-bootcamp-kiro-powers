@@ -1,7 +1,10 @@
-"""Prompt logic tests for the 7 critical hooks.
+"""Prompt logic tests for the critical hooks.
 
 Verifies that each critical hook's prompt contains the required behavioral
-instructions, keywords, and patterns appropriate to its purpose.
+instructions, keywords, and patterns appropriate to its purpose. Under Kiro
+1.0 the critical set is the four hooks in ``CRITICAL_HOOKS``; the former
+``commonmark-validation`` manual hook is now the ``/commonmark-validation``
+slash command and is validated as such here.
 """
 
 from __future__ import annotations
@@ -28,16 +31,16 @@ from hook_test_helpers import (
 
 
 def _load_prompt(hook_id: str) -> str:
-    """Load the prompt text for a given hook identifier."""
-    path = HOOKS_DIR / f"{hook_id}.kiro.hook"
+    """Load the action.prompt text for a given hook identifier."""
+    path = HOOKS_DIR / f"{hook_id}.json"
     assert path.exists(), f"Hook file not found: {path}"
     data = load_hook(path)
-    return data["then"]["prompt"]
+    return data["action"]["prompt"]
 
 
 def _load_hook_data(hook_id: str) -> dict:
-    """Load the full hook data for a given hook identifier."""
-    path = HOOKS_DIR / f"{hook_id}.kiro.hook"
+    """Load the v1 hook entry for a given hook identifier."""
+    path = HOOKS_DIR / f"{hook_id}.json"
     assert path.exists(), f"Hook file not found: {path}"
     return load_hook(path)
 
@@ -147,25 +150,40 @@ class TestCodeStyleCheck:
 # ===========================================================================
 
 class TestCommonmarkValidation:
-    """Verify commonmark-validation prompt references CommonMark rule identifiers."""
+    """Verify the CommonMark validation instruction references its rule identifiers.
+
+    Under Kiro 1.0, ``commonmark-validation`` is no longer a shipped hook — the
+    former manual hook became the ``/commonmark-validation`` slash-command
+    steering file. The CommonMark-rule intent is preserved there, so this class
+    now validates the slash-command steering file rather than a hook prompt.
+    """
 
     COMMONMARK_RULES = ["MD022", "MD031", "MD032", "MD040"]
+    SLASH_COMMAND_FILE = (
+        Path("senzing-bootcamp/steering/slash-commonmark-validation.md")
+    )
+
+    def _slash_command_text(self) -> str:
+        assert self.SLASH_COMMAND_FILE.exists(), (
+            f"Slash command file not found: {self.SLASH_COMMAND_FILE}"
+        )
+        return self.SLASH_COMMAND_FILE.read_text(encoding="utf-8")
 
     def test_prompt_references_commonmark_rule(self):
-        """Prompt references at least one CommonMark rule identifier (Req 3.6)."""
-        prompt = _load_prompt("commonmark-validation")
-        found = [r for r in self.COMMONMARK_RULES if r in prompt]
+        """The slash command references at least one CommonMark rule id (Req 3.6)."""
+        text = self._slash_command_text()
+        found = [r for r in self.COMMONMARK_RULES if r in text]
         assert len(found) >= 1, (
-            f"commonmark-validation prompt does not reference any CommonMark rule. "
+            f"slash-commonmark-validation does not reference any CommonMark rule. "
             f"Expected at least one of: {self.COMMONMARK_RULES}"
         )
 
     def test_prompt_references_all_rules(self):
-        """Prompt references all 4 required CommonMark rule identifiers."""
-        prompt = _load_prompt("commonmark-validation")
-        missing = [r for r in self.COMMONMARK_RULES if r not in prompt]
+        """The slash command references all 4 required CommonMark rule ids."""
+        text = self._slash_command_text()
+        missing = [r for r in self.COMMONMARK_RULES if r not in text]
         assert not missing, (
-            f"commonmark-validation prompt missing CommonMark rules: {missing}"
+            f"slash-commonmark-validation missing CommonMark rules: {missing}"
         )
 
 
@@ -197,32 +215,32 @@ class TestAskBootcamper:
 # ===========================================================================
 
 class TestCriticalHookSilentProcessing:
-    """Verify preToolUse/promptSubmit critical hooks contain silent processing instruction."""
+    """Verify PreToolUse/UserPromptSubmit critical hooks contain silent processing."""
 
-    # Critical hooks that use preToolUse or promptSubmit event types
-    PASS_THROUGH_EVENT_TYPES = {"preToolUse", "promptSubmit"}
+    # Critical hooks that use the 1.0 PreToolUse or UserPromptSubmit triggers
+    PASS_THROUGH_TRIGGERS = {"PreToolUse", "UserPromptSubmit"}
 
     def test_pass_through_critical_hooks_have_silent_processing(self):
-        """All critical hooks with preToolUse/promptSubmit have silent processing (Req 3.8)."""
+        """All critical hooks with PreToolUse/UserPromptSubmit have silent processing (Req 3.8)."""
         for hook_id in CRITICAL_HOOKS:
             data = _load_hook_data(hook_id)
-            event_type = data.get("when", {}).get("type", "")
-            if event_type not in self.PASS_THROUGH_EVENT_TYPES:
+            trigger = data.get("trigger", "")
+            if trigger not in self.PASS_THROUGH_TRIGGERS:
                 continue
-            prompt = data["then"]["prompt"]
+            prompt = data["action"]["prompt"]
             assert has_silent_processing(prompt), (
-                f'Critical hook "{hook_id}" (event type: {event_type}) '
+                f'Critical hook "{hook_id}" (trigger: {trigger}) '
                 f"missing silent processing instruction in prompt"
             )
 
     @pytest.mark.parametrize("hook_id", CRITICAL_HOOKS)
     def test_individual_critical_hook_silent_processing(self, hook_id: str):
-        """Each critical hook with pass-through event type has silent processing."""
+        """Each critical hook with a pass-through trigger has silent processing."""
         data = _load_hook_data(hook_id)
-        event_type = data.get("when", {}).get("type", "")
-        if event_type not in self.PASS_THROUGH_EVENT_TYPES:
-            pytest.skip(f"{hook_id} uses event type '{event_type}', not pass-through")
-        prompt = data["then"]["prompt"]
+        trigger = data.get("trigger", "")
+        if trigger not in self.PASS_THROUGH_TRIGGERS:
+            pytest.skip(f"{hook_id} uses trigger '{trigger}', not pass-through")
+        prompt = data["action"]["prompt"]
         assert has_silent_processing(prompt), (
             f'Critical hook "{hook_id}" missing silent processing instruction'
         )

@@ -45,10 +45,13 @@ REQUIRED_FIELDS: list[str] = [
 FILE_EVENT_TYPES: set[str] = {"fileEdited", "fileCreated", "fileDeleted"}
 TOOL_EVENT_TYPES: set[str] = {"preToolUse", "postToolUse"}
 
+# The migrated (Kiro 1.0) critical hook set. ``commonmark-validation`` is no
+# longer a shipped hook — it became the ``/commonmark-validation`` slash-command
+# steering file — so it is intentionally excluded here to match
+# ``hooks/hook-categories.yaml`` ``critical:``.
 CRITICAL_HOOKS: list[str] = [
     "ask-bootcamper",
     "code-style-check",
-    "commonmark-validation",
     "review-bootcamper-input",
     "write-policy-gate",
 ]
@@ -71,19 +74,31 @@ SILENT_PROCESSING_PATTERNS: list[str] = [
 # ---------------------------------------------------------------------------
 
 def get_hook_files() -> list[Path]:
-    """Return all .kiro.hook file paths in the hooks directory, sorted."""
+    """Return all shipped Kiro 1.0 ``*.json`` hook file paths, sorted.
+
+    Under Kiro 1.0 each shipped hook is a ``<id>.json`` wrapper of the form
+    ``{"version": "v1", "hooks": [entry]}``. The hooks directory contains only
+    these hook wrappers plus ``hook-categories.yaml`` / ``hooks.lock.yaml``
+    (YAML) and ``README.md``, so globbing ``*.json`` selects exactly the shipped
+    hook files.
+    """
     assert HOOKS_DIR.is_dir(), f"Hooks directory not found at {HOOKS_DIR}"
-    return sorted(HOOKS_DIR.glob("*.kiro.hook"))
+    return sorted(HOOKS_DIR.glob("*.json"))
 
 
-def load_hook(path: Path) -> dict:
-    """Load and parse a single .kiro.hook JSON file.
+def hook_id_from_path(path: Path) -> str:
+    """Return the hook id for a v1 hook file (filename with ``.json`` removed)."""
+    return path.name[: -len(".json")] if path.name.endswith(".json") else path.stem
+
+
+def load_hook_wrapper(path: Path) -> dict:
+    """Load a v1 hook file and return the full wrapper object.
 
     Args:
-        path: Path to the hook file.
+        path: Path to the ``<id>.json`` hook file.
 
     Returns:
-        Parsed JSON dict.
+        The parsed wrapper dict, e.g. ``{"version": "v1", "hooks": [entry]}``.
 
     Raises:
         json.JSONDecodeError: If the file is not valid JSON.
@@ -92,16 +107,41 @@ def load_hook(path: Path) -> dict:
         return json.load(f)
 
 
-def load_all_hooks() -> list[tuple[str, dict]]:
-    """Load all .kiro.hook files from the hooks directory.
+def load_hook(path: Path) -> dict:
+    """Load a v1 hook file and return its single hook entry (``hooks[0]``).
+
+    Kiro 1.0 hook files wrap one hook entry in
+    ``{"version": "v1", "hooks": [entry]}``. This returns that entry, whose keys
+    are ``name``, ``trigger``, optional ``matcher``, ``action``
+    (``{"type": "agent"|"command", "prompt"|"command": ...}``), and an optional
+    hook-level ``timeout``. Use :func:`load_hook_wrapper` when the wrapper-level
+    ``version``/``hooks`` shape itself is under test.
+
+    Args:
+        path: Path to the ``<id>.json`` hook file.
 
     Returns:
-        List of (hook_id, parsed_json_dict) tuples where hook_id is the
-        filename without the .kiro.hook extension.
+        The single v1 hook entry dict.
+
+    Raises:
+        json.JSONDecodeError: If the file is not valid JSON.
+        KeyError/IndexError: If the file is not a valid single-entry v1 wrapper.
+    """
+    wrapper = load_hook_wrapper(path)
+    return wrapper["hooks"][0]
+
+
+def load_all_hooks() -> list[tuple[str, dict]]:
+    """Load all v1 hook files from the hooks directory.
+
+    Returns:
+        List of ``(hook_id, entry)`` tuples where ``hook_id`` is the filename
+        without the ``.json`` extension and ``entry`` is the v1 hook entry
+        (``hooks[0]``).
     """
     results = []
     for path in get_hook_files():
-        hook_id = path.name.replace(".kiro.hook", "")
+        hook_id = hook_id_from_path(path)
         data = load_hook(path)
         results.append((hook_id, data))
     return results
@@ -120,7 +160,7 @@ def parse_categories_yaml(path: Path | None = None) -> dict[str, list[str]]:
     - Each leaf is a list of hook identifier strings
 
     Returns a flat dict mapping category names to lists of hook identifiers:
-    - "critical" -> [7 hook ids]
+    - "critical" -> [critical hook ids]
     - "module-1" -> [hook ids for module 1]
     - "module-any" -> [hook ids for 'any' module]
 

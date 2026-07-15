@@ -5,13 +5,13 @@ modules:
     phases:
       phase1-discovery:
         file: module-01-phase1-discovery.md
-        token_count: 6122
+        token_count: 6973
         size_category: large
         step_range: [1, 9]
       phase2-document-confirm:
         file: module-01-phase2-document-confirm.md
-        token_count: 2528
-        size_category: medium
+        token_count: 3222
+        size_category: large
         step_range: [10, 18]
   2:
     root: module-02-sdk-setup.md
@@ -26,17 +26,17 @@ modules:
     phases:
       phase1-verification:
         file: module-03-phase1-verification.md
-        token_count: 4194
+        token_count: 4923
         size_category: large
         step_range: [1, 8]
       phase2-visualization:
         file: module-03-phase2-visualization.md
-        token_count: 5340
+        token_count: 5342
         size_category: large
         step_range: [9, 9]
       phase3-report-close:
         file: module-03-phase3-report-close.md
-        token_count: 1751
+        token_count: 2096
         size_category: medium
         step_range: [10, 12]
   4:
@@ -44,7 +44,7 @@ modules:
     phases:
       phase1-collection:
         file: module-04-data-collection.md
-        token_count: 4320
+        token_count: 6112
         size_category: large
         step_range: [1, 9]
   5:
@@ -52,12 +52,12 @@ modules:
     phases:
       phase1-quality-assessment:
         file: module-05-phase1-quality-assessment.md
-        token_count: 1710
-        size_category: medium
+        token_count: 2820
+        size_category: large
         step_range: [1, 7]
       phase2-data-mapping:
         file: module-05-phase2-data-mapping.md
-        token_count: 5355
+        token_count: 5447
         size_category: large
         step_range: [8, 20]
       phase3-test-load-validate:
@@ -70,12 +70,12 @@ modules:
     phases:
       phase1-build-loading-program:
         file: module-06-phaseA-build-loading.md
-        token_count: 3649
+        token_count: 3943
         size_category: large
         step_range: [1, 4]
       phase2-load-first-source:
         file: module-06-phaseB-load-first-source.md
-        token_count: 1193
+        token_count: 1500
         size_category: medium
         step_range: [5, 11]
       phase3-multi-source-orchestration:
@@ -116,8 +116,8 @@ modules:
         step_range: [1, 3]
       phase2-benchmarking:
         file: module-08-phaseB-benchmarking.md
-        token_count: 426
-        size_category: small
+        token_count: 753
+        size_category: medium
         step_range: [4, 7]
       phase3-optimization:
         file: module-08-phaseC-optimization.md
@@ -129,7 +129,7 @@ modules:
     phases:
       phase1-assessment:
         file: module-09-phaseA-assessment.md
-        token_count: 1221
+        token_count: 1294
         size_category: medium
         step_range: [1, 4]
       phase2-hardening:
@@ -155,7 +155,7 @@ modules:
     phases:
       phase1-packaging:
         file: module-11-phase1-packaging.md
-        token_count: 2870
+        token_count: 2940
         size_category: large
         step_range: [1, 12]
       phase2-deploy:
@@ -174,13 +174,13 @@ onboarding:
       step_range: [0, 2]
     phase1b-intro-language:
       file: onboarding-phase1b-intro-language.md
-      token_count: 2055
+      token_count: 2490
       size_category: large
       step_range: [3, "5b"]
     phase2-track-setup:
       file: onboarding-phase2-track-setup.md
-      token_count: 1503
-      size_category: medium
+      token_count: 2979
+      size_category: large
       step_range: [5, "5c"]
 
 session-resume:
@@ -188,7 +188,7 @@ session-resume:
   phases:
     phase1-fast-path:
       file: session-resume.md
-      token_count: 3380
+      token_count: 4197
       size_category: large
     phase2-mapping:
       file: session-resume-phase2-mapping.md
@@ -196,7 +196,7 @@ session-resume:
       size_category: medium
     phase2-state-repair:
       file: session-resume-phase2-state-repair.md
-      token_count: 547
+      token_count: 793
       size_category: medium
     phase2-setup-recovery:
       file: session-resume-phase2-setup-recovery.md
@@ -316,13 +316,13 @@ split_allowlist:
 
 file_metadata:
   agent-behavior-rules.md:
-    token_count: 760
+    token_count: 1749
     size_category: medium
   agent-context-management.md:
-    token_count: 1326
+    token_count: 1616
     size_category: medium
   agent-instructions.md:
-    token_count: 4404
+    token_count: 5355
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -337,10 +337,10 @@ file_metadata:
     token_count: 606
     size_category: medium
   conversation-examples.md:
-    token_count: 536
+    token_count: 687
     size_category: medium
   conversation-protocol.md:
-    token_count: 4212
+    token_count: 6344
     size_category: large
   data-lineage.md:
     token_count: 603
@@ -349,85 +349,85 @@ file_metadata:
     token_count: 1174
     size_category: medium
   deployment-aws.md:
-    token_count: 1323
+    token_count: 1324
     size_category: medium
   deployment-azure.md:
-    token_count: 965
+    token_count: 966
     size_category: medium
   deployment-gcp.md:
-    token_count: 956
+    token_count: 957
     size_category: medium
   deployment-kubernetes.md:
-    token_count: 1397
+    token_count: 1398
     size_category: medium
   deployment-onpremises.md:
-    token_count: 952
+    token_count: 953
     size_category: medium
   design-patterns.md:
     token_count: 810
     size_category: medium
   entity-resolution-intro.md:
-    token_count: 1864
+    token_count: 1977
     size_category: medium
   environment-setup.md:
     token_count: 658
     size_category: medium
   feedback-workflow.md:
-    token_count: 1239
+    token_count: 1274
     size_category: medium
   file-placement.md:
-    token_count: 288
-    size_category: small
+    token_count: 515
+    size_category: medium
   graduation.md:
-    token_count: 8509
+    token_count: 11664
     size_category: large
   hook-architecture.md:
-    token_count: 2149
+    token_count: 2418
     size_category: large
   hook-registry-critical.md:
-    token_count: 8592
+    token_count: 14312
     size_category: large
   hook-registry-module-01.md:
-    token_count: 474
+    token_count: 434
     size_category: small
   hook-registry-module-02.md:
-    token_count: 261
+    token_count: 269
     size_category: small
   hook-registry-module-03.md:
-    token_count: 2341
+    token_count: 2124
     size_category: large
   hook-registry-module-04.md:
-    token_count: 282
+    token_count: 272
     size_category: small
   hook-registry-module-05.md:
-    token_count: 1390
+    token_count: 1322
     size_category: medium
   hook-registry-module-06.md:
-    token_count: 519
+    token_count: 538
     size_category: medium
   hook-registry-module-07.md:
-    token_count: 544
+    token_count: 504
     size_category: medium
   hook-registry-module-08.md:
-    token_count: 760
+    token_count: 698
     size_category: medium
   hook-registry-module-09.md:
-    token_count: 268
+    token_count: 276
     size_category: small
   hook-registry-module-10.md:
-    token_count: 286
+    token_count: 288
     size_category: small
   hook-registry-module-11.md:
-    token_count: 463
+    token_count: 412
     size_category: small
   hook-registry-module-any.md:
-    token_count: 4905
+    token_count: 2003
     size_category: large
   hook-registry.md:
-    token_count: 2130
-    size_category: large
+    token_count: 850
+    size_category: medium
   inline-status.md:
-    token_count: 460
+    token_count: 461
     size_category: small
   lang-csharp.md:
     token_count: 1642
@@ -448,10 +448,10 @@ file_metadata:
     token_count: 434
     size_category: small
   mcp-response-caching.md:
-    token_count: 1442
+    token_count: 1443
     size_category: medium
   mcp-tool-decision-tree.md:
-    token_count: 2310
+    token_count: 2311
     size_category: large
   mcp-usage-reference.md:
     token_count: 905
@@ -460,40 +460,40 @@ file_metadata:
     token_count: 500
     size_category: medium
   module-01-phase1-discovery.md:
-    token_count: 6765
+    token_count: 6973
     size_category: large
   module-01-phase2-document-confirm.md:
-    token_count: 2536
+    token_count: 3222
     size_category: large
   module-02-sdk-setup.md:
-    token_count: 7915
+    token_count: 8690
     size_category: large
   module-03-phase1-verification.md:
-    token_count: 4194
+    token_count: 4928
     size_category: large
   module-03-phase2-visualization.md:
-    token_count: 5340
+    token_count: 5342
     size_category: large
   module-03-phase3-report-close.md:
-    token_count: 1751
-    size_category: medium
+    token_count: 2066
+    size_category: large
   module-03-system-verification.md:
-    token_count: 604
+    token_count: 913
     size_category: medium
   module-03-visualization-api-reference.md:
     token_count: 2101
     size_category: large
   module-04-data-collection.md:
-    token_count: 4320
+    token_count: 6112
     size_category: large
   module-05-data-quality-mapping.md:
-    token_count: 689
+    token_count: 712
     size_category: medium
   module-05-phase1-quality-assessment.md:
-    token_count: 1710
-    size_category: medium
+    token_count: 2853
+    size_category: large
   module-05-phase2-data-mapping.md:
-    token_count: 5355
+    token_count: 5906
     size_category: large
   module-05-phase3-test-load.md:
     token_count: 2947
@@ -502,10 +502,10 @@ file_metadata:
     token_count: 652
     size_category: medium
   module-06-phaseA-build-loading.md:
-    token_count: 3649
+    token_count: 3943
     size_category: large
   module-06-phaseB-load-first-source.md:
-    token_count: 1193
+    token_count: 1500
     size_category: medium
   module-06-phaseC-multi-source.md:
     token_count: 1428
@@ -514,7 +514,7 @@ file_metadata:
     token_count: 2248
     size_category: large
   module-07-phase1-query-visualize.md:
-    token_count: 3372
+    token_count: 3374
     size_category: large
   module-07-phase2-discover.md:
     token_count: 3453
@@ -529,16 +529,16 @@ file_metadata:
     token_count: 617
     size_category: medium
   module-08-phaseA-requirements.md:
-    token_count: 2169
+    token_count: 2171
     size_category: large
   module-08-phaseB-benchmarking.md:
-    token_count: 429
-    size_category: small
+    token_count: 753
+    size_category: medium
   module-08-phaseC-optimization.md:
     token_count: 746
     size_category: medium
   module-09-phaseA-assessment.md:
-    token_count: 1221
+    token_count: 1294
     size_category: medium
   module-09-phaseB-hardening.md:
     token_count: 928
@@ -559,49 +559,49 @@ file_metadata:
     token_count: 479
     size_category: small
   module-11-phase1-packaging.md:
-    token_count: 2870
+    token_count: 2940
     size_category: large
   module-11-phase2-deploy.md:
     token_count: 850
     size_category: medium
   module-completion-artifacts.md:
-    token_count: 3982
+    token_count: 3551
     size_category: large
   module-completion-error-handling.md:
-    token_count: 604
+    token_count: 637
     size_category: medium
   module-completion-next-steps.md:
-    token_count: 702
+    token_count: 705
     size_category: medium
   module-completion-track.md:
-    token_count: 3290
+    token_count: 4090
     size_category: large
   module-completion.md:
-    token_count: 2262
+    token_count: 2432
     size_category: large
   module-prerequisites.md:
-    token_count: 1394
+    token_count: 1395
     size_category: medium
   module-transitions.md:
-    token_count: 1908
-    size_category: medium
+    token_count: 2106
+    size_category: large
   onboarding-flow.md:
-    token_count: 4124
+    token_count: 4138
     size_category: large
   onboarding-phase1b-intro-language.md:
-    token_count: 2126
+    token_count: 2546
     size_category: large
   onboarding-phase2-track-setup.md:
-    token_count: 1503
-    size_category: medium
+    token_count: 2979
+    size_category: large
   phase-loading-guide.md:
     token_count: 890
     size_category: medium
   project-structure.md:
-    token_count: 764
+    token_count: 789
     size_category: medium
   qa-transcript.md:
-    token_count: 1284
+    token_count: 1204
     size_category: medium
   recovery-from-mistakes.md:
     token_count: 1227
@@ -609,23 +609,35 @@ file_metadata:
   security-privacy.md:
     token_count: 278
     size_category: small
+  session-handoff.md:
+    token_count: 4148
+    size_category: large
   session-resume-phase2-mapping.md:
     token_count: 656
     size_category: medium
   session-resume-phase2-setup-recovery.md:
-    token_count: 997
+    token_count: 1034
     size_category: medium
   session-resume-phase2-state-repair.md:
-    token_count: 547
+    token_count: 793
     size_category: medium
   session-resume.md:
-    token_count: 3380
+    token_count: 4197
     size_category: large
   skip-step-protocol.md:
     token_count: 799
     size_category: medium
+  slash-backup-project.md:
+    token_count: 157
+    size_category: small
+  slash-commonmark-validation.md:
+    token_count: 444
+    size_category: small
+  slash-git-commit.md:
+    token_count: 187
+    size_category: small
   track-switching.md:
-    token_count: 766
+    token_count: 840
     size_category: medium
   troubleshooting-commands.md:
     token_count: 672
@@ -637,20 +649,20 @@ file_metadata:
     token_count: 576
     size_category: medium
   verbosity-control.md:
-    token_count: 2048
+    token_count: 2240
     size_category: large
   visualization-guide.md:
-    token_count: 4660
+    token_count: 4666
     size_category: large
   visualization-web-service.md:
-    token_count: 2195
+    token_count: 2197
     size_category: large
   whats-new.md:
     token_count: 602
     size_category: medium
 
 budget:
-  total_tokens: 204320
+  total_tokens: 230276
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

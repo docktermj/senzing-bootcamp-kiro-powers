@@ -11,17 +11,31 @@ This is a verification layer only — it does not move, duplicate, or modify any
 existing enforcement logic. It is stdlib-only (no PyYAML) and introduces no
 external endpoints.
 
+In addition to the registry-driven conformance check, this script runs the
+write-gate preservation guard (Requirements 5.4, 5.5 of the Kiro 1.0 hook
+migration). The guard asserts that the three ``PreToolUse`` write gates listed
+in :data:`EXPECTED_WRITE_GATES` remain present, enabled, and scoped to the
+``fs_write|str_replace|fs_append`` matcher, and fails the build when any of them
+is missing or disabled. Removing a gate is only sanctioned by deleting its id
+from :data:`EXPECTED_WRITE_GATES` in the same change — that in-code edit is the
+explicit, reviewable maintainer-approval signal. The ``--check`` flag selects
+which checks run.
+
 Usage:
     python senzing-bootcamp/scripts/validate_governance_rules.py
     python senzing-bootcamp/scripts/validate_governance_rules.py \\
         --registry path/to/governance-rules.yaml
     python senzing-bootcamp/scripts/validate_governance_rules.py \\
         --repo-root path/to/repo
+    python senzing-bootcamp/scripts/validate_governance_rules.py \\
+        --check write-gates
 
 Exit codes:
-    0 — Registry is structurally valid, every assertion holds, no internal error.
+    0 — Registry is structurally valid, every assertion holds, every expected
+        write gate is preserved, and no internal error occurred.
     1 — Load error, schema error, malformed/unsupported assertion, at least one
-        content violation, or an internal evaluation error.
+        content violation, a missing/disabled/drifted write gate, or an internal
+        evaluation error.
 
 Examples:
     # Validate using default paths (repo root inferred from script location)
@@ -1112,6 +1126,296 @@ def run(registry_path: Path, repo_root: Path) -> RunResult:
 
 
 # ---------------------------------------------------------------------------
+# Write-gate preservation guard (Requirements 5.4, 5.5)
+# ---------------------------------------------------------------------------
+
+# The three PreToolUse write gates that MUST keep intercepting writes under
+# Kiro 1.0 so SQL blocking, single-question enforcement, path/root-placement
+# policies, and the mandatory Module 3 visualization gate are not silently lost.
+#
+# APPROVAL SIGNAL (Requirements 5.4, 5.5): this set is the guard's single source
+# of truth for which write gates must exist. The guard fails and blocks the
+# build whenever a gate named here is missing, disabled, or no longer a
+# PreToolUse write-scoped hook (Req 5.4). The ONLY sanctioned way to remove or
+# disable one of these gates is to delete its id from THIS set in the SAME
+# change — that in-code edit is the explicit, reviewable maintainer-approval
+# signal that lets the removal proceed (Req 5.5). Do not weaken the guard any
+# other way (for example by loosening the trigger/matcher checks below).
+EXPECTED_WRITE_GATES: frozenset[str] = frozenset(
+    {
+        "write-policy-gate",
+        "enforce-mandatory-gate",
+        "gate-module3-visualization",
+    }
+)
+
+# The fixed 1.0 trigger and tool-name matcher every write gate must carry
+# (Requirements 5.1, 5.2). These are not configurable: a gate that drifts from
+# them no longer intercepts writes and is treated the same as a removed gate.
+WRITE_GATE_TRIGGER = "PreToolUse"
+WRITE_GATE_MATCHER = "fs_write|str_replace|fs_append"
+
+# Repo-root-relative directory holding the shipped v1 hook definition files.
+_HOOKS_DIR_REL = "senzing-bootcamp/hooks"
+
+# Synthetic rule id stamped on every write-gate violation for reporting.
+_WRITE_GATE_RULE_ID = "write-gate-preservation"
+
+
+@dataclass(frozen=True)
+class WriteGateGuardResult:
+    """Aggregate outcome of the write-gate preservation guard.
+
+    Attributes:
+        expected_gates: The write-gate ids the guard checked, in sorted order.
+        hooks_dir_present: True when the hooks directory existed and was
+            scanned; False when it was absent and the guard skipped (the guard
+            is not applicable without a hooks directory).
+        violations: Every write-gate violation found (missing, disabled, or a
+            drifted trigger/matcher). Empty on a clean pass or a skip.
+        exit_code: 0 iff no violations were found (a skip counts as a pass), 1
+            otherwise.
+    """
+
+    expected_gates: tuple[str, ...]
+    hooks_dir_present: bool
+    violations: list[Violation]
+    exit_code: int
+
+
+def _is_disabled(obj: object) -> bool:
+    """Return whether a v1 wrapper or hook entry is explicitly disabled.
+
+    The shipped v1 hook files carry no enable/disable field, so a gate is
+    enabled by default. A gate is treated as disabled only when it opts out
+    explicitly via ``"enabled": false`` or ``"disabled": true`` on either the
+    top-level wrapper or the hook entry.
+
+    Args:
+        obj: A parsed wrapper or hook-entry object.
+
+    Returns:
+        True if the object explicitly disables the hook, else False.
+    """
+    if not isinstance(obj, dict):
+        return False
+    return obj.get("enabled") is False or obj.get("disabled") is True
+
+
+def _write_gate_violation(gate_id: str, file_rel: str, detail: str) -> Violation:
+    """Build a write-gate :class:`Violation` naming the gate and remediation.
+
+    Every write-gate violation carries the approval-signal remediation so a
+    blocked change explains exactly how to proceed (Requirements 5.4, 5.5).
+
+    Args:
+        gate_id: The write-gate id that failed the invariant.
+        file_rel: The repo-root-relative path to the gate's hook file.
+        detail: The specific cause (missing, disabled, or drifted).
+
+    Returns:
+        A ``kind="write-gate"`` violation for the failing gate.
+    """
+    remediation = (
+        f" To intentionally remove or disable this PreToolUse write gate, delete "
+        f"'{gate_id}' from EXPECTED_WRITE_GATES in validate_governance_rules.py in "
+        f"the same change (the maintainer-approval signal)."
+    )
+    return Violation(
+        rule_id=_WRITE_GATE_RULE_ID,
+        kind="write-gate",
+        detail=detail + remediation,
+        file=file_rel,
+    )
+
+
+def _check_one_write_gate(gate_id: str, file_rel: str, data: object) -> list[Violation]:
+    """Validate one parsed write-gate file against the preserved-gate invariant.
+
+    A valid write gate is a ``v1`` wrapper holding exactly one enabled hook
+    entry whose ``trigger`` is ``PreToolUse`` and whose ``matcher`` is the fixed
+    write matcher. Every deviation is reported (collect-all).
+
+    Args:
+        gate_id: The write-gate id being checked.
+        file_rel: The repo-root-relative path to the gate file (for messages).
+        data: The parsed top-level JSON object of the gate file.
+
+    Returns:
+        The list of violations for this gate (empty when it is a valid, enabled
+        PreToolUse write gate).
+    """
+    # Defensive: a legacy when/then shape means the gate was never migrated.
+    if isinstance(data, dict) and ("when" in data or "then" in data):
+        return [
+            _write_gate_violation(
+                gate_id,
+                file_rel,
+                f"write gate '{gate_id}' still uses the legacy when/then schema",
+            )
+        ]
+
+    if not isinstance(data, dict) or data.get("version") != "v1":
+        return [
+            _write_gate_violation(
+                gate_id,
+                file_rel,
+                f"write gate '{gate_id}' is not a v1 wrapper (top-level "
+                "version != 'v1')",
+            )
+        ]
+
+    if _is_disabled(data):
+        return [
+            _write_gate_violation(
+                gate_id,
+                file_rel,
+                f"write gate '{gate_id}' is disabled at the wrapper level",
+            )
+        ]
+
+    hooks = data.get("hooks")
+    if not isinstance(hooks, list) or len(hooks) != 1:
+        count = len(hooks) if isinstance(hooks, list) else 0
+        return [
+            _write_gate_violation(
+                gate_id,
+                file_rel,
+                f"write gate '{gate_id}' must hold exactly one hook entry "
+                f"(found {count})",
+            )
+        ]
+
+    entry = hooks[0]
+    if not isinstance(entry, dict):
+        return [
+            _write_gate_violation(
+                gate_id,
+                file_rel,
+                f"write gate '{gate_id}' hook entry is not an object",
+            )
+        ]
+
+    violations: list[Violation] = []
+    if _is_disabled(entry):
+        violations.append(
+            _write_gate_violation(
+                gate_id, file_rel, f"write gate '{gate_id}' is disabled"
+            )
+        )
+    trigger = entry.get("trigger")
+    if trigger != WRITE_GATE_TRIGGER:
+        violations.append(
+            _write_gate_violation(
+                gate_id,
+                file_rel,
+                f"write gate '{gate_id}' has trigger {trigger!r}, expected "
+                f"{WRITE_GATE_TRIGGER!r}",
+            )
+        )
+    matcher = entry.get("matcher")
+    if matcher != WRITE_GATE_MATCHER:
+        violations.append(
+            _write_gate_violation(
+                gate_id,
+                file_rel,
+                f"write gate '{gate_id}' has matcher {matcher!r}, expected "
+                f"{WRITE_GATE_MATCHER!r}",
+            )
+        )
+    return violations
+
+
+def check_write_gates(
+    repo_root: Path,
+    expected_gates: frozenset[str] = EXPECTED_WRITE_GATES,
+) -> WriteGateGuardResult:
+    """Assert every expected PreToolUse write gate is present and enforcing.
+
+    For each id in ``expected_gates`` (checked in sorted order for stable
+    output), the guard confirms the shipped hook file
+    ``<repo_root>/senzing-bootcamp/hooks/<id>.json`` exists, is a ``v1``
+    wrapper, holds exactly one hook entry, and that the entry is enabled, has
+    ``trigger == "PreToolUse"``, and ``matcher == "fs_write|str_replace|
+    fs_append"``. Any gate that is missing, unreadable, disabled, or drifted
+    from that shape yields a violation and fails the guard (Requirement 5.4).
+    Removing an id from ``expected_gates`` — in production, the module-level
+    :data:`EXPECTED_WRITE_GATES` constant — is the sanctioned maintainer-
+    approval signal that lets a gate be retired without failing the guard
+    (Requirement 5.5).
+
+    When the hooks directory itself is absent, the guard is not applicable and
+    returns a clean skip: the separate ``validate_power.py`` hook checks already
+    fail hard on a missing hooks directory, so the guard's job is specifically
+    to catch the selective removal or disabling of a gate, which requires the
+    directory to exist.
+
+    Args:
+        repo_root: Repository root used to resolve the hooks directory.
+        expected_gates: The write-gate ids that must be preserved. Defaults to
+            the module-level :data:`EXPECTED_WRITE_GATES` approval set; callers
+            (and tests) may pass a custom set to model an approved removal.
+
+    Returns:
+        A :class:`WriteGateGuardResult` whose ``exit_code`` is 0 iff no gate
+        violated the invariant (a skip counts as a pass).
+    """
+    sorted_gates = tuple(sorted(expected_gates))
+    hooks_dir = repo_root / _HOOKS_DIR_REL
+
+    if not hooks_dir.is_dir():
+        return WriteGateGuardResult(
+            expected_gates=sorted_gates,
+            hooks_dir_present=False,
+            violations=[],
+            exit_code=0,
+        )
+
+    violations: list[Violation] = []
+    for gate_id in sorted_gates:
+        file_rel = f"{_HOOKS_DIR_REL}/{gate_id}.json"
+        path = hooks_dir / f"{gate_id}.json"
+
+        if not path.is_file():
+            violations.append(
+                _write_gate_violation(
+                    gate_id, file_rel, f"write gate '{gate_id}' is missing"
+                )
+            )
+            continue
+
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError) as exc:
+            violations.append(
+                _write_gate_violation(
+                    gate_id,
+                    file_rel,
+                    f"write gate '{gate_id}' could not be read: {exc}",
+                )
+            )
+            continue
+        except ValueError as exc:
+            violations.append(
+                _write_gate_violation(
+                    gate_id,
+                    file_rel,
+                    f"write gate '{gate_id}' is not valid JSON: {exc}",
+                )
+            )
+            continue
+
+        violations.extend(_check_one_write_gate(gate_id, file_rel, data))
+
+    return WriteGateGuardResult(
+        expected_gates=sorted_gates,
+        hooks_dir_present=True,
+        violations=violations,
+        exit_code=0 if not violations else 1,
+    )
+
+
+# ---------------------------------------------------------------------------
 # Reporting
 # ---------------------------------------------------------------------------
 
@@ -1208,13 +1512,61 @@ def report(
         print(f"Violations found: {len(result.violations)}", file=out)
 
 
+def report_write_gates(
+    result: WriteGateGuardResult,
+    *,
+    stdout: TextIO | None = None,
+    stderr: TextIO | None = None,
+) -> None:
+    """Route the write-gate guard's outcome to the standard streams.
+
+    Mirrors :func:`report`'s stream discipline: every violation is written to
+    ``stderr`` (each rendered as its own block), while a clean pass or a
+    not-applicable skip prints a single status line to ``stdout`` and writes
+    nothing to ``stderr``.
+
+    Args:
+        result: The guard outcome produced by :func:`check_write_gates`.
+        stdout: Stream for the pass/skip status line (defaults to
+            :data:`sys.stdout`).
+        stderr: Stream for violation details (defaults to :data:`sys.stderr`).
+    """
+    out = stdout if stdout is not None else sys.stdout
+    err = stderr if stderr is not None else sys.stderr
+
+    for violation in result.violations:
+        print(_format_violation(violation), file=err)
+
+    if not result.hooks_dir_present:
+        print(
+            "Write-gate preservation guard: SKIPPED (no hooks directory found)",
+            file=out,
+        )
+        return
+
+    if result.exit_code == 0:
+        gates = ", ".join(result.expected_gates)
+        print(f"Write-gate preservation guard: PASS ({gates})", file=out)
+    else:
+        print(
+            "Write-gate preservation guard: FAIL "
+            f"({len(result.violations)} violation(s))",
+            file=out,
+        )
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Run governance-rule conformance validation.
+    """Run governance-rule conformance validation and the write-gate guard.
+
+    By default (``--check all``) both the registry-driven conformance check and
+    the write-gate preservation guard run; the process exits 1 if either fails.
+    ``--check registry`` or ``--check write-gates`` restrict the run to a single
+    check (used by CI to wire the guard as its own step, and by tests).
 
     Args:
         argv: Command-line arguments (defaults to sys.argv[1:]).
@@ -1225,7 +1577,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             "Validate that each governing rule in governance-rules.yaml is "
-            "wired to its enforcement point(s)."
+            "wired to its enforcement point(s), and that the PreToolUse write "
+            "gates are preserved."
         ),
     )
     parser.add_argument(
@@ -1244,6 +1597,16 @@ def main(argv: list[str] | None = None) -> int:
             "(default: repository root inferred from script location)."
         ),
     )
+    parser.add_argument(
+        "--check",
+        choices=("all", "registry", "write-gates"),
+        default="all",
+        help=(
+            "Which checks to run: 'registry' (governance-rule conformance), "
+            "'write-gates' (the PreToolUse write-gate preservation guard), or "
+            "'all' (both; default)."
+        ),
+    )
     args = parser.parse_args(argv)
 
     # Infer the repository root from the script location:
@@ -1259,11 +1622,24 @@ def main(argv: list[str] | None = None) -> int:
         else repo_root / "senzing-bootcamp" / "config" / "governance-rules.yaml"
     )
 
-    # Orchestrate: load -> schema -> evaluate-all, then route reporting to the
-    # standard streams and return the canonical exit code (Requirement 4.8).
-    result = run(registry_path, repo_root)
-    report(result)
-    return result.exit_code
+    exit_code = 0
+
+    # Registry conformance: load -> schema -> evaluate-all, then route reporting
+    # to the standard streams (Requirement 4.8).
+    if args.check in ("all", "registry"):
+        result = run(registry_path, repo_root)
+        report(result)
+        if result.exit_code != 0:
+            exit_code = 1
+
+    # Write-gate preservation guard (Requirements 5.4, 5.5).
+    if args.check in ("all", "write-gates"):
+        gate_result = check_write_gates(repo_root)
+        report_write_gates(gate_result)
+        if gate_result.exit_code != 0:
+            exit_code = 1
+
+    return exit_code
 
 
 if __name__ == "__main__":

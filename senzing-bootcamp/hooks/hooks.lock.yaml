@@ -1,124 +1,108 @@
 # AUTO-GENERATED — do not edit manually.
 # Run: python3 senzing-bootcamp/scripts/sync_hook_registry.py --write
-generated_at: "2026-07-07T02:44:37Z"
+generated_at: "2026-07-14T20:13:40Z"
 hooks:
   - id: analyze-after-mapping
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: fileCreated
+    event_type: PostFileCreate
   - id: ask-bootcamper
-    version: "4.0.0"
+    version: "v1"
     category: critical
-    event_type: agentStop
+    event_type: Stop
   - id: backup-before-load
-    version: "2.0.0"
+    version: "v1"
     category: module
-    event_type: fileEdited
-  - id: backup-project-on-request
-    version: "3.0.0"
-    category: module
-    event_type: userTriggered
+    event_type: PostFileSave
   - id: code-style-check
-    version: "2.0.0"
+    version: "v1"
     category: critical
-    event_type: fileEdited
-  - id: commonmark-validation
-    version: "2.0.0"
-    category: critical
-    event_type: userTriggered
+    event_type: PostFileSave
   - id: data-quality-check
-    version: "2.0.0"
+    version: "v1"
     category: module
-    event_type: fileEdited
+    event_type: PostFileSave
   - id: deployment-phase-gate
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: postTaskExecution
+    event_type: PostTaskExec
   - id: enforce-critical-artifacts
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: agentStop
+    event_type: Stop
   - id: enforce-gate-on-stop
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: agentStop
+    event_type: Stop
   - id: enforce-mandatory-gate
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: preToolUse
+    event_type: PreToolUse
   - id: enforce-mapping-spec
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: fileCreated
+    event_type: PostFileCreate
   - id: enforce-visualization-offers
-    version: "2.0.0"
+    version: "v1"
     category: module
-    event_type: agentStop
+    event_type: Stop
   - id: error-recovery-context
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: postToolUse
+    event_type: PostToolUse
   - id: gate-module3-visualization
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: preToolUse
-  - id: git-commit-reminder
-    version: "1.0.0"
-    category: module
-    event_type: userTriggered
+    event_type: PreToolUse
   - id: module-completion-celebration
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: agentStop
-  - id: module-recap-append
-    version: "1.2.0"
-    category: module
-    event_type: agentStop
+    event_type: Stop
   - id: review-bootcamper-input
-    version: "1.0.0"
+    version: "v1"
     category: critical
-    event_type: promptSubmit
+    event_type: UserPromptSubmit
   - id: run-tests-after-change
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: fileEdited
+    event_type: PostFileSave
   - id: security-scan-on-save
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: fileEdited
+    event_type: PostFileSave
   - id: session-log-events
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: postToolUse
+    event_type: PostToolUse
   - id: validate-alert-config
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: fileCreated
+    event_type: PostFileCreate
   - id: validate-benchmark-results
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: fileEdited
+    event_type: PostFileSave
   - id: validate-business-problem
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: postTaskExecution
+    event_type: PostTaskExec
   - id: validate-data-files
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: fileCreated
+    event_type: PostFileCreate
   - id: verify-demo-results
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: postTaskExecution
+    event_type: PostTaskExec
   - id: verify-generated-code
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: fileCreated
+    event_type: PostFileCreate
   - id: verify-sdk-setup
-    version: "1.0.0"
+    version: "v1"
     category: module
-    event_type: fileEdited
+    event_type: PostFileSave
   - id: write-policy-gate
-    version: "1.0.0"
+    version: "v1"
     category: critical
-    event_type: preToolUse
+    event_type: PreToolUse

@@ -415,14 +415,21 @@ class TestCompletionFixedStepOrderPreserved:
 
     def test_fixed_step_order_present(self) -> None:
         content = _MODULE_COMPLETION.read_text(encoding="utf-8")
+        # After the journal-recap consolidation the separate recap_append /
+        # journal_entry steps are folded into a single consolidated_append; the
+        # transcript-reconciliation spec inserted transcript_reconciliation right
+        # after it, and capture_hook_safeguard runs before next_step_options.
+        # Match the bold step headings (**step**) so a step name mentioned in
+        # another step's prose cannot perturb the first-occurrence ordering.
         steps = [
             "progress_update",
-            "recap_append",
-            "journal_entry",
+            "consolidated_append",
+            "transcript_reconciliation",
             "completion_certificate",
+            "capture_hook_safeguard",
             "next_step_options",
         ]
-        positions = [content.find(step) for step in steps]
+        positions = [content.find(f"**{step}**") for step in steps]
         for step, pos in zip(steps, positions):
             assert pos != -1, f"Completion step {step!r} missing from steering."
         assert positions == sorted(positions), (

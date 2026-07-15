@@ -46,14 +46,16 @@ size category, and keyword associations.
 | Attribute | Value |
 |-----------|-------|
 | Directory | `hooks/` |
-| Format | JSON (`.kiro.hook` files) |
+| Format | JSON (`v1` hook files — one `<id>.json` per hook) |
 | Registry | `hooks/hook-categories.yaml` |
 
-Hooks automate agent actions in response to IDE events. Each `.kiro.hook` file
-defines a trigger condition (`when`) and an action (`then`). Hooks are
-classified as either critical (installed during onboarding) or module-specific
-(installed when the associated module starts). The `hook-categories.yaml` file
-maps each hook to its category and module association.
+Hooks automate agent actions in response to IDE events. Each `<id>.json` file
+is a `v1` wrapper (`{"version": "v1", "hooks": [ ... ]}`) whose entry pairs a
+`trigger` (the IDE event) and an optional `matcher` (a single regex scoping the
+event) with an `action`. Hooks are classified as either critical (installed
+during onboarding) or module-specific (installed when the associated module
+starts). The `hook-categories.yaml` file maps each hook to its category and
+module association.
 
 ### Scripts
 
@@ -133,7 +135,7 @@ senzing-bootcamp/
 ├── steering/        Drives agent behavior
 │   └── *.md           (YAML frontmatter + Markdown)
 ├── hooks/           Automates checks on IDE events
-│   └── *.kiro.hook    (JSON trigger/action pairs)
+│   └── *.json         (v1 hooks: trigger/matcher/action)
 ├── scripts/         Provides tooling
 │   └── *.py           (validation, measurement, CI)
 ├── config/          Stores state and gates
@@ -554,7 +556,7 @@ For further details on the progress file structure, see
 ## Hook Architecture
 
 Hooks are the automation layer of the senzing-bootcamp power. Each hook is a
-`.kiro.hook` JSON file in `hooks/` that pairs an IDE event trigger with an
+`v1` JSON file in `hooks/` that pairs an IDE event trigger with an
 agent action. When the IDE raises a matching event, the hook's condition is
 evaluated and — only on failure — the agent produces output. This
 fire-and-forget model keeps the bootcamp experience fluid: passing checks are
@@ -562,15 +564,22 @@ invisible, while problems surface immediately.
 
 ### How Hooks Work
 
-A hook definition contains two top-level fields:
+Each `v1` hook entry contains these fields:
 
-- **`when`** — The IDE event that activates the hook. Event types include
-  `fileEdited` (a file matching a glob pattern was saved), `agentStop` (the
-  agent finished a response), `preToolUse` (the agent is about to call a
-  write tool), and `promptSubmit` (the bootcamper sent a message).
-- **`then`** — The action the agent takes when the hook fires. The action
-  type is `askAgent` with a prompt that instructs the agent how to evaluate
-  the condition and what to do on pass or fail.
+- **`trigger`** — The Kiro 1.0 IDE event that activates the hook. Triggers
+  include `PostFileSave` (a file matching the matcher was saved),
+  `PostFileCreate` (a matching file was created), `Stop` (the agent finished a
+  response), `PreToolUse`/`PostToolUse` (before/after a tool call such as a
+  write), `UserPromptSubmit` (the bootcamper sent a message), and `PostTaskExec`
+  (a task finished).
+- **`matcher`** — A single regular expression that scopes the trigger: a
+  file-path regex for file triggers or a tool-name regex (for example
+  `fs_write|str_replace|fs_append`) for tool triggers. Unscoped triggers
+  (`Stop`, `UserPromptSubmit`, `PostTaskExec`) omit the matcher.
+- **`action`** — What the agent does when the hook fires, either
+  `{"type": "agent", "prompt": ...}` — a prompt that instructs the agent how to
+  evaluate the condition and what to do on pass or fail — or
+  `{"type": "command", "command": ...}`.
 
 The hook prompt encodes the condition logic. The agent reads the prompt,
 evaluates the condition against the current state (files, context, recent
@@ -582,7 +591,7 @@ declarative — no scripting language, no external runtime.
 The `hooks/hook-categories.yaml` file classifies every hook into one of two
 categories that determine when it is installed.
 
-#### Critical Hooks (5 hooks — installed during onboarding)
+#### Critical Hooks (4 hooks — installed during onboarding)
 
 Critical hooks are created in Step 4 of the onboarding flow via `createHook`.
 They remain active for the entire bootcamp session regardless of which module
@@ -593,7 +602,6 @@ is running. These hooks enforce cross-cutting concerns:
 | `ask-bootcamper` | Owns all closing questions at step boundaries |
 | `review-bootcamper-input` | Routes feedback and status trigger phrases |
 | `code-style-check` | Enforces language-appropriate coding standards |
-| `commonmark-validation` | Checks Markdown for CommonMark compliance at graduation (manually triggered) |
 | `write-policy-gate` | Enforces feedback path, working-directory, single-question, and direct-SQL write policies |
 
 #### Module Hooks (created when the associated module starts)
@@ -616,10 +624,12 @@ conditions no longer match the active context).
 | 9 Security | `security-scan-on-save` |
 | 10 Monitoring | `validate-alert-config` |
 | 11 Deployment | `deployment-phase-gate` |
-| Any module | `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration` |
+| Any module | `error-recovery-context`, `module-completion-celebration` |
 
 The "any" category contains utility hooks that apply across all modules.
 They are installed during onboarding alongside the critical hooks.
+
+The former `backup-project-on-request`, `git-commit-reminder`, and `commonmark-validation` hooks were removed in Kiro 1.0 (which dropped the manual `userTriggered` trigger) and are now the `/backup-project`, `/git-commit`, and `/commonmark-validation` slash commands (see `steering/slash-backup-project.md`, `steering/slash-git-commit.md`, and `steering/slash-commonmark-validation.md`).
 Note that `enforce-visualization-offers` is a single hook installed once but
 activated in multiple modules (3, 5, 7, 8) based on the current-module check
 in its prompt.
@@ -636,7 +646,7 @@ agent stop, every write operation. If passing hooks produced output, the
 bootcamper would be buried in noise. Silence on success means the
 bootcamper only sees hook output when something needs attention.
 
-The silence rule is enforced in the hook prompt itself. Each hook's `then`
+The silence rule is enforced in the hook prompt itself. Each hook's action
 prompt begins with instructions like:
 
 > "If compliant, produce no output at all — zero tokens, zero characters."
@@ -652,7 +662,7 @@ condition is satisfied.
 
 The `ask-bootcamper` hook has a unique role: it is the single hook
 responsible for asking the bootcamper questions at step boundaries. It
-fires on `agentStop` (after every agent response) and decides whether a
+fires on `Stop` (after every agent response) and decides whether a
 closing question is appropriate.
 
 Before generating a question, `ask-bootcamper` checks three conditions:
@@ -677,21 +687,21 @@ questions. Other hooks may surface warnings or suggestions, but only
 └──────────────────────────────────────────────────────┘
 
 ┌────────────────┐
-│   IDE EVENT    │  fileEdited, agentStop, preToolUse,
-│                │  promptSubmit
+│   IDE EVENT    │  PostFileSave, Stop, PreToolUse,
+│                │  UserPromptSubmit
 └───────┬────────┘
         │
         ↓
 ┌────────────────┐
-│ HOOK MATCHING  │  Does the event type match a hook's
-│                │  "when" field? Does the file pattern
+│ HOOK MATCHING  │  Does the event match a hook's
+│                │  trigger? Does the matcher regex
 │                │  match (if applicable)?
 └───────┬────────┘
         │
         │ match found
         ↓
 ┌────────────────┐
-│ AGENT EVALUATES│  Agent reads the hook's "then" prompt
+│ AGENT EVALUATES│  Agent reads the hook's action prompt
 │ CONDITION      │  and checks the condition against
 │                │  current state (files, context, output)
 └───────┬────────┘

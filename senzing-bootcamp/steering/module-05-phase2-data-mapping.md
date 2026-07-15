@@ -7,6 +7,15 @@ inclusion: manual
 
 **Before starting:** Confirm which data source. Track multi-source progress (In Progress / Complete / Pending).
 
+### Skip Fast-Pathed Sources
+
+> **Agent instruction — Skip fast-pathed sources:**
+>
+> Before starting the mapping workflow for a source, check its Registry_Entry in
+> `config/data_sources.yaml`. If `fast_pathed` is `true` and `mapping_status` is
+> `complete`, skip this source entirely — it has already been routed to Module 6.
+> Proceed to the next unmapped source.
+
 ### Mapping Verbosity Check
 
 > **Agent instruction — before starting the mapping workflow:**
@@ -15,13 +24,13 @@ inclusion: manual
 >
 > - **If `mapping_verbosity` is `null` or absent:** Present the following question:
 >
->   👉 "Before we start mapping, would you like **verbose mode** (I'll show each mapping step in detail — field detection, attribute selection rationale, transformation preview) or **concise mode** (I'll map quickly and show only the final mapped record and any warnings)?"
+>   👉 **"Before we start mapping, would you like *verbose mode (recommended)* (I'll show each mapping step in detail — field detection, attribute selection rationale, transformation preview) or *concise mode* (I'll map quickly and show only the final mapped record and any warnings)?"**
 >
->   🛑 STOP — Wait for the bootcamper's answer. Persist their choice (`verbose` or `concise`) to `mapping_verbosity` in `config/bootcamp_preferences.yaml`.
+>   🛑 STOP — Wait for the bootcamper's Real_Answer, then persist their choice (`verbose` or `concise`) to `mapping_verbosity` in `config/bootcamp_preferences.yaml`. This 👉 question is governed by the Answer_Required_Rule (see `conversation-protocol.md`): it requires a Real_Answer before mapping proceeds.
 >
->   If the bootcamper skips or doesn't answer directly: default to `verbose`, persist it, and say: "Defaulting to verbose mode — say 'switch to concise' anytime if you want less detail."
+>   "*verbose mode (recommended)*" is an Explicit_Default_Choice — the bootcamper can select it in one keystroke, and an explicit "use the default" / "skip" is itself a Real_Answer you record as `verbose`. Do NOT apply `verbose` (or any mode) as a silent default when the bootcamper says nothing, and do NOT proceed as if answered — treating silence as a choice is an Assumed_Answer and is forbidden.
 >
-> - **If `mapping_verbosity` is already set to `verbose` or `concise`:** Say "Using your [verbose/concise] mapping preference from last time — say 'switch to [other]' if you'd prefer [less detail/more detail]" and proceed without waiting.
+> - **If `mapping_verbosity` is already set to `verbose` or `concise`:** This is a stored-preference branch (a value already saved from a prior turn), not an unanswered 👉 question — no question is presented. Say "Using your [verbose/concise] mapping preference from last time — say 'switch to [other]' if you'd prefer [less detail/more detail]" and proceed.
 
 ### Mid-Mapping Verbosity Switch
 
@@ -111,7 +120,30 @@ inclusion: manual
    > or redirect these transient artifacts out of `<workspace_dir>` — the workflow
    > needs them in place to keep functioning. Because they are produced *after*
    > the post-download organize step, they are not present when the organizer runs
-   > and are therefore left untouched in the workspace by design.
+   > and are therefore left untouched in the workspace by design. Once the
+   > `mapping_workflow` run for a source is complete (after the iterate/finalize
+   > step), relocate these artifacts to their durable homes per the file-placement
+   > contract.
+
+   > **Agent instruction — Relocate run artifacts to durable homes after the run completes:**
+   >
+   > Once the `mapping_workflow` run for a source is complete — after the
+   > iterate/finalize step (step 10) — the transient artifacts above are no longer
+   > being read or written by the workflow and MUST be relocated from
+   > `<workspace_dir>` to their durable homes so mapping documentation and working
+   > data are discoverable and survive session compaction:
+   >
+   > - Relocate mapping-phase Markdown — `profile_report.md`, `schema_hints.md`,
+   >   `JOURNAL.md` — from `<workspace_dir>` to `docs/mapping/`.
+   > - Relocate mapping working data — `*_mapping_spec.json`, the per-source
+   >   `{source}_sample.jsonl`, and intermediate analyzer JSONL — from
+   >   `<workspace_dir>` to `data/mapping/`.
+   > - Final transformed, load-ready JSONL remains in `data/transformed/` — it is
+   >   already routed there by the organize step (step 5) and does NOT move to
+   >   `data/mapping/`.
+   >
+   > Do this only *after* the run completes; do not relocate while the run is in
+   > progress (see the transient-artifacts instruction above).
 
    **Checkpoint:** Write step 8 to `config/bootcamp_progress.json`.
 

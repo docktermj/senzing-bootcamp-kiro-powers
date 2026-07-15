@@ -22,7 +22,7 @@ from hypothesis import strategies as st
 # Constants
 # ---------------------------------------------------------------------------
 
-HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.kiro.hook")
+HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.json")
 
 # Phrases that express the "no compound question → no output" directive.
 # At least one of these must appear in the Phase 4 section to satisfy the
@@ -47,10 +47,10 @@ NO_COMPOUND_CONTEXT_PHRASES: list[str] = [
 
 
 def load_hook_prompt() -> str:
-    """Load and return the then.prompt field from the consolidated hook file."""
+    """Load and return the action.prompt field from the consolidated v1 hook."""
     with open(HOOK_PATH, encoding="utf-8") as f:
         data = json.load(f)
-    return data["then"]["prompt"]
+    return data["hooks"][0]["action"]["prompt"]
 
 
 def extract_phase4_section(prompt: str) -> str:

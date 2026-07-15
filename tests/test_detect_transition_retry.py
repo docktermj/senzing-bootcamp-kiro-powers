@@ -191,7 +191,7 @@ _HOOK_FILE: Path = (
     Path(__file__).resolve().parent.parent
     / "senzing-bootcamp"
     / "hooks"
-    / "ask-bootcamper.kiro.hook"
+    / "ask-bootcamper.json"
 )
 
 
@@ -222,30 +222,29 @@ class TestHookFileSchemaValidity:
         assert isinstance(hook, dict)
 
     def test_required_fields_exist(self) -> None:
-        """Hook file must contain all required top-level fields."""
-        hook = self._load_hook()
-        required_fields = {"name", "version", "description", "when", "then"}
-        missing = required_fields - set(hook.keys())
+        """Hook file must be a v1 wrapper whose entry has the required fields."""
+        wrapper = self._load_hook()
+        assert wrapper.get("version") == "v1", "wrapper must declare version v1"
+        assert isinstance(wrapper.get("hooks"), list) and wrapper["hooks"]
+        entry = wrapper["hooks"][0]
+        missing = {"name", "trigger", "action"} - set(entry.keys())
         assert not missing, f"Missing required fields: {missing}"
 
     def test_when_type_is_agent_stop(self) -> None:
-        """when.type must be 'agentStop'."""
-        hook = self._load_hook()
-        assert "when" in hook
-        assert isinstance(hook["when"], dict)
-        assert hook["when"].get("type") == "agentStop"
+        """trigger must be 'Stop' (1.0 rename of agentStop)."""
+        entry = self._load_hook()["hooks"][0]
+        assert entry.get("trigger") == "Stop"
 
     def test_then_type_is_ask_agent(self) -> None:
-        """then.type must be 'askAgent'."""
-        hook = self._load_hook()
-        assert "then" in hook
-        assert isinstance(hook["then"], dict)
-        assert hook["then"].get("type") == "askAgent"
+        """action.type must be 'agent' (1.0 rename of askAgent)."""
+        entry = self._load_hook()["hooks"][0]
+        assert isinstance(entry.get("action"), dict)
+        assert entry["action"].get("type") == "agent"
 
     def test_name_starts_with_to(self) -> None:
         """name field must start with 'to ' following hook naming convention."""
-        hook = self._load_hook()
-        name = hook.get("name", "")
+        entry = self._load_hook()["hooks"][0]
+        name = entry.get("name", "")
         assert name.startswith("to "), (
             f"Hook name must start with 'to ', got: {name!r}"
         )

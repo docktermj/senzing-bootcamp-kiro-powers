@@ -23,23 +23,28 @@ from pathlib import Path
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-HOOK_PATH: Path = Path("senzing-bootcamp/hooks/write-policy-gate.kiro.hook")
+HOOK_PATH: Path = Path("senzing-bootcamp/hooks/write-policy-gate.json")
 
 # The major prompt blocks are separated by a blank-line-delimited horizontal
 # rule. Splitting on it yields, in order: the header + INTERNAL-FILE
-# PASS-THROUGH block, the FAST PATH GATE, CHECK 1-4, then OUTPUT FORMAT.
+# PASS-THROUGH block, the FAST PATH GATE, CHECK 1-4, CHECK 5, then OUTPUT FORMAT.
+# Re-baselined 7 -> 8 for the mandatory-question-answers spec (Task 5.1 / 6.2):
+# CHECK 5 (ANSWER-REQUIRED) was inserted as a new rule-delimited section between
+# CHECK 4 (index 5) and OUTPUT FORMAT (now index 7). The FAST PATH GATE and
+# CHECK 1-4 baseline sections stay at their original indices 1-5, so only the
+# section count moved; the byte-for-byte baseline assertions below are unchanged.
 _SECTION_SEPARATOR = "\n\n---\n\n"
-_EXPECTED_SECTION_COUNT = 7
+_EXPECTED_SECTION_COUNT = 8
 
 
 def _load_prompt() -> str:
-    """Load the live ``then.prompt`` text from the hook file.
+    """Load the live ``action.prompt`` text from the v1 hook entry.
 
     Returns:
         The gate prompt string.
     """
     data = json.loads(HOOK_PATH.read_text(encoding="utf-8"))
-    return data["then"]["prompt"]
+    return data["hooks"][0]["action"]["prompt"]
 
 
 def _sections() -> list[str]:
@@ -69,7 +74,7 @@ BASELINE_FAST_PATH_GATE: str = "FAST PATH GATE: If ALL of the following are true
 
 BASELINE_CHECK_1: str = 'CHECK 1: SENZING SQL BLOCKING\n\nSQL PATTERNS TO DETECT: SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA\n\nSENZING DATABASE INDICATORS: G2C.db, database/G2C.db, RES_ENT, OBS_ENT, RES_FEAT_STAT, DSRC_RECORD, LIB_FEAT, RES_REL, SZ_, sz_dm_\n\nIf the content does NOT contain any of the SQL patterns above targeting Senzing database indicators, this is a non-Senzing file write (e.g., CSV, JSONL, config files, general SQL for other databases like users, orders, products tables). Do not acknowledge. Do not explain. Do not print anything. Proceed silently.\n\nIf the content contains ANY of the SQL patterns (SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA) AND references ANY Senzing database indicator (G2C.db, database/G2C.db, RES_ENT, OBS_ENT, RES_FEAT_STAT, DSRC_RECORD, LIB_FEAT, RES_REL, SZ_, sz_dm_):\n\nSTOP. Do not proceed with the write. Instead:\n1. Explain that direct SQL against the Senzing database is prohibited because it bypasses the SDK abstraction layer, produces non-portable results, and may return incorrect data from internal tables.\n2. Rewrite the code to use the appropriate Senzing SDK methods via MCP tools:\n   - To query entities: use get_entity or get_entity_by_record_id\n   - To search for records: use search_by_attributes\n   - To understand resolution: use why_entities or why_records\n   - To explore entity structure: use how_entity\n   - To count or report: use reporting_guide\n   - For general SDK guidance: use sdk_guide or get_sdk_reference\n3. Present the rewritten code using SDK methods to the bootcamper.\n\nIMPORTANT: Only flag content that contains BOTH SQL patterns AND Senzing database indicators. General SQL for non-Senzing databases (e.g., SELECT * FROM users, INSERT INTO orders) must NOT be flagged.\n\nIMPORTANT: Only flag content that contains BOTH SQL patterns AND Senzing database indicators.\nContent referencing Senzing indicators WITHOUT SQL patterns (e.g., JSON configuration files\nwith database connection strings) passes silently — zero tokens, no explanation.'  # noqa: E501
 
-BASELINE_CHECK_2: str = "CHECK 2: SINGLE-QUESTION ENFORCEMENT\n\nExamine the file being written. If the target path does NOT end with '.question_pending', this check does not apply. Do not acknowledge. Do not explain. Do not print anything. Proceed silently.\n\nIf the target path DOES end with '.question_pending', validate the question content against ALL of these rules:\n\n1. EXACTLY ONE QUESTION: The content must contain exactly one question mark. Two or more question marks means multiple questions — VIOLATION.\n2. NO CONJUNCTIONS JOINING QUESTIONS: The content must not use 'and', 'or', 'also', 'but first', 'alternatively', 'or if you prefer', 'or would you rather' to join separate choices in prose. Exception: 'or' inside a numbered list of options is allowed.\n3. NO APPENDED ALTERNATIVES: The content must not append an alternative action after the main question (e.g., 'Do you want X, or we could skip to Y?' is a violation).\n4. UNAMBIGUOUS YES/NO: If it's a yes/no question, 'yes' must map to exactly one meaning and 'no' must map to exactly one meaning. 'Does that look right? Anything I missed?' is a violation because 'yes' is ambiguous.\n5. NO FOLLOW-UP AFTER CONFIRMATION: The content must not combine a confirmation question with a follow-up (e.g., 'Does that work? What do you want changed?' is a violation).\n\nIf ALL rules pass: Do not acknowledge. Do not explain. Do not print anything. Proceed silently.\n\nIf ANY rule is violated: STOP. Output exactly:\n\n⚠️ COMPOUND QUESTION DETECTED — REWRITE REQUIRED\nViolation: [describe which rule was broken]\nOriginal: [the question text]\nFix: Rewrite as a single, unambiguous question. If multiple pieces of information are needed, ask only the first one. If choices exist, use a numbered list format.\n\nDo NOT allow the write to proceed with a compound question. The agent must rewrite the question before continuing."  # noqa: E501
+BASELINE_CHECK_2: str = "CHECK 2: SINGLE-QUESTION ENFORCEMENT\n\nExamine the file being written. If the target path does NOT end with '.question_pending', this check does not apply. Do not acknowledge. Do not explain. Do not print anything. Proceed silently.\n\nIf the target path DOES end with '.question_pending', FIRST strip bold markers, THEN validate. STRIP BOLD MARKERS (do this before evaluating any rule below): remove ALL '**' bold-emphasis markers from the question content, and perform every count and detection in the rules below — the question-mark count in rule 1 and the joining-conjunction detection in rule 2 — on that marker-stripped wording only. The '**' markers are presentational; they contain no question mark and no conjunction words and act as word boundaries, so they MUST NOT change the verdict. Then validate the marker-stripped question content against ALL of these rules:\n\n1. EXACTLY ONE QUESTION: The content must contain exactly one question mark. Two or more question marks means multiple questions — VIOLATION.\n2. NO CONJUNCTIONS JOINING QUESTIONS: The content must not use 'and', 'or', 'also', 'but first', 'alternatively', 'or if you prefer', 'or would you rather' to join separate choices in prose. Exception: 'or' inside a numbered list of options is allowed.\n3. NO APPENDED ALTERNATIVES: The content must not append an alternative action after the main question (e.g., 'Do you want X, or we could skip to Y?' is a violation).\n4. UNAMBIGUOUS YES/NO: If it's a yes/no question, 'yes' must map to exactly one meaning and 'no' must map to exactly one meaning. 'Does that look right? Anything I missed?' is a violation because 'yes' is ambiguous.\n5. NO FOLLOW-UP AFTER CONFIRMATION: The content must not combine a confirmation question with a follow-up (e.g., 'Does that work? What do you want changed?' is a violation).\n\nIf ALL rules pass: Do not acknowledge. Do not explain. Do not print anything. Proceed silently.\n\nIf ANY rule is violated: STOP. Output exactly:\n\n⚠️ COMPOUND QUESTION DETECTED — REWRITE REQUIRED\nViolation: [describe which rule was broken]\nOriginal: [the question text]\nFix: Rewrite as a single, unambiguous question. If multiple pieces of information are needed, ask only the first one. If choices exist, use a numbered list format.\n\nDo NOT allow the write to proceed with a compound question. The agent must rewrite the question before continuing."  # noqa: E501
 
 BASELINE_CHECK_3: str = "CHECK 3: FILE PATH POLICIES\n\nQUICK CHECK — answer these two questions about the file being written:\n\nQ1: Is the target path inside the working directory? (Not /tmp/, not %TEMP%, not ~/Downloads, not any absolute path outside the project)\nQ2: Is this feedback content (has Date/Module/Priority/Category/What Happened sections) being written to a path OTHER than 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md'?\n\nFAST PATH: If Q1 is YES (path is inside working directory) AND Q2 is NO (not misrouted feedback): Do not acknowledge. Do not explain. Do not print anything. Proceed silently.\n\nDo not check file content for path references in the fast path. Do not acknowledge. Do not explain. Do not print anything. Proceed silently.\n\nSLOW PATH: If Q1 is NO (path is outside working directory) OR Q2 is YES (feedback going to wrong file):\n- For external paths: STOP. Tell the agent to use project-relative equivalents (database/G2C.db for databases, data/temp/ for temporary files, src/ for source code).\n- For misrouted feedback: STOP. Redirect to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md.\n\nCONTENT CHECK (only if fast path passed): Does the file content reference /tmp/, %TEMP%, ~/Downloads, or any location outside the working directory? If YES: STOP and require replacement with project-relative equivalents. If NO: do nothing — proceed silently.\n\nAPPEND-ONLY GUARD: If the target path is 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md':\n\n(a) If the tool being invoked is fs_write (full file overwrite, NOT fs_append):\nSTOP. Do not proceed with the write. Output:\n⚠️ FEEDBACK FILE OVERWRITE BLOCKED — docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md is append-only.\nThis file accumulates bootcamper feedback across the entire bootcamp. Overwriting it would destroy previous entries.\nFix: Use fs_append to add new feedback entries. NEVER use fs_write on this file after initial creation.\nIf the file does not yet exist, fs_write is permitted for initial creation from the template.\n\n(b) If the tool being invoked is str_replace (in-place edit of existing content):\nSTOP. Do not proceed with the edit. Output:\n⚠️ FEEDBACK FILE MODIFICATION BLOCKED — docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md is append-only.\nExisting feedback entries must never be modified, reformatted, corrected, or deleted. The bootcamper's original words are preserved exactly as written.\nFix: If you need to add new content, use fs_append. If the bootcamper explicitly asks to edit their own feedback, they can do so manually in their editor.\n\n(c) If the tool being invoked is fs_append: Do not acknowledge. Do not explain. Do not print anything. Proceed silently."  # noqa: E501
 
@@ -179,8 +184,8 @@ class TestPassThroughIntroducesNoNewOutputStrings:
 # Task 2.3 — Hook schema-conformance and enumeration-diff example tests
 # ===========================================================================
 # These are example/unit (not property) tests. They guard two things:
-#   1. The edited hook still conforms to the required .kiro.hook schema shape
-#      (name, version, when.type/toolTypes, then.type/prompt).
+#   1. The edited hook still conforms to the required v1 schema shape
+#      (wrapper version "v1"; entry name/trigger/matcher/action).
 #   2. The pass-through enumeration gained EXACTLY the two new exact-match
 #      entries and nothing else, relative to the pre-extension baseline.
 #
@@ -203,12 +208,17 @@ _NOT_GUARD_HEADER: str = (
 
 
 def _load_hook() -> dict:
-    """Load and parse the full hook JSON document.
+    """Load and parse the full v1 wrapper JSON document.
 
     Returns:
-        The parsed hook object.
+        The parsed wrapper object (``{"version": "v1", "hooks": [entry]}``).
     """
     return json.loads(HOOK_PATH.read_text(encoding="utf-8"))
+
+
+def _load_entry() -> dict:
+    """Return the single v1 hook entry (``hooks[0]``)."""
+    return _load_hook()["hooks"][0]
 
 
 def _passthrough_enumeration_lines() -> list[str]:
@@ -249,10 +259,10 @@ def _derive_baseline_enumeration(current: list[str]) -> list[str]:
 
 
 class TestHookSchemaConformance:
-    """The edited hook still conforms to the required ``.kiro.hook`` schema.
+    """The edited hook still conforms to the required v1 schema.
 
-    Editing only the ``then.prompt`` enumeration must not disturb any
-    structural field. A ``preToolUse`` write gate with an empty prompt would
+    Editing only the ``action.prompt`` enumeration must not disturb any
+    structural field. A ``PreToolUse`` write gate with an empty prompt would
     silently stop enforcing the security checks, so the prompt must stay
     non-empty.
 
@@ -260,29 +270,32 @@ class TestHookSchemaConformance:
     """
 
     def test_required_top_level_fields_present(self):
-        """The hook retains the four required top-level fields."""
-        hook = _load_hook()
-        for field in ("name", "version", "when", "then"):
-            assert field in hook, f"missing required hook field: {field}"
+        """The wrapper declares v1 and the entry retains the required fields."""
+        wrapper = _load_hook()
+        assert wrapper.get("version") == "v1", "wrapper must declare version v1"
+        entry = wrapper["hooks"][0]
+        for field in ("name", "trigger", "action"):
+            assert field in entry, f"missing required hook entry field: {field}"
 
     def test_name_and_version_are_non_empty_strings(self):
-        """``name`` and ``version`` are present and non-empty."""
-        hook = _load_hook()
-        assert isinstance(hook["name"], str) and hook["name"].strip()
-        assert isinstance(hook["version"], str) and hook["version"].strip()
+        """The entry ``name`` is non-empty and the wrapper ``version`` is ``v1``."""
+        wrapper = _load_hook()
+        entry = wrapper["hooks"][0]
+        assert isinstance(entry["name"], str) and entry["name"].strip()
+        assert wrapper.get("version") == "v1"
 
     def test_when_is_pretooluse_write_gate(self):
-        """The trigger is a ``preToolUse`` hook scoped to write tools only."""
-        when = _load_hook()["when"]
-        assert when["type"] == "preToolUse"
-        assert when["toolTypes"] == ["write"]
+        """The trigger is a ``PreToolUse`` hook scoped to the write-tool matcher."""
+        entry = _load_entry()
+        assert entry["trigger"] == "PreToolUse"
+        assert entry.get("matcher") == "fs_write|str_replace|fs_append"
 
     def test_then_is_askagent_with_non_empty_prompt(self):
-        """The action is ``askAgent`` carrying a non-empty prompt."""
-        then = _load_hook()["then"]
-        assert then["type"] == "askAgent"
-        assert isinstance(then["prompt"], str)
-        assert then["prompt"].strip(), "then.prompt must not be empty"
+        """The action is an ``agent`` action carrying a non-empty prompt."""
+        action = _load_entry()["action"]
+        assert action["type"] == "agent"
+        assert isinstance(action["prompt"], str)
+        assert action["prompt"].strip(), "action.prompt must not be empty"
 
 
 class TestPassThroughEnumerationDiff:

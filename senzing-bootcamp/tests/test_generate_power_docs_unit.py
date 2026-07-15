@@ -532,14 +532,14 @@ def _hooks_world(
 
     Reuses :func:`_write_world` for the surrounding (valid) steering and module
     sources, then overwrites ``hook-categories.yaml`` with ``categories_yaml``
-    and creates one minimal ``<id>.kiro.hook`` file per id in ``hook_ids``. The
+    and creates one minimal ``<id>.json`` file per id in ``hook_ids``. The
     cross-check only inspects filenames, so the hook bodies are intentionally
     trivial (``{}``).
 
     Args:
         tmp_path: The pytest temporary directory for this test.
         categories_yaml: Raw YAML content for ``hook-categories.yaml``.
-        hook_ids: Hook ids for which to create ``<id>.kiro.hook`` files.
+        hook_ids: Hook ids for which to create ``<id>.json`` files.
 
     Returns:
         A :class:`SourcePaths` pointing entirely inside ``tmp_path``.
@@ -547,7 +547,7 @@ def _hooks_world(
     paths = _write_world(tmp_path)
     paths.hook_categories.write_text(categories_yaml, encoding="utf-8")
     for hook_id in hook_ids:
-        (paths.hooks_dir / f"{hook_id}.kiro.hook").write_text("{}\n", encoding="utf-8")
+        (paths.hooks_dir / f"{hook_id}.json").write_text("{}\n", encoding="utf-8")
     return paths
 
 
@@ -1008,7 +1008,7 @@ def _power_md_skeleton() -> str:
 def _full_world(tmp_path: Path) -> SourcePaths:
     """Build a complete, internally consistent world so ``main([])`` succeeds.
 
-    Creates a hooks directory with two ``*.kiro.hook`` files and a
+    Creates a hooks directory with two ``*.json`` files and a
     ``hook-categories.yaml`` that names exactly those two ids (one critical, one
     under ``modules: any:``), a ``steering-index.yaml`` with two ``file_metadata``
     entries (plus the matching ``.md`` files so the existence check passes) and a
@@ -1035,7 +1035,7 @@ def _full_world(tmp_path: Path) -> SourcePaths:
         encoding="utf-8",
     )
     for hook_id in ("alpha-hook", "beta-hook"):
-        (hooks_dir / f"{hook_id}.kiro.hook").write_text("{}\n", encoding="utf-8")
+        (hooks_dir / f"{hook_id}.json").write_text("{}\n", encoding="utf-8")
 
     steering_dir = tmp_path / "steering"
     steering_dir.mkdir()

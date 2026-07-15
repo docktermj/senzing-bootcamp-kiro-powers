@@ -13,9 +13,38 @@ After each module, check if the user finished their track's last module:
 
 ## Path Completion Celebration
 
-> **Note:** The per-module artifacts (recap section, journal entry, completion certificate) for the final module of a track are produced by the Shared Boundary-Detection Trigger BEFORE this celebration runs. Track completion adds the celebration and next-step guidance below — it never replaces or suppresses the final module's per-module artifacts.
+> **Note:** The per-module artifacts (consolidated recap section including its `### Journal` subsection, completion certificate) for the final module of a track are produced by the Shared Boundary-Detection Trigger BEFORE this celebration runs. Track completion adds the celebration and next-step guidance below — it never replaces or suppresses the final module's per-module artifacts.
 
 > **Note:** The completion-summary document (`docs/completion_summary.md`) is always created at track completion; the completion-summary offer in its existing position (between the celebration and the export option) governs only the shareable PDF/share, not the document's creation.
+
+### Graduation Banner
+
+<!-- AGENT INSTRUCTION — not shown to the bootcamper.
+Display the GRADUATION banner below VERBATIM as the FIRST output of the
+track-completion celebration, before the reconciliation passes, the shareable
+deliverable renders, and the "🎉 You've completed…" summary below. It bookends
+the bootcamp: the welcome banner signposts the start, this banner signposts
+the finish.
+
+Show the banner exactly ONCE per track completion. The track-completion
+celebration ALWAYS runs at track completion — before the graduation offer — so
+every bootcamper who completes a track sees the banner here, INCLUDING one who
+later declines graduation or has `skip_graduation` set. When the bootcamper
+ACCEPTS graduation, the graduation workflow (graduation.md) coordinates with
+this note: because the celebration already displayed the banner for this
+completion, graduation.md does NOT display it again, keeping it to at most once
+per track completion.
+
+This banner is display-only: it introduces no new question or gate, and it
+does NOT change the artifact guarantees, the recap/transcript rendering order,
+or the mandatory closing question defined later in this file.
+-->
+
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎓🎓🎓  GRADUATION  🎓🎓🎓
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
 
 ### Recap Reconciliation & Backfill (Path A final safety net)
 
@@ -24,7 +53,7 @@ Before presenting the celebration, reconcile the recap deliverable against the r
 1. Reconcile `docs/bootcamp_recap.md` against `config/bootcamp_progress.json` `modules_completed` and backfill any missing per-module `## Module N:` section:
 
    ```bash
-   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --journal docs/bootcamp_journal.md --progress-dir docs/progress --backfill
+   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --progress-dir docs/progress --backfill
    ```
 
    The applier uses a pure set difference, so it appends only the sections that are missing — existing sections are preserved byte-for-byte (Req 3.1) and a re-run on an already-consistent recap makes no changes (Req 3.2). It exits non-zero naming any module whose section it could not produce, so a silent gap is never reported as complete.
@@ -75,26 +104,26 @@ This subsection **always** runs at track completion. It runs **independent of wh
 
    This reads the reconciled `config/session_log.jsonl` and overwrites `docs/bootcamp_transcript.md`, an ordered Q&A record grouped by module. On success, inform the bootcamper: "📝 Q&A transcript generated at `docs/bootcamp_transcript.md`."
 
-3. This subsection is **non-blocking**. On any failure — or when `fpdf2` is absent (the recap PDF's existing graceful degradation, unchanged here: the script keeps the Markdown recap and prints the `pip install fpdf2` install hint) — log a warning, point the bootcamper to the existing `docs/bootcamp_recap.md`, and continue to the next step. A generation failure never blocks the celebration, the remaining offers, or the graduation offer. When the recap PDF cannot be written, the Markdown recap at `docs/bootcamp_recap.md` is retained. When the transcript renderer reports no Q&A events, no transcript is written; inform the bootcamper and continue.
+3. This subsection is **non-blocking**, and the recap PDF is **guaranteed**: `generate_recap_pdf.py` routes through the tiered strategy — the rich `fpdf2` renderer when available, a best-effort auto-install of `fpdf2` otherwise, and a stdlib-only PDF writer as the final tier — so a valid `docs/bootcamp_recap.pdf` is produced even when `fpdf2` is absent (a plainer PDF, not "Markdown only"). Installing `fpdf2` (`pip install fpdf2`) simply upgrades the result to the professionally designed PDF. Should a genuine, unexpected render error still occur, log a warning, point the bootcamper to the existing `docs/bootcamp_recap.md` as the content backstop, and continue — a generation failure never blocks the celebration, the remaining offers, or the graduation offer. When the transcript renderer reports no Q&A events, no transcript is written; inform the bootcamper and continue.
 
-> **Note (enforced guarantee):** The always-run renders above are the *best-effort* pass; they stay non-blocking so a render failure never holds up the celebration. The recap PDF / transcript / recap Markdown are additionally **guaranteed** at every stopping point by the `enforce-critical-artifacts` `agentStop` hook, which runs `python senzing-bootcamp/scripts/ensure_graduation_artifacts.py` and blocks "done" until each artifact exists and is non-empty. That orchestrator preserves the reconcile-then-render ordering used here (reconcile the source, then render) and, when `fpdf2` is absent, produces a self-contained HTML fallback at `docs/bootcamp_recap.html` so a rendered recap always exists. The enforcement gate is what makes these deliverables guaranteed; it does not change the non-blocking behavior of this celebration pass.
+> **Note (enforced guarantee):** The always-run renders above are the *best-effort* pass; they stay non-blocking so a render failure never holds up the celebration. The recap PDF / transcript / recap Markdown are additionally **guaranteed** at every stopping point by the `enforce-critical-artifacts` `Stop` hook, which runs `python senzing-bootcamp/scripts/ensure_graduation_artifacts.py` and blocks "done" until each artifact exists and is non-empty. That orchestrator preserves the reconcile-then-render ordering used here (reconcile the source, then render) and guarantees a valid `docs/bootcamp_recap.pdf` via the tiered strategy (the best-effort `fpdf2` auto-install may run; otherwise the stdlib-only PDF writer is used), so a rendered PDF always exists. Any `docs/bootcamp_recap.html` is only a supplementary extra, never the artifact that satisfies the rendered-recap guarantee. The enforcement gate is what makes these deliverables guaranteed; it does not change the non-blocking behavior of this celebration pass.
 
 ### fpdf2 Preflight Note (before the completion-summary PDF / export offer)
 
-At track completion, before the completion-summary PDF offer and the export option below, run the preflight helper so the bootcamper learns up front whether a PDF will be produced:
+At track completion, before the completion-summary PDF offer and the export option below, run the preflight helper so the bootcamper learns up front which recap PDF they'll get — the professionally designed one when `fpdf2` is available, or a plainer but still valid PDF otherwise (a PDF is produced either way):
 
 ```bash
 python3 senzing-bootcamp/scripts/fpdf2_preflight.py
 ```
 
-If it prints a line, surface that line to the bootcamper; if it prints nothing, continue silently. This step is **non-blocking regardless of exit code** — the completion-summary PDF and export offers always run afterward whether or not a note was shown, and the PDF scripts' existing graceful degradation is unchanged.
+If it prints a line, surface that line to the bootcamper; if it prints nothing, continue silently. This step is **non-blocking regardless of exit code** — the completion-summary PDF and export offers always run afterward whether or not a note was shown. The note only distinguishes the rich vs. plainer PDF; a valid recap PDF is produced regardless, so it never implies the recap PDF might be skipped.
 
 When track is complete, present:
 
 - 🎉 "You've completed the [track name]!"
 - Summary of all artifacts built (code, data, docs)
 - Where everything lives (src/, data/transformed/, docs/, config/, database/)
-- Reference to `docs/bootcamp_journal.md`
+- Reference to `docs/bootcamp_recap.md` (the consolidated per-module log, including each module's `### Journal` subsection)
 - Next options: switch to longer track (modules carry forward), harden for production, or start using the code
 - Export option: "Would you like to export a shareable report of your bootcamp results?" — when accepted, run `python3 scripts/export_results.py` and present the output path to the bootcamper. This option appears only at track completion, not after every module.
 - Record export offer (after the export option, before the analytics offer): "📋 Would you like a record of your bootcamp journey? You can share it with your team or use it to replay the same setup on another project." — when accepted, run `python3 scripts/record_export.py` and present the output path (`docs/bootcamp_record.yaml`) to the bootcamper. When declined, proceed to the next step without generating any export file.
@@ -126,3 +155,15 @@ When track is complete, present:
   6. If the feedback file does not exist or contains no entries beyond the template header, display the fallback: "Say 'bootcamp feedback' to share your experience"
 
 Load `lessons-learned.md` and offer the retrospective.
+
+### Bootcamp-Completion Closing Question
+
+Once every offer above is resolved — including the retrospective offered from `lessons-learned.md` — close the track-completion turn with exactly one clearly marked question. This closing question is **unconditional**: it is always presented at the end of the celebration, even when every offer was declined, so the bootcamper always receives an explicit signal that the bootcamp is complete and an invitation to raise anything else.
+
+Present it through the standard question renderer — the 👉 pointer at the start of the line, **outside** the bold span, with the question text wrapped in CommonMark bold:
+
+```text
+👉 **The Senzing Bootcamp is complete. Do you have anything else you would like to discuss?**
+```
+
+A celebratory emoji (for example 🎉 or 🎓) MAY appear before or inside the bold span, but it does NOT replace the 👉 — the pointer always leads the line. This terminal turn carries the same One Question Rule as every other yielding turn: emit exactly one 👉 question, write it to `config/.question_pending`, and stop immediately after (🛑 STOP). Do not append any statement, offer, or follow-up after this question.

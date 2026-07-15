@@ -30,6 +30,7 @@ Generate a structured summary of all verification checks.
    - Pass or fail status
    - Duration in milliseconds (where applicable)
    - Any relevant metadata (record counts, entity counts, file paths, ports)
+   - For `truthset_acquisition`, the `source_provenance` value (`mcp_primary`, `github_fallback`, or `cord_substitute`) carried from the Step 2/2a acquisition check — do NOT re-derive it, mirror what Step 2/2a wrote
 
 3. **If ALL checks passed:** Display a success banner:
 
@@ -63,7 +64,7 @@ Generate a structured summary of all verification checks.
        "status": "passed|failed",
        "checks": {
          "mcp_connectivity": {"status": "passed|failed", "duration_ms": 0},
-         "truthset_acquisition": {"status": "passed|failed", "records": 0},
+         "truthset_acquisition": {"status": "passed|failed", "records": 0, "source_provenance": "mcp_primary|github_fallback|cord_substitute"},
          "sdk_initialization": {"status": "passed|failed", "duration_ms": 0},
          "code_generation": {"status": "passed|failed", "file": "verify_pipeline.[ext]"},
          "build_compilation": {"status": "passed|failed", "duration_ms": 0},
@@ -81,6 +82,13 @@ Generate a structured summary of all verification checks.
    - The `timestamp` field SHALL use ISO 8601 format (e.g., `2026-05-13T10:30:00Z`).
    - The `fix_instructions` array SHALL contain one entry per failed check, each with the check name and remediation text.
    - If verification was interrupted, mark unexecuted checks as `"status": "skipped"`.
+   - The `source_provenance` field on the `truthset_acquisition` check mirrors the value written by Step 2/2a — one of `mcp_primary`, `github_fallback`, or `cord_substitute`. Do NOT re-derive it; carry the acquisition result forward (Req 8.1, 8.3).
+
+   **State the TruthSet source provenance (Req 8.1, 8.2):** The Verification Report SHALL state the `source_provenance` for the run alongside the `truthset_acquisition` result:
+
+   - `mcp_primary` — deterministic verification used the MCP-provided TruthSet (primary path).
+   - `github_fallback` — the report SHALL state that deterministic verification used the sanctioned fallback source (registry id `senzing_truthset_demo`) rather than an MCP-provided TruthSet. Reference the source by its registry identifier only — never embed the raw URL.
+   - `cord_substitute` — deterministic verification did NOT run against known-good expected results; a non-deterministic CORD substitute was used and Module 3 is `incomplete`.
 
 6. **If all checks passed:** Proceed to Step 11 (Cleanup).
 7. **If any checks failed:** Do NOT proceed to cleanup. Advise the bootcamper to fix issues and re-run Module 3 from the beginning.
@@ -95,7 +103,7 @@ Terminate test services and clean up verification data from the database.
 
 Before proceeding with termination, confirm the bootcamper has finished exploring the visualization. Ask the bootcamper for confirmation before terminating the web service or performing any cleanup:
 
-> 👉 Have you finished exploring the visualization? Let me know when you're ready and I'll clean up the server.
+> 👉 **Have you finished exploring the visualization? Let me know when you're ready and I'll clean up the server.**
 
 🛑 STOP — Wait for the bootcamper to confirm they are done exploring. Do NOT proceed with termination until the bootcamper responds.
 

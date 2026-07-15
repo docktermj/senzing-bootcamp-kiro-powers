@@ -323,7 +323,327 @@ _BASELINE_HASHES: dict[str, str] = {
     # 2037 -> 2130), all recomputed by measure_steering.py into file_metadata and
     # the budget total. Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "949379689716d35e0a3fba0d9c89a3be68f1304a492e6c19bee72f0abb8f6ce8",
+    # Re-baselined once more (204320 -> 202637) for the kiro-1-0-migration spec:
+    # the hook migration regenerated the hook registry (hook-registry.md
+    # 2130 -> 872 after the monolith was thinned, hook-registry-module-any.md
+    # 4905 -> 4374, hook-registry-critical.md 8592 -> 7984, and the per-module
+    # hook-registry-module-*.md slices), grew hook-architecture.md (2149 -> 2325)
+    # and the onboarding/agent files (agent-instructions.md 4404 -> 4470,
+    # onboarding-flow.md 4124 -> 4230, onboarding-phase2-track-setup.md
+    # 1503 -> 1505, session-resume-phase2-setup-recovery.md 997 -> 1034), and
+    # added three slash-command steering files (slash-backup-project.md,
+    # slash-commonmark-validation.md, slash-git-commit.md), all recomputed by
+    # measure_steering.py into file_metadata and the budget total
+    # (202637 = sum of file_metadata counts). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (202637 -> 203322) for the question-visibility spec
+    # (task 6.1 re-ran measure_steering.py): bold `**` emphasis markers were added
+    # across many steering files and conversation-protocol.md gained
+    # rule/checklist/self-check content, growing several file_metadata counts, all
+    # recomputed by measure_steering.py into file_metadata and the budget total
+    # (203322 = sum of file_metadata counts). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (203322 -> 203333) for the
+    # steering-inclusion-auto-audit spec (task 7.1 re-ran measure_steering.py in
+    # update mode): re-classifying the eleven former `inclusion: auto` files to
+    # standard modes rewrote only their frontmatter (e.g. session-resume.md
+    # auto -> manual, +2 chars -> token_count 3384 -> 3385), which
+    # measure_steering.py recomputed into file_metadata and the budget total
+    # (203333 = sum of file_metadata counts). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (203333 -> 203334) for the follow-up
+    # steering-inclusion-auto-audit documentation fix: session-resume.md's
+    # Protocol Confirmation parenthetical was refreshed from the now-stale
+    # `inclusion: auto` to `inclusion: always` (conversation-protocol.md is
+    # classified `always`), a two-character body change that nudged
+    # session-resume.md's measured token_count 3385 -> 3386, which
+    # measure_steering.py recomputed into file_metadata and the budget total
+    # (203334 = sum of file_metadata counts). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (203334 -> 204764) for the cord-mapping-fast-path
+    # spec: module-05-phase1-quality-assessment.md grew when Step 5a was reworded
+    # to reuse the Step 3 schema and its intro gained a get_sample_data clause
+    # (the CORD readiness check + fast-path offer, 1710 -> 2853),
+    # module-05-data-quality-mapping.md's Phase 1 hub note was rephrased to
+    # mention the readiness check (689 -> 712), module-05-phase2-data-mapping.md
+    # gained the fast-pathed-source skip guard (5355 -> 5447), and
+    # module-04-data-collection.md gained the CORD provenance recording
+    # instruction (4320 -> 4492), all recomputed by measure_steering.py into
+    # file_metadata and the budget total (204764 = sum of file_metadata counts).
+    # Only the budget block changed; keywords/languages/deployment/root_step_range
+    # are byte-identical (verified: their baseline hashes still match the live index).
+    # Re-baselined once more (204764 -> 205367) for the file-placement-conventions
+    # spec: file-placement.md grew (296 -> 515, small -> medium) when Task 5.1
+    # added the "## Canonical File-Placement Contract" section, and Tasks 5.2/6.1
+    # made smaller within-tolerance edits to other always-loaded steering files,
+    # all recomputed by measure_steering.py into file_metadata and the budget
+    # total (205367 = sum of file_metadata counts). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (205367 -> 207168) for the graduation-enrichment
+    # spec: graduation.md grew (8509 -> 10310, still large) when the Src/Data
+    # index-generation steps (0b.6/0b.7), the README index-update step (0b.8),
+    # and the Artifact_Announcement extension were added, which measure_steering.py
+    # recomputed into file_metadata and the budget total (207168 = sum of
+    # file_metadata counts). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (207168 -> 207104) for the journal-recap-consolidation
+    # spec (Task 10.3 resynced steering-index.yaml): the feature's steering edits
+    # netted -64 tokens across the hook/completion slices —
+    # hook-registry-module-any.md grew +420, module-completion-artifacts.md shrank
+    # -552, module-completion.md +10, module-completion-error-handling.md +33,
+    # module-completion-next-steps.md +3, module-completion-track.md +22 — all
+    # recomputed by measure_steering.py into file_metadata and the budget total
+    # (207104 = sum of file_metadata counts). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (207104 -> 209111) for the license-aware-sampling
+    # bugfix: the steering edits grew module-01-phase1-discovery.md (Step 6a
+    # license-aware threshold), module-02-sdk-setup.md (Step 5e detect-license
+    # insertion + Step 5a guard), module-04-data-collection.md (canonical
+    # license-aware framing), module-06-phaseB-load-first-source.md (conditional
+    # SENZ9000 warning), and module-08-phaseB-benchmarking.md (benchmark cap
+    # removal), all recomputed by measure_steering.py into file_metadata and the
+    # budget total (209111 = sum of file_metadata counts). Only the budget block
+    # changed (solely the total_tokens line); keywords/languages/deployment/
+    # root_step_range are byte-identical (verified: their baseline hashes still
+    # match the live index).
+    # Re-baselined once more (209111 -> 209239) for the onboarding-session-ux
+    # spec: session-resume.md grew (3386 -> 3463) when Rule 6 (the bold-question
+    # convention) was added inline to Step 2b's Core Rules to satisfy Requirement
+    # 4.x — the convention is stated self-contained so it survives context
+    # compaction (Req 4.3) and is not trimmed — which measure_steering.py
+    # recomputed into file_metadata and the budget total (209239 = sum of
+    # file_metadata counts). Only the budget block changed (solely the
+    # total_tokens line); keywords/languages/deployment/root_step_range are
+    # byte-identical (verified: their baseline hashes still match the live index).
+    # Re-baselined once more (209239 -> 209610) for the stop-hook-ux bugfix
+    # (Task: resync steering token index): the recap logic was folded out of the
+    # deleted standalone module-recap-append.json hook into ask-bootcamper Phase 0
+    # — which grew hook-registry-critical.md and shrank hook-registry-module-any.md
+    # (26 hooks) — and the coupled steering edits removed the module-recap-append
+    # references from agent-instructions.md, onboarding-flow.md,
+    # session-resume-phase2-setup-recovery.md, module-completion.md, and
+    # module-completion-artifacts.md (capture-critical set is now
+    # {session-log-events, ask-bootcamper}), all recomputed by measure_steering.py
+    # into file_metadata and the budget total (209610 = sum of file_metadata
+    # counts). Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (209610 -> 210967) for the truthset-fallback-source
+    # spec (final steering resync): the Module 3 fallback-source steering edits
+    # grew module-03-phase1-verification.md (4194 -> 4928, the get_sample_data
+    # availability classification + GitHub fallback branch + graceful-degradation
+    # handling), module-03-system-verification.md (604 -> 913, the fallback path
+    # documented under Error Handling with its registry-identifier reference and
+    # approval rationale), and module-03-phase3-report-close.md (1752 -> 2066,
+    # medium -> large, the TruthSet_Source_Provenance addition to the verification
+    # report), all recomputed by measure_steering.py into file_metadata and the
+    # budget total (210967 = sum of file_metadata counts). Only the budget block
+    # changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (210967 -> 212484) for the
+    # module4-sqlite-load-time-warning spec: module-04-data-collection.md
+    # (4888 -> 6112) gained the Step 8b in-flow SQLite Load_Time_Warning
+    # (collection-time heads-up), and module-06-phaseA-build-loading.md
+    # (3650 -> 3943) gained the additive module4_decision_applies OR into its
+    # already_decided computation, both recomputed by measure_steering.py into
+    # file_metadata and the budget total (212484 = sum of file_metadata counts).
+    # Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (212484 -> 213421) for the question-format-consistency
+    # bugfix: agent-behavior-rules.md (822 -> 970, Rule 4's Session-Recreation
+    # Re-Rendering + Track-Completion / Graduation Terminal Turn clauses),
+    # graduation.md (10310 -> 10562, the Mandatory Closing Step 👉 question),
+    # module-completion-track.md (3310 -> 3601, the Bootcamp-Completion Closing
+    # Question), and session-resume-phase2-state-repair.md (547 -> 793, the
+    # relocated Pending Question Re-Rendering guidance) grew, all recomputed by
+    # measure_steering.py into file_metadata and the budget total
+    # (213421 = sum of file_metadata counts). session-resume.md is unchanged
+    # (3463 — the re-rendering guidance was relocated out of its Step 3). Only the
+    # budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (213421 -> 213990) for the
+    # recap-pdf-professional-design spec (Task 7.1 resynced steering-index.yaml):
+    # graduation.md grew (10562 -> 11131) when the non-blocking "Visual Review
+    # Loop" section was added to its Step 0b (render first/last content pages to
+    # images, inspect for Required_Detail_Section headings, warn-and-continue on
+    # any failure), which measure_steering.py recomputed into file_metadata and
+    # the budget total (213990 = sum of file_metadata counts). Only the budget
+    # block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (213990 -> 218428) for the session-handoff spec:
+    # task 6.1 registered the new session-handoff.md steering file in file_metadata
+    # (token_count 4148, size_category large) and task 5.1's hook-in grew
+    # agent-context-management.md (1326 -> 1616), which measure_steering.py
+    # recomputed into file_metadata and the budget total (218428 = sum of
+    # file_metadata counts). Only the budget block changed (solely the total_tokens
+    # line); keywords/languages/deployment/root_step_range are byte-identical
+    # (verified: their baseline hashes still match the live index).
+    # Re-baselined once more (218428 -> 218526) for the write-gate-noise-cleanup
+    # bugfix: Rule 5 was added to agent-behavior-rules.md (an `inclusion: always`
+    # file), growing its measured token_count 970 -> 1315 (+345), which
+    # measure_steering.py recomputed into file_metadata and the budget total
+    # (218526 = sum of file_metadata counts). Only the budget block changed (solely
+    # the total_tokens line); keywords/languages/deployment/root_step_range are
+    # byte-identical (verified: their baseline hashes still match the live index).
+    # Re-baselined once more (218526 -> 220273) for the clean-question-presentation
+    # bugfix: making the 🛑 STOP / ⛔ MANDATORY GATE markers internal-only and
+    # adding the compose-clean-first / no-duplicate-re-display rules grew three
+    # `inclusion: always` files — agent-behavior-rules.md (1315 -> 1537, +222),
+    # conversation-protocol.md (4600 -> 5179, +579), and agent-instructions.md
+    # (+146) — which measure_steering.py recomputed into file_metadata and the
+    # budget total (220273 = sum of file_metadata counts). Only the budget block
+    # changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (220273 -> 220727) for the guaranteed-recap-pdf spec
+    # (Task 5.2): the graduation.md and module-completion-track.md steering edits
+    # replaced the "degrades to HTML/Markdown when fpdf2 absent" language with the
+    # guaranteed-PDF tiered behavior, growing graduation.md (11131 -> 11426, +295)
+    # and module-completion-track.md (3601 -> 3760, +159), which
+    # measure_steering.py recomputed into file_metadata and the budget total
+    # (220727 = sum of file_metadata counts). Only the budget block changed
+    # (solely the total_tokens line); keywords/languages/deployment/root_step_range
+    # are byte-identical (verified: their baseline hashes still match the live
+    # index).
+    # Re-baselined once more (220727 -> 222488) for the mandatory-question-answers
+    # spec (Tasks 1-4.2): the normative Answer_Required_Rule was added to
+    # conversation-protocol.md (5179 -> 5759, +580) and referenced from
+    # agent-behavior-rules.md (1537 -> 1749, +212) and agent-instructions.md
+    # (4650 -> 4825, +175); the verbosity silent default was removed and reworded
+    # across onboarding-phase1b-intro-language.md (2522 -> 2786),
+    # verbosity-control.md (2048 -> 2240), and module-05-phase2-data-mapping.md
+    # (5781 -> 5906); and Task 4.2 brought the Advanced Track Knowledge Check
+    # (Step 5c) under the Answer_Required_Rule in onboarding-phase2-track-setup.md
+    # (1506 -> 1719). measure_steering.py recomputed all of these into
+    # file_metadata and the budget total (222488 = sum of file_metadata counts).
+    # Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (222488 -> 223281) for the mandatory-question-answers
+    # spec (Task 5.3 / 6.2): Task 5.3 re-synced the generated
+    # hook-registry-critical.md mirror to embed the write-policy-gate CHECK 5
+    # (ANSWER-REQUIRED) text, growing it 11455 -> 12248 (+793), but the
+    # steering-index.yaml was not re-run through measure_steering afterward — the
+    # stored count stayed within the 10% --check tolerance yet was no longer the
+    # exact value. Task 6.2 re-ran measure_steering.py (update mode) to reconcile
+    # file_metadata and the budget total to the live consistent value
+    # (223281 = sum of file_metadata counts). hook-registry-critical.md is the
+    # ONLY file that moved; keywords/languages/deployment/root_step_range are
+    # byte-identical (verified: their baseline hashes still match the live index).
+    # Re-baselined once more (223281 -> 224434) for the preface-flow-and-banners
+    # spec: the preface reorder (track before language) relocated content between
+    # onboarding-phase1b-intro-language.md (2786 -> 1734) and
+    # onboarding-phase2-track-setup.md (1719 -> 2979), and the new banners grew
+    # entity-resolution-intro.md (1864 -> 2043), graduation.md (11426 -> 11664),
+    # module-completion-track.md (3760 -> 4090), onboarding-flow.md (3983 -> 4138),
+    # and session-resume.md (3463 -> 3506), all recomputed by measure_steering.py
+    # into file_metadata and the budget total (224434 = sum of file_metadata
+    # counts). Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (224434 -> 224324) for the preface-flow-and-banners
+    # token-band remediation: entity-resolution-intro.md was trimmed (2043 ->
+    # 1933) by condensing two agent-only HTML comments so it re-enters the
+    # medium band (< 2000), which measure_steering.py recomputed into
+    # file_metadata and the budget total. Only the budget block changed (solely
+    # the total_tokens line); keywords/languages/deployment/root_step_range are
+    # byte-identical (verified: their baseline hashes still match the live index).
+    # Re-baselined once more (224324 -> 226469) for the
+    # single-ask-question-guarantee spec: the normative Ask-Once Guarantee was
+    # added to conversation-protocol.md (5759 -> 6344), the Question_Ledger
+    # operations to agent-instructions.md (an `inclusion: always` file), the
+    # checkpoint-boundary note to module-transitions.md, and one-line
+    # cross-references to session-resume.md, module-09-phaseA-assessment.md and
+    # module-11-phase1-packaging.md; the review-bootcamper-input Repeat_Request
+    # phrases and the ask-bootcamper ledger-consult step also regenerated
+    # hook-registry-critical.md. All recomputed by measure_steering.py into
+    # file_metadata and the budget total (226469 = sum of file_metadata counts).
+    # Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (226469 -> 226863) across two specs that touched
+    # always-loaded files and regenerated always-loaded metadata:
+    # experience-audit-remediation added the onboarding admin-setup summary
+    # (onboarding-phase1b-intro-language.md 1734 -> 1986, +252), and
+    # guaranteed-qa-capture folded hook-enforced Q&A capture into the two critical
+    # hooks (regenerating hook-registry-critical.md 12859 -> 13182, +323) and
+    # rewrote qa-transcript.md (1284 -> 1103, -181). measure_steering.py recomputed
+    # file_metadata and the budget total (226863 = sum of file_metadata counts).
+    # Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (226863 -> 228261) for the early-fpdf2-hint spec
+    # (Task 1). NOTE: this baseline was ALSO stale on the branch before this task
+    # — an intervening spec had already moved the live budget total to 227993
+    # without updating this constant (it still pinned 226863). This task adds the
+    # Module 1 early fpdf2 hint step (17a) to module-01-phase2-document-confirm.md
+    # (2534 -> 2802, +268), which measure_steering.py recomputed into file_metadata
+    # and the budget total, bringing the live consistent value to 228261 (= sum of
+    # file_metadata counts). Only the budget block changed (solely the total_tokens
+    # line); keywords/languages/deployment/root_step_range are byte-identical
+    # (verified: their baseline hashes still match the live index).
+    # Re-baselined once more (228261 -> 228481) for the early-fpdf2-hint spec
+    # (Task 2, make it one-time): step 17a in module-01-phase2-document-confirm.md
+    # gained the `fpdf2_hint_shown` guard (read the flag first, skip if already
+    # set; set it after surfacing the hint), which measure_steering.py recomputed
+    # into file_metadata and the budget total (= sum of file_metadata counts).
+    # Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (228481 -> 228681) for the early-fpdf2-hint spec
+    # (Task 3, non-blocking / optional / lazy-import guarantees): step 17a in
+    # module-01-phase2-document-confirm.md gained the explicit preflight-failure
+    # silent no-op clause and the no-auto-install / lazy-import framing
+    # (3022 -> 3222, +200), which measure_steering.py recomputed into file_metadata
+    # and the budget total (= sum of file_metadata counts). Only the budget block
+    # changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (228681 -> 228725) for the
+    # er-intro-interactive-illustration spec: entity-resolution-intro.md grew when
+    # the ER_Illustration offer + content block were added, then Task 4 trimmed the
+    # agent-only HTML comments to keep it in the medium band (2792 -> 1977 tokens),
+    # which measure_steering.py recomputed into file_metadata and the budget total.
+    # Only the budget block changed; keywords/languages/deployment/root_step_range
+    # are byte-identical.
+    # Re-baselined once more for the setup-summary-persistence spec (Task 2).
+    # NOTE: this baseline was ALSO stale before this task — an intervening spec
+    # moved the live budget total to 229105 without updating this constant (it
+    # still pinned 228725). This task adds the `setup_summary` persistence
+    # directive to onboarding-phase1b-intro-language.md §4.0 (1986 -> 2490, +504),
+    # which measure_steering.py recomputed into file_metadata and the budget total,
+    # bringing the live consistent value to 229609 (= sum of file_metadata counts).
+    # Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (229609 -> 230220) for the setup-summary-persistence
+    # spec (Task 3): the new "## Step 2f: Setup Summary Replay" section (plus a
+    # one-word fast-path jump addition) was added to session-resume.md so resume
+    # replays the persisted setup_summary as a verbosity-aware "your environment
+    # already has…" recap (3586 -> 4197, +611), which measure_steering.py
+    # recomputed into file_metadata and the budget total (230220 = sum of
+    # file_metadata counts). Only the budget block changed (solely the
+    # total_tokens line); keywords/languages/deployment/root_step_range are
+    # byte-identical.
+    # Re-baselined once more (230220 -> 230276) for the clean-question-presentation
+    # follow-through: the residual emitted "🛑 STOP — Wait ..." line in
+    # onboarding-phase1b-intro-language.md Step 4a was converted to an internal-only
+    # stop-and-wait directive (the marker glyph no longer renders beside the 👉
+    # question), growing that file +56 tokens, which measure_steering.py recomputed
+    # into file_metadata and the budget total (230276 = sum of file_metadata
+    # counts). Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "4d488f9fe36ad8c2d677ddf54234686ee25029c1ac117fec5450b741355ae7fc",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -685,11 +1005,68 @@ class TestNonPhaseBlocksBytePreserved:
         license guidance was reframed as a default evaluation license with
         expansion paths, all recomputed by ``measure_steering.py`` into
         ``file_metadata`` and the budget total.
-        Most recently, the fpdf2-preflight-note spec re-baselines again
-        (198225 -> 198523): ``graduation.md`` and ``module-completion-track.md``
-        grew (the fpdf2 preflight invocation was added), all recomputed by
+        Most recently, the question-visibility spec re-baselines again
+        (202637 -> 203322): task 6.1 re-ran ``measure_steering.py`` after bold
+        ``**`` emphasis markers were added across many steering files and
+        ``conversation-protocol.md`` gained rule/checklist/self-check content,
+        all recomputed by ``measure_steering.py`` into ``file_metadata`` and the
+        budget total. Most recently, the steering-inclusion-auto-audit spec
+        re-baselines again (203322 -> 203333): task 7.1 re-ran
+        ``measure_steering.py`` in update mode after the eleven former
+        ``inclusion: auto`` files were re-classified to standard modes (e.g.
+        ``session-resume.md`` auto -> manual, +2 chars), all recomputed into
+        ``file_metadata`` and the budget total. Most recently, a follow-up
+        documentation fix re-baselines again (203333 -> 203334):
+        ``session-resume.md``'s Protocol Confirmation parenthetical was refreshed
+        from the stale ``inclusion: auto`` to ``inclusion: always`` (two more
+        characters), nudging its measured token_count 3385 -> 3386, recomputed by
+        ``measure_steering.py`` into ``file_metadata`` and the budget total. Most
+        recently, the cord-mapping-fast-path spec re-baselines again
+        (203334 -> 204764): ``module-05-phase1-quality-assessment.md`` gained the
+        CORD readiness check / fast-path offer (Step 5a reworded to reuse the
+        Step 3 schema plus a get_sample_data clause, 1710 -> 2853),
+        ``module-05-data-quality-mapping.md`` rephrased its Phase 1 hub note
+        (689 -> 712), ``module-05-phase2-data-mapping.md`` gained the
+        fast-pathed-source skip guard (5355 -> 5447), and
+        ``module-04-data-collection.md`` gained CORD provenance recording
+        (4320 -> 4492), all recomputed by ``measure_steering.py`` into
+        ``file_metadata`` and the budget total. Most recently, the
+        file-placement-conventions spec re-baselines again (204764 -> 205367):
+        ``file-placement.md`` grew (296 -> 515, small -> medium) when Task 5.1
+        added the "## Canonical File-Placement Contract" section and Tasks 5.2/6.1
+        made smaller within-tolerance edits to other always-loaded files, all
+        recomputed by ``measure_steering.py`` into ``file_metadata`` and the
+        budget total. Most recently, the journal-recap-consolidation spec
+        re-baselines again (207168 -> 207104): Task 10.3 resynced
+        ``steering-index.yaml`` after the feature's steering edits netted -64
+        tokens across the hook/completion slices —
+        ``hook-registry-module-any.md`` grew +420,
+        ``module-completion-artifacts.md`` shrank -552,
+        ``module-completion.md`` +10, ``module-completion-error-handling.md``
+        +33, ``module-completion-next-steps.md`` +3, and
+        ``module-completion-track.md`` +22 — all recomputed by
         ``measure_steering.py`` into ``file_metadata`` and the budget total.
-        Pinning the hash alone could
+        Most recently, the stop-hook-ux bugfix re-baselines again
+        (209239 -> 209610): the recap logic was folded out of the deleted
+        standalone ``module-recap-append.json`` hook into ``ask-bootcamper``
+        Phase 0 (growing ``hook-registry-critical.md`` and shrinking
+        ``hook-registry-module-any.md``) and the coupled steering edits removed
+        the ``module-recap-append`` references, all recomputed by
+        ``measure_steering.py`` into ``file_metadata`` and the budget total.
+        Most recently, the truthset-fallback-source spec re-baselines again
+        (209610 -> 210967): the Module 3 fallback-source steering edits grew
+        ``module-03-phase1-verification.md`` (4194 -> 4928, the get_sample_data
+        availability classification + GitHub fallback branch + graceful
+        degradation), ``module-03-system-verification.md`` (604 -> 913, the
+        fallback path documented under Error Handling), and
+        ``module-03-phase3-report-close.md`` (1752 -> 2066, the
+        TruthSet_Source_Provenance report addition), all recomputed by
+        ``measure_steering.py`` into ``file_metadata`` and the budget total.
+        Most recently, the write-gate-noise-cleanup bugfix re-baselines again
+        (218428 -> 218526): Rule 5 was added to ``agent-behavior-rules.md`` (an
+        ``inclusion: always`` file), growing its token_count 970 -> 1315 (+345),
+        resynced by ``measure_steering.py`` into ``file_metadata`` and the budget
+        total. Pinning the hash alone could
         silently lock in a future regression, so this asserts the budget block's
         actual contents (the corrected aggregate plus every other budget
         sub-key) line by line. The two assertions together guarantee the
@@ -705,10 +1082,42 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (201014 after the track-completion-pdf-transcript re-sequencing), so the
-        # hash cannot silently re-pin a stale value.
+        # (223281 after the mandatory-question-answers spec: Tasks 1-4.2 added the
+        # normative Answer_Required_Rule to conversation-protocol.md +580 and
+        # referenced it from agent-behavior-rules.md +212 and agent-instructions.md
+        # +175, removed/reworded the verbosity silent default across
+        # onboarding-phase1b-intro-language.md +264, verbosity-control.md +192, and
+        # module-05-phase2-data-mapping.md +125, and Task 4.2 brought the Advanced
+        # Track Knowledge Check under the rule in onboarding-phase2-track-setup.md
+        # +213; then Task 5.3 re-synced hook-registry-critical.md to embed the
+        # write-policy-gate CHECK 5 mirror +793, all resynced by measure_steering.py
+        # into file_metadata and the budget total), so the hash cannot silently
+        # re-pin a stale value.
+        # Aggregate re-synced 224434 -> 224324 for the preface-flow-and-banners
+        # token-band remediation (entity-resolution-intro.md trimmed 2043 -> 1933
+        # by condensing two agent-only HTML comments).
+        # Aggregate re-synced 228681 -> 228725 for the
+        # er-intro-interactive-illustration spec (Task 4): entity-resolution-intro.md
+        # gained the ER_Illustration offer + content, then its agent-only HTML
+        # comments were trimmed to keep it in the medium band (1933 -> 1977).
+        # Aggregate re-synced 228725 -> 229609 for the setup-summary-persistence
+        # spec (Task 2): onboarding-phase1b-intro-language.md gained the
+        # `setup_summary` persistence directive in §4.0 (1986 -> 2490). NOTE: an
+        # intervening spec had already moved the live total to 229105 without
+        # re-syncing this assertion; this re-baseline corrects that drift too
+        # (229105 + 504 = 229609 = live sum of file_metadata counts).
+        # Aggregate re-synced 229609 -> 230220 for the setup-summary-persistence
+        # spec (Task 3): session-resume.md gained the "## Step 2f: Setup Summary
+        # Replay" section (3586 -> 4197, +611) so resume replays the persisted
+        # setup_summary, recomputed by measure_steering.py into file_metadata and
+        # the budget total (230220 = live sum of file_metadata counts).
+        # Aggregate re-synced 230220 -> 230276 for the clean-question-presentation
+        # follow-through: onboarding-phase1b-intro-language.md Step 4a's residual
+        # emitted "🛑 STOP" line became an internal-only stop-and-wait directive
+        # (+56), recomputed by measure_steering.py into file_metadata and the
+        # budget total (230276 = live sum of file_metadata counts).
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 204320" in budget_block
+        assert "total_tokens: 230276" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

@@ -32,7 +32,7 @@ _HOOKS_DIR = _BOOTCAMP_DIR / "hooks"
 _AGENT_INSTRUCTIONS = _STEERING_DIR / "agent-instructions.md"
 _CONVERSATION_PROTOCOL = _STEERING_DIR / "conversation-protocol.md"
 _MODULE3_STEERING = _STEERING_DIR / "module-03-system-verification.md"
-_ASK_BOOTCAMPER_HOOK = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+_ASK_BOOTCAMPER_HOOK = _HOOKS_DIR / "ask-bootcamper.json"
 
 # ---------------------------------------------------------------------------
 # Constants — Non-mandatory steps and question patterns
@@ -387,7 +387,7 @@ class TestAskBootcamperHookPreserved:
     def test_ask_bootcamper_hook_exists(self) -> None:
         """The ask-bootcamper hook file must exist."""
         assert _ASK_BOOTCAMPER_HOOK.exists(), (
-            f"ask-bootcamper.kiro.hook not found at {_ASK_BOOTCAMPER_HOOK}"
+            f"ask-bootcamper.json not found at {_ASK_BOOTCAMPER_HOOK}"
         )
 
     def test_ask_bootcamper_hook_generates_closing_questions(self) -> None:

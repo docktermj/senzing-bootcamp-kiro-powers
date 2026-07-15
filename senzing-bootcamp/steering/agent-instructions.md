@@ -10,18 +10,19 @@ On session start: check `config/bootcamp_progress.json`. If exists, load `sessio
 
 Processing a bootcamper's answer to a pending 👉 question takes **absolute precedence** over all other agent actions — including hook evaluation, context management, and content generation. No other work may begin until the pending answer is fully processed.
 
-**Delete-and-process rule:** WHEN `config/.question_pending` exists and the bootcamper has provided a response, the agent SHALL delete `config/.question_pending` and process the bootcamper's answer as the **first action** of the turn before any other work.
+**Delete-and-process rule:** WHEN `config/.question_pending` exists and the bootcamper has provided a response, the agent SHALL delete `config/.question_pending` and process the bootcamper's answer as the **first action** of the turn before any other work. As part of that first action, mark the pending question's Question_Key `answered` in the Question_Ledger (`question_ledger.py mark-answered --key <KEY>`; see State & Progress → Question_Ledger).
 
 **Protocol violation:** IF the agent produces Minimal_Output (dot, empty, whitespace-only, <50 chars, or single-word acknowledgment) after a bootcamper responds to a pending 👉 question, the agent has committed a critical protocol violation equivalent to a ⛔ mandatory gate violation. This is never acceptable regardless of context budget, token limits, or any other agent-internal reasoning.
 
 ## File Placement
 
-| Content       | Location   | Content       | Location     |
-| ------------- | ---------- | ------------- | ------------ |
-| Source code   | `src/`         | SQLite DB     | `database/`  |
-| Scripts       | `src/scripts/` | Config        | `config/`    |
-| Docs          | `docs/`        | Temp files    | `data/temp/` |
-| Data          | `data/`        | Markdown docs | `docs/`      |
+| Content       | Location         | Content       | Location        |
+| ------------- | ---------------- | ------------- | --------------- |
+| Source code   | `src/`           | SQLite DB     | `database/`     |
+| Scripts       | `src/scripts/`   | Config        | `config/`       |
+| Docs          | `docs/`          | Temp files    | `data/temp/`    |
+| Data          | `data/`          | Markdown docs | `docs/`         |
+| Resources     | `src/resources/` | Mapping data  | `data/mapping/` |
 
 🚨 ALL files within working directory only. Never `/tmp`, `%TEMP%`, `~/Downloads`. Override MCP-generated paths (`/tmp/`, `ExampleEnvironment`) to project-relative equivalents. Never modify global shell config.
 
@@ -76,18 +77,26 @@ Track switch triggers (*switch track*, *change track*, …): load `track-switchi
 - Progress: `config/bootcamp_progress.json`. Preferences: `config/bootcamp_preferences.yaml`. Corrupted? Run `python3 senzing-bootcamp/scripts/validate_module.py`.
 - Conversation style persistence: after onboarding completes and the first module interaction establishes a baseline style, write a `conversation_style` profile to `config/bootcamp_preferences.yaml`. Schema — `verbosity_preset` (string: concise | standard | detailed | custom), `question_framing` (string: minimal | moderate | full), `tone` (string: concise | conversational | detailed), `pacing` (string: one_concept_per_turn | grouped_concepts).
 - Step-level checkpointing: after each numbered step or sub-step, update `config/bootcamp_progress.json` — set `current_step` (integer for whole steps, string like `"5.3"` or `"7a"` for sub-steps), set `step_history["<module_number>"]` to `{ "last_completed_step": <step>, "updated_at": "<ISO 8601>" }`. On module completion, set `current_step` to `null`.
+- Question_Ledger (ask-once tracking): at each question boundary, maintain the Question_Ledger alongside the `current_step`/`step_history` checkpoint so the **Ask-Once Guarantee** (defined in `conversation-protocol.md` → The Ask-Once Guarantee) survives context compaction and session resume. Every 👉 question has a stable **Question_Key**, named by the step that owns it:
+  - Onboarding steps → `onboarding.<step>` (e.g., `onboarding.language_selection`, `onboarding.track_selection`, `onboarding.verbosity`).
+  - Module steps/sub-steps → `module.<N>.<step>` (e.g., `module.5.7a`) — mirrors `current_step` (module number + step/sub-step id); it is not a parallel identity.
+  - Cross-module singletons → `global.<name>` (e.g., `global.hardware_target`).
+  - Presenting a 👉 question: record its key as `asked` via `python3 senzing-bootcamp/scripts/question_ledger.py record-asked --key <KEY>`, at the same moment you write `config/.question_pending` (idempotent — safe to run again on re-present).
+  - Processing the bootcamper's Real_Answer: mark the key `answered` via `python3 senzing-bootcamp/scripts/question_ledger.py mark-answered --key <KEY>`, alongside deleting `config/.question_pending` and writing the step checkpoint.
+  - Before presenting a question: consult `is-answered --key <KEY>` and skip it — reuse the stored answer and proceed — when already answered. Add `--member <ID>` in team mode. A ledger read/write failure degrades safely: fall back to checkpoint/preference state and never block the bootcamper — but an unknown or unavailable ledger state is never license to re-ask a question whose answer is already present in `config/bootcamp_preferences.yaml` (the ledger is the primary mechanism; preferences are the safety net).
 - Recovery from mistakes: load `recovery-from-mistakes.md` when a bootcamper needs to undo or redo a step.
 - Skip steps: `skip-step-protocol.md` handles "I'm stuck" / "skip this" requests with consequence tracking. Load it via `#skip-step-protocol` or when keyword routing triggers.
 
 ## Communication
 
-- One question at a time, wait for response. Prefix input-required questions with "👉" in ALL modules.
+- One question at a time, wait for response. Prefix input-required questions with "👉" and wrap the question text in bold (`**...**`) in ALL modules.
   - NEVER combine questions with conjunctions (and, or, also, but first) — each is a separate turn. This is the #1 most-reported bootcamper complaint. Zero tolerance.
   - Every 👉 question must have one unambiguous meaning for "yes" and one for "no." Never append a follow-up question to a confirmation (see conversation-protocol.md Question Disambiguation). When both confirmation and correction are needed: confirm first, ask for corrections only if the answer is no.
   - A question without the 👉 prefix is a formatting violation.
   - The `write-policy-gate` hook validates every question at write time. If it rejects your question, rewrite it — do not bypass.
   - These rules apply in ALL contexts — onboarding, feedback workflow, module steps, and session resume. See conversation-protocol.md for the full rule set.
-- Never fabricate user input. Do not simulate user responses or assume choices. STOP and wait at 👉 questions and ⛔ gates. This applies to agentStop hooks — zero output when a 👉 question is pending.
+- Never fabricate user input. Do not simulate user responses or assume choices. STOP and wait at 👉 questions and ⛔ gates. This applies to `Stop`-trigger hooks — zero output when a 👉 question is pending.
+  - The stop/gate boundary is internal: signal it by ending the turn after the single 👉 question. Never render `🛑 STOP` or `⛔ MANDATORY GATE` text to the bootcamper — those glyphs are internal control directives only.
   - FORBIDDEN output patterns: never generate text beginning with "Human:", "User:", or any text that simulates a bootcamper response. This is a critical violation.
 - Goldilocks check: after Modules 3, 6, 9 ask if detail level is right. Store as `detail_level` in preferences. First-term explanations: define Senzing terms inline on first use by calling `search_docs` from the MCP server to retrieve current definitions.
 - Before each step: what and why. During: status updates. After: what changed, files with paths. Offer to visualize data results as a web page.
@@ -100,9 +109,13 @@ Track switch triggers (*switch track*, *change track*, …): load `track-switchi
 
 Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response immediately after the question — do not answer, do not assume a response, do not proceed to the next step.
 
+**Answer_Required_Rule.** Every 👉 question requires a Real_Answer (a response the bootcamper actually gives, including an explicit decline/skip) before the flow advances past it. Never supply an Assumed_Answer — no fabricated choice, no silent default, no proceeding as if answered — under any circumstance (context-budget pressure, token limits, session resume, perceived time savings). The only exits are a Real_Answer or the question staying outstanding via `config/.question_pending`; express optionality as an Explicit_Default_Choice the bootcamper picks, never as license to advance unanswered. This is the single normative rule defined in `conversation-protocol.md` (The Answer_Required_Rule).
+
+The boundary is internal and is signaled by ending the turn after the 👉 question, not by printing a marker. You MUST NOT emit `🛑 STOP` or `⛔ MANDATORY GATE` text to the bootcamper — these are internal control directives. The behavioral requirement is unchanged: STOP and wait for the bootcamper's real input at every 👉 question and ⛔ gate, and never skip a ⛔ gate.
+
 ### Question_Pending File Format
 
-When writing `config/.question_pending`, use the structured format (question type on line 1 — one of `track_selection`, `module_transition`, `step_question`, `confirmation`, `choice`; full question text on subsequent lines; default to `step_question`). Full format spec with example: see `conversation-protocol.md`.
+When writing `config/.question_pending`, use the structured format (question type on line 1 — one of `track_selection`, `module_transition`, `step_question`, `confirmation`, `choice`; full question text on subsequent lines; default to `step_question`). Full format spec with example: see `conversation-protocol.md`. At the same time, record the question's Question_Key as `asked` in the Question_Ledger (`question_ledger.py record-asked --key <KEY>`; see State & Progress → Question_Ledger).
 
 ## Module Transition Execution
 
@@ -133,18 +146,18 @@ Steps marked with ⛔ are mandatory gates. This rule takes **absolute precedence
 
 ## Hooks
 
-Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:]]` in `onboarding-flow.md`). Critical hooks during onboarding; module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if present, skip creation; if absent, create Critical Hooks. **Always use the exact `name` from the `- name:` line in `hook-registry-critical.md` — the `name` field is user-facing (UI shows "Ask Kiro Hook {name}") and must follow the "to {verb phrase}" pattern.**
+Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:]]` in `onboarding-flow.md`). Each hook is a v1 `.json` definition (`trigger`/`matcher`/`action`) written to `.kiro/hooks/<id>.json`; use the exact `trigger`, `matcher` (only where the registry entry specifies one), and `action` type from the registry. Critical hooks during onboarding; module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if present, skip creation; if absent, create Critical Hooks. **Always use the exact `name` from the `- name:` line in `hook-registry-critical.md` — the `name` field is user-facing (UI shows "Ask Kiro Hook {name}") and must follow the "to {verb phrase}" pattern.**
 
-**Capture-critical hooks created at session start:** The capture-critical hooks — `ask-bootcamper`, `module-recap-append`, and `session-log-events` — MUST all be created via `createHook` during onboarding/session start, not deferred to module start, so the completion summary and journey recap are never silently incomplete. `ask-bootcamper` is a critical hook (definition in `hook-registry-critical.md`); `module-recap-append` and `session-log-events` are defined in `hook-registry-module-any.md` but are added to the onboarding createHook-from-registry set alongside `ask-bootcamper`. Capture-critical coverage is required on **both** the createHook-from-registry path and the `install_hooks.py --essential` file-copy path.
+**Capture-critical hooks created at session start:** The capture-critical hooks — `ask-bootcamper` and `session-log-events` — MUST both be created via `createHook` during onboarding/session start, not deferred to module start, so the completion summary and journey recap are never silently incomplete. `ask-bootcamper` is a critical hook (definition in `hook-registry-critical.md`) and now owns the module recap append in its Phase 0; `session-log-events` is defined in `hook-registry-module-any.md` but is added to the onboarding createHook-from-registry set alongside `ask-bootcamper`. Capture-critical coverage is required on **both** the createHook-from-registry path and the `install_hooks.py --essential` file-copy path.
 
-**Session-start warn-on-absence:** On session resume, after the `hooks_installed` check, the agent inspects `.kiro/hooks` and warns which capture-critical hooks (`session-log-events`, `module-recap-append`, `ask-bootcamper`) are absent and how to install them (createHook from the registry, or `python3 senzing-bootcamp/scripts/install_hooks.py --essential`). The warning is advisory and never blocks the session. See `session-resume-phase2-setup-recovery.md` (Capture-Critical Warn-on-Absence Check) for the full behavior.
+**Session-start warn-on-absence:** On session resume, after the `hooks_installed` check, the agent inspects `.kiro/hooks` for each hook's `<id>.json` file and warns which capture-critical hooks (`session-log-events`, `ask-bootcamper`) are absent and how to install them (createHook from the registry, or `python3 senzing-bootcamp/scripts/install_hooks.py --essential`). The warning is advisory and never blocks the session. See `session-resume-phase2-setup-recovery.md` (Capture-Critical Warn-on-Absence Check) for the full behavior.
 
 **🔇 Hook silence rule:** When a hook check passes with no action needed, produce zero visible
 tokens — no acknowledgment, no reasoning, no status, no summary. Only produce output when the
 hook identifies a problem requiring corrective action. When a hook produces corrective output
 (e.g., a rewritten question, a STOP message), output ONLY the corrective content with no
 preamble or explanation of why the correction was made. This applies to ALL hook types:
-preToolUse hooks, agentStop hooks, and any future hook types added to the power.
+`PreToolUse` hooks, `Stop` hooks, and any future hook types added to the power.
 
 FORBIDDEN hook reasoning output (never produce these after any hook fires):
 
@@ -161,7 +174,7 @@ FORBIDDEN hook reasoning output (never produce these after any hook fires):
 
 The agent owns closing questions (see `conversation-protocol.md`); the `ask-bootcamper` hook is a safety net that fires only when the agent fails to provide one.
 
-**🔄 preToolUse retry rule:** When a preToolUse hook produces "policy: pass" or produces no output (zero tokens), you MUST immediately retry the original tool call with exactly the same parameters. Do not emit any acknowledgment, do not explain, do not pause — retry instantly. Only when a preToolUse hook explicitly denies access or produces corrective instructions should you NOT retry.
+**🔄 PreToolUse retry rule:** When a `PreToolUse` hook produces "policy: pass" or produces no output (zero tokens), you MUST immediately retry the original tool call with exactly the same parameters. Do not emit any acknowledgment, do not explain, do not pause — retry instantly. Only when a `PreToolUse` hook explicitly denies access or produces corrective instructions should you NOT retry.
 
 ## Context Budget
 

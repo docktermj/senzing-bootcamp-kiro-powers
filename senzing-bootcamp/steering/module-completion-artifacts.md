@@ -5,7 +5,7 @@ inclusion: manual
 ## Markdown Authoring: Free-Form During the Bootcamp, Normalized at Graduation
 
 While the bootcamper is working through the modules, write every Markdown_Artifact
-(`docs/bootcamp_recap.md`, `docs/bootcamp_journal.md`, mapper docs, progress notes) **free-form**:
+(`docs/bootcamp_recap.md`, mapper docs, progress notes) **free-form**:
 capture the content first and defer structural formatting. Do **not** stop to make in-flight Markdown
 match a downstream tool's exact schema (for example the recap-PDF heading/subsection schema), and do
 **not** gate or block a module step on an artifact conforming to a Consumer_Schema. Getting the right
@@ -22,9 +22,10 @@ maps a file to its schema, the downstream parser falls back to the raw Markdown 
 mismatch **never silently drops content**. The two changes are designed as a pair — free-form authoring
 here, tolerant consumption plus a graduation normalization pass there.
 
-Keep capturing all the content the modules rely on during the run: the recap section, the journal
-entry, and mapper docs are still written for every completed module exactly as described below. Only
-the *structural formatting* moves to graduation; nothing about *what* gets captured changes.
+Keep capturing all the content the modules rely on during the run: the recap section (including its
+`### Journal` subsection) and mapper docs are still written for every completed module exactly as
+described below. Only the *structural formatting* moves to graduation; nothing about *what* gets
+captured changes.
 
 ## Backfill for Already-Completed Modules
 
@@ -33,12 +34,11 @@ On a completion boundary — and before appending the new module's artifacts —
 1. Run the deterministic planner to discover exactly which artifacts are missing:
 
    ```text
-   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --journal docs/bootcamp_journal.md --progress-dir docs/progress --plan
+   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --progress-dir docs/progress --plan
    ```
 
 2. Parse the emitted JSON. It lists, by set difference only (never re-emitting existing artifacts):
-   - `recap_modules` — completed modules missing a recap section
-   - `journal_modules` — completed modules missing a journal entry
+   - `recap_modules` — completed modules missing a recap section (each backfilled section includes the `### Journal` subsection)
    - `certificate_modules` — completed modules missing a completion certificate (applying the uniform-certificate rule: either every completed module gets a certificate or none do)
    - `module_durations` — per-module Duration strings computed from `step_history` (only modules with reliable timing appear)
    - `total_duration` — the cumulative `Total Duration`, or `null` when timing is unreliable
@@ -49,16 +49,48 @@ On a completion boundary — and before appending the new module's artifacts —
 
 ## Recap Append
 
-The recap append is a **synchronous, verified step of the module-completion workflow** (step 2 in the fixed order), not solely an asynchronous `agentStop` hook. The `hooks/module-recap-append.kiro.hook` hook still appends the structured section on boundary detection, but the workflow now treats the append as complete only after it has **read back** the file and confirmed the section persisted — so a write that does not persist across a session boundary, or a hook invocation that does not write on the final module, is detected and repaired instead of silently lost.
+The recap append is a **synchronous, verified step of the module-completion workflow** (step 2 in the fixed order), not solely an asynchronous `Stop` hook. `ask-bootcamper` Phase 0 (the recap logic folded in from the retired standalone recap hook) still appends the structured section on boundary detection, but the workflow now treats the append as complete only after it has **read back** the file and confirmed the section persisted — so a write that does not persist across a session boundary, or a Phase 0 invocation that does not write on the final module, is detected and repaired instead of silently lost.
 
-When a module is marked complete in `config/bootcamp_progress.json`, gather session content and append a structured Recap_Section to `docs/bootcamp_recap.md`, then verify and (if needed) backfill before reporting success.
+When a module is marked complete in `config/bootcamp_progress.json`, gather session content and append a **consolidated** Recap_Section to `docs/bootcamp_recap.md`, then verify and (if needed) backfill before reporting success. A single consolidated append now carries both the structured recap content and the narrative `### Journal` subsection that was formerly written to the retired `docs/bootcamp_journal.md` — there is no separate journal step.
+
+**Q&A capture guarantee boundary (recap-facing):** The `### Questions & Responses` pairs that land in this recap are captured best-effort and event-driven mid-module (hook-enforced on the Q&A cadence per `qa-transcript.md`, never on a file write), reconciled at every stopping point, and hard-guaranteed only at track completion / graduation via `enforce-critical-artifacts` → `ensure_graduation_artifacts.py`.
 
 ### What is gathered
 
 - **Information Shared:** Key concepts, explanations, and reference material presented during the module
-- **Questions & Responses:** Each substantive question the agent posed, immediately paired with the bootcamper's response, in ascending ask order. This is rendered as the single `### Questions & Responses` section of interleaved `- **Q:**` / `- **R:**` pairs that the `module-recap-append` hook and `format_qr_section` emit (never as separate "Questions Asked" / "Answers Given" headings).
+- **Questions & Responses:** Each substantive question the agent posed, immediately paired with the bootcamper's response, in ascending ask order. This is rendered as the single `### Questions & Responses` section of interleaved `- **Q:**` / `- **R:**` pairs that ask-bootcamper Phase 0 and `format_qr_section` emit (never as separate "Questions Asked" / "Answers Given" headings).
 - **Actions Taken:** File creations, modifications, code generation, and commands executed
 - **Duration:** The per-module elapsed time and cumulative `Total Duration` come from `scripts/completion_artifacts.py` (computed from the ISO 8601 timestamps in `step_history` and the top-level `started_at`), never from session context. When the planner returns no value for a module, omit the `### Duration` field entirely rather than writing a placeholder such as "Module N session".
+- **Journal:** The narrative `### Journal` subsection carrying the four fields formerly written to the Legacy_Journal_File — `**What we did:**` (1–2 sentence summary of what was accomplished), `**What was produced:**` (comma-separated artifact paths created or modified), `**Why it matters:**` (how this module enables subsequent work), and `**Bootcamper's takeaway:**` (the bootcamper's stated takeaway, or `N/A` when none was provided). See `config/module-dependencies.yaml` for module names and `config/bootcamp_preferences.yaml` for the bootcamper name used elsewhere in the header.
+
+### Consolidated Recap_Section format
+
+Each Recap_Section appended to `docs/bootcamp_recap.md` follows this structure — the `### Journal` subsection is appended after `### Duration`:
+
+```markdown
+## Module N: {Name} — {ISO 8601 timestamp}
+
+### Information Shared
+- {content}
+
+### Questions & Responses
+- **Q:** {question}
+    - **R:** {response}
+
+### Actions Taken
+- {content}
+
+### Duration
+{value from planner — omit this subsection entirely when the planner returns no value}
+
+### Journal
+**What we did:** {summary}
+**What was produced:** {comma-separated artifact paths}
+**Why it matters:** {explanation}
+**Bootcamper's takeaway:** {takeaway or N/A}
+
+---
+```
 
 ### Synchronous verification and backfill (before reporting success)
 
@@ -66,10 +98,10 @@ After appending (or after the hook reports it appended), confirm the section act
 
 1. Read `docs/bootcamp_recap.md` and check for a `## Module N:` heading for the **just-completed** module N.
 2. If the heading is **present**, the append is verified — display the confirmation line and proceed.
-3. If the heading is **absent** (write lost, hook miss, or session boundary), do NOT report success. Backfill it deterministically by running the applier, which appends a `## Module N:` section for every completed module that is missing one (append-around, never rewriting existing bytes; idempotent when nothing is missing):
+3. If the heading is **absent** (write lost, hook miss, or session boundary), do NOT report success. Backfill it deterministically by running the applier, which appends a `## Module N:` section (including its `### Journal` subsection scaffold) for every completed module that is missing one (append-around, never rewriting existing bytes; idempotent when nothing is missing):
 
    ```text
-   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --journal docs/bootcamp_journal.md --progress-dir docs/progress --backfill
+   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --progress-dir docs/progress --backfill
    ```
 
    The applier exits non-zero and prints which modules remain missing if verification still fails after the write, so a silent gap can never be reported as success. Re-read the file and confirm the `## Module N:` heading is now present before continuing.
@@ -78,11 +110,11 @@ This append-and-verify cycle applies to **every** completed module, **including 
 
 ### Workflow position
 
-The recap append executes after the progress file update (module marked complete) and before the journal entry below. It completes without requiring additional bootcamper confirmation and displays a single confirmation line (e.g., "Recap updated for Module N: [Name].") only after the section is verified present.
+The consolidated recap append executes after the progress file update (module marked complete) and before the completion certificate. It completes without requiring additional bootcamper confirmation and displays a single confirmation line (e.g., "Recap updated for Module N: [Name].") only after the section is verified present.
 
 ### Non-blocking behavior
 
-If the recap append or its backfill fails for any reason (file system error, missing data), it logs a warning and continues the module completion flow. It does not halt execution, raise errors, or alter the behavior of existing hooks or the journal entry process. The track-completion reconciliation pass (see below and `module-completion-track.md`) is the final safety net: it re-runs the same applier so any section still missing at graduation is backfilled before the deliverable is rendered.
+If the consolidated recap append or its backfill fails for any reason (file system error, missing data), it logs a warning and continues the module completion flow. It does not halt execution, raise errors, or alter the behavior of existing hooks. The track-completion reconciliation pass (see below and `module-completion-track.md`) is the final safety net: it re-runs the same applier so any section still missing at graduation is backfilled before the deliverable is rendered.
 
 ### Recap File Creation
 
@@ -107,95 +139,18 @@ On first module completion, if `docs/bootcamp_recap.md` does not exist:
 
 If `docs/bootcamp_recap.md` already exists, append the new recap section at the end of the file without modifying any existing bytes in the file.
 
-**Step ordering:** The recap append always executes after the progress file update and before the journal entry. This ensures the progress data is available when building the recap section, and the journal entry can reference a successful recap write.
+**Step ordering:** The consolidated recap append always executes after the progress file update and before the completion certificate. This ensures the progress data is available when building the recap section.
 
 ### References
 
-- Hook: `hooks/module-recap-append.kiro.hook`
+- Hook: `ask-bootcamper` Phase 0 (recap append; see `hooks/ask-bootcamper.json`)
 - Output: `docs/bootcamp_recap.md`
-
-## Bootcamp Journal
-
-The journal entry step executes **after** the recap append and **before** the completion certificate. It is driven by the **same boundary-detection trigger** as the recap append (see the Shared Boundary-Detection Trigger section above), so every newly completed module — including the final module of a track — gets a journal entry without the bootcamper having to invoke this workflow explicitly. This step is **mandatory** regardless of module number (1 through 11) or completion method (normal completion or skip). It must never be omitted.
-
-### Journal File Creation (First Module Completion)
-
-On first module completion, if `docs/bootcamp_journal.md` does not exist:
-
-1. Create the `docs/` directory if it does not already exist
-2. Read the bootcamper's name from `config/bootcamp_preferences.yaml`
-   - If the file does not exist or the `name` field is missing, use **"Bootcamper"** as the default name
-3. Determine the start date as today's date in ISO 8601 format (`YYYY-MM-DD`)
-4. Create `docs/bootcamp_journal.md` with the following header:
-
-```markdown
-# Bootcamp Journal
-
-**Bootcamper:** {name from config/bootcamp_preferences.yaml}
-**Started:** {YYYY-MM-DD}
-
----
-```
-
-5. Proceed immediately to appending the first journal entry (below)
-
-### Journal Entry Append
-
-After the recap append step completes (or is skipped due to error), append a journal entry to `docs/bootcamp_journal.md`. If the file already exists, append the new entry at the end **without modifying any existing content** — all prior entries must be preserved byte-for-byte.
-
-Each journal entry uses this structure:
-
-```markdown
-## Module N: {Name} — Completed {ISO 8601 with timezone}
-
-**What we did:** {summary}
-**What was produced:** {comma-separated artifact paths}
-**Why it matters:** {explanation}
-**Bootcamper's takeaway:** {takeaway or N/A}
-
----
-```
-
-### Field Derivation Rules
-
-| Field | Source |
-|-------|--------|
-| **Module number** | The module number just completed (from `config/bootcamp_progress.json`) |
-| **Module name** | Derived from `config/module-dependencies.yaml` — use the `name` field for the corresponding module number |
-| **Completion date** | Current timestamp in ISO 8601 format with timezone offset (e.g., `2026-05-14T10:30:00-05:00`) |
-| **Summary** | 1–2 sentences describing what was accomplished during the module |
-| **Artifacts** | Comma-separated list of file paths created or modified during the module session |
-| **Why it matters** | Brief explanation of how this module enables subsequent work |
-| **Takeaway** | The bootcamper's stated takeaway if provided during the session, otherwise `N/A` |
-
-### Workflow Position
-
-The journal entry step occupies position 3 in the fixed completion order:
-
-1. progress_update
-2. recap_append
-3. **journal_entry** ← this step
-4. completion_certificate
-5. next_step_options
-
-The journal entry does not depend on the recap append's output — if the recap append fails, the journal entry still executes using data from the progress file and session context.
-
-### Non-blocking Behavior
-
-If the journal file cannot be created or the entry cannot be appended (file system error, permission denied, disk full), log a warning identifying the failure reason and continue to the completion certificate step. Do not halt execution, raise errors, or retry immediately. Retry happens automatically on the next module completion.
-
-### References
-
-- Output: `docs/bootcamp_journal.md`
-- Module names: `config/module-dependencies.yaml`
-- Bootcamper name: `config/bootcamp_preferences.yaml`
-- Validation: `scripts/validate_completion_artifacts.py --journal`
 
 ## Module Completion Certificate
 
-The completion certificate is driven by the **same boundary-detection trigger** as the recap append and journal entry (see the Shared Boundary-Detection Trigger section above), so every newly completed module — including the final module of a track — gets a certificate. Certificates are applied **uniformly**: either every completed module has a `docs/progress/MODULE_N_COMPLETE.md` or none do (the planner's `certificate_modules` list enforces this).
+The completion certificate is driven by the **same boundary-detection trigger** as the consolidated recap append (see the Shared Boundary-Detection Trigger section above), so every newly completed module — including the final module of a track — gets a certificate. Certificates are applied **uniformly**: either every completed module has a `docs/progress/MODULE_N_COMPLETE.md` or none do (the planner's `certificate_modules` list enforces this).
 
-After the journal entry, generate a completion certificate:
+After the consolidated recap append, generate a completion certificate:
 
 1. Create `docs/progress/MODULE_N_COMPLETE.md` (create `docs/progress/` directory if it doesn't exist)
 2. Use the bootcamper's chosen language from `config/bootcamp_preferences.yaml` in artifact descriptions

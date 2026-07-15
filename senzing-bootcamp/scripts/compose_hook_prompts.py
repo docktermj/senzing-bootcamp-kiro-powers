@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Compose self-contained Module 3 gate-hook prompts from shared fragments.
 
-The IDE reads each ``.kiro.hook`` file as-is: ``then.prompt`` must be a
+The IDE reads each v1 hook ``.json`` file as-is: ``action.prompt`` must be a
 self-contained string with no include/expansion mechanism at runtime. This
 script is the **build-time** single-source mechanism for the shared Module 3
 gate logic. It holds a per-hook prompt *template* containing
@@ -9,9 +9,10 @@ gate logic. It holds a per-hook prompt *template* containing
 marker using the authoritative ``FRAGMENTS`` mapping in
 ``hook_prompt_fragments.py``.
 
-The composer's ``--write`` output is **byte-identical** to the current on-disk
-gate hooks, so introducing it is a pure no-op refactor that ``--verify`` proves
-in CI (run *before* ``sync_hook_registry.py --verify``).
+The composer's ``--write`` output is **byte-identical** to the committed v1 gate
+hooks (emitted by ``migrate_hooks.py`` via the shared :func:`serialize_hook`), so
+it stays a pure single-source refactor that ``--verify`` proves in CI (run
+*before* ``sync_hook_registry.py --verify``).
 
 Modes
 -----
@@ -74,7 +75,7 @@ class UnknownFragmentError(Exception):
 # ---------------------------------------------------------------------------
 # Per-hook prompt templates
 #
-# Each template is the hook's full then.prompt with the shared regions replaced
+# Each template is the hook's full action.prompt with the shared regions replaced
 # by {{fragment:NAME}} markers. All per-hook literal text (the CHECK clause, the
 # question-pending guard in enforce-gate-on-stop, surrounding prose) stays
 # verbatim so composition reproduces the original prompt byte-for-byte.
@@ -209,29 +210,33 @@ def compose_hook(
     fragments: dict[str, str],
     hooks_dir: Path = HOOKS_DIR,
 ) -> dict:
-    """Return the full hook JSON dict with ``then.prompt`` fully expanded.
+    """Return the full v1 hook wrapper dict with ``action.prompt`` fully expanded.
 
-    The static fields (``name``, ``version``, ``description``, ``when``) are read
-    from the current on-disk file so the ``when`` block and other metadata are
-    preserved unchanged; only ``then.prompt`` is (re)composed from the template.
+    The static fields (the wrapper ``version``, and each hook entry's ``name``,
+    ``trigger``, ``matcher`` and ``action.type``) are read from the current
+    on-disk v1 file so the trigger, matcher, and other metadata are preserved
+    unchanged; only ``action.prompt`` is (re)composed from the template. The v1
+    gate files are emitted one hook per file (a single-entry ``hooks`` array), so
+    the composer swaps the prompt of that single entry.
 
     Args:
         hook_id: The gate-hook id (key in ``HOOK_TEMPLATES``).
         fragments: The fragment-name -> text mapping to expand from.
-        hooks_dir: Directory containing the ``.kiro.hook`` files.
+        hooks_dir: Directory containing the v1 ``.json`` hook files.
 
     Returns:
-        The composed hook dict, preserving the original key order.
+        The composed v1 wrapper dict, preserving the original key order.
 
     Raises:
-        KeyError: If *hook_id* has no registered template.
+        KeyError: If *hook_id* has no registered template, or the on-disk file is
+            not a well-formed v1 wrapper (missing ``hooks``/``action``).
         FileNotFoundError: If the on-disk hook file is missing.
         UnknownFragmentError: Propagated from :func:`compose_prompt`.
     """
     if hook_id not in HOOK_TEMPLATES:
         raise KeyError(f"no template registered for hook '{hook_id}'")
 
-    hook_path = hooks_dir / f"{hook_id}.kiro.hook"
+    hook_path = hooks_dir / f"{hook_id}.json"
     if not hook_path.is_file():
         raise FileNotFoundError(f"hook file not found: {hook_path}")
 
@@ -239,13 +244,19 @@ def compose_hook(
 
     composed_prompt = compose_prompt(HOOK_TEMPLATES[hook_id], fragments)
 
-    # Rebuild preserving the original key order; only swap then.prompt.
-    new_then = {
+    # The v1 wrapper carries exactly one hook entry per gate file; swap only
+    # action.prompt on that entry, preserving every other field and key order.
+    entry = data["hooks"][0]
+    new_action = {
         key: (composed_prompt if key == "prompt" else value)
-        for key, value in data["then"].items()
+        for key, value in entry["action"].items()
+    }
+    new_entry = {
+        key: (new_action if key == "action" else value)
+        for key, value in entry.items()
     }
     new_hook = {
-        key: (new_then if key == "then" else value)
+        key: ([new_entry] if key == "hooks" else value)
         for key, value in data.items()
     }
     return new_hook
@@ -254,10 +265,15 @@ def compose_hook(
 # ---------------------------------------------------------------------------
 # Byte-identical JSON serialization
 #
-# The on-disk hook files use 2-space indentation, ensure_ascii=False, and keep
-# scalar-only arrays (e.g. ``"toolTypes": ["write"]``) inline. The stdlib
+# The canonical hook files use 2-space indentation, ensure_ascii=False, and keep
+# scalar-only arrays (e.g. a list of string patterns) inline. The stdlib
 # ``json.dumps(indent=2)`` expands every array onto multiple lines, so a custom
 # serializer is required to reproduce the canonical bytes exactly.
+#
+# This serializer is also imported and reused by ``migrate_hooks.py`` to emit the
+# byte-stable v1 ``<id>.json`` files, so its output format must stay unchanged:
+# any drift here would desynchronize the composed gate hooks from the migrated
+# hook set and break the downstream ``--verify`` gates.
 # ---------------------------------------------------------------------------
 
 
@@ -267,7 +283,7 @@ def _is_scalar(value: object) -> bool:
 
 
 def serialize_hook(hook: dict, indent: int = 2) -> str:
-    """Serialize *hook* to JSON matching the on-disk ``.kiro.hook`` formatting.
+    """Serialize *hook* to JSON matching the canonical on-disk hook formatting.
 
     Uses 2-space indentation and ``ensure_ascii=False``, but keeps arrays whose
     elements are all scalars inline (matching the canonical files). A trailing
@@ -312,9 +328,9 @@ def serialize_hook(hook: dict, indent: int = 2) -> str:
 
 
 def write_hook(hook_id: str, content: str, hooks_dir: Path) -> Path:
-    """Write composed *content* to ``<hooks_dir>/<hook_id>.kiro.hook``."""
+    """Write composed *content* to ``<hooks_dir>/<hook_id>.json``."""
     hooks_dir.mkdir(parents=True, exist_ok=True)
-    out_path = hooks_dir / f"{hook_id}.kiro.hook"
+    out_path = hooks_dir / f"{hook_id}.json"
     out_path.write_text(content, encoding="utf-8", newline="")
     return out_path
 
@@ -326,7 +342,7 @@ def verify_hook(hook_id: str, content: str, hooks_dir: Path) -> tuple[bool, str]
         ``(matches, message)`` where *matches* is True only if the on-disk file
         exists and its bytes equal *content*.
     """
-    hook_path = hooks_dir / f"{hook_id}.kiro.hook"
+    hook_path = hooks_dir / f"{hook_id}.json"
     if not hook_path.is_file():
         return False, f"hook file missing: {hook_path}"
     existing = hook_path.read_text(encoding="utf-8")

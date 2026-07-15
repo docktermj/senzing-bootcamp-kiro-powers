@@ -5,7 +5,70 @@ All notable changes to the Senzing Bootcamp power will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+> **Versioning note.** An early `1.0.0` was set prematurely (see the
+> `## [1.0.0] - 2026-06-24` section below) and then withdrawn. The Power's
+> public versioning was re-based onto the `0.x` line for the Kiro 1.0 migration,
+> so the current shipping version is `0.2.0` and the `0.x` releases dated after
+> 2026-06-24 supersede that withdrawn `1.0.0` entry. The `1.0.0` section is kept
+> for historical continuity, which is why the version numbers below are not
+> strictly monotonic by date. `VERSION` and the POWER.md frontmatter are the
+> authoritative current version.
+
 ## [Unreleased]
+
+## [0.2.0] - 2026-07-15
+
+Kiro 1.0 hook & permissions migration. The Power now targets the Kiro 1.0 `v1`
+hook and permissions model and **requires Kiro 1.0 or later** — legacy
+`*.kiro.hook` files do not execute under Kiro 1.0.
+
+### Added
+
+- `scripts/hook_matcher.py` — deterministic, stdlib-only Matcher_Translator
+  (glob→regex over the workspace-relative path domain) plus the trigger/action
+  rename tables that back the migration and validator accept-list
+- `scripts/migrate_hooks.py` — one-time legacy→v1 migration transform that reads
+  the legacy `hooks/*.kiro.hook` files and emits the `{"version":"v1","hooks":[...]}`
+  wrapper per hook, preserving `name` and prompt/command text verbatim
+- Three slash-command steering files replacing the former manual hooks —
+  `steering/slash-backup-project.md`, `steering/slash-git-commit.md`, and
+  `steering/slash-commonmark-validation.md` (`inclusion: manual`, legacy prompt
+  text preserved)
+- Kiro 1.0 permissions guide under `docs/guides/` documenting the write, shell,
+  and Senzing MCP capabilities the bootcamp requests and the recommended
+  approval scope for file writes, Python script executions, and MCP calls
+- Write-gate governance guard and a stale-legacy-reference CI gate that fail if a
+  required `PreToolUse` write gate is missing/disabled or any file still
+  references the legacy schema
+
+### Changed
+
+- Converted the 26 non-manual hooks from legacy `*.kiro.hook` to the Kiro 1.0
+  `v1` JSON schema with renamed triggers (`fileEdited`→`PostFileSave`,
+  `agentStop`→`Stop`, `preToolUse`→`PreToolUse`, …), restructured actions
+  (`askAgent`/`prompt`→`{type:agent,prompt}`, `runCommand`/`command`→
+  `{type:command,command}`), and `when.patterns`/`when.toolTypes` folded into a
+  single regex `matcher`; the three write gates (`write-policy-gate`,
+  `enforce-mandatory-gate`, `gate-module3-visualization`) emit
+  `trigger: PreToolUse` with the fixed `fs_write|str_replace|fs_append` matcher
+- Updated the hook tooling to v1: validator (`validate_power.py` `check_hooks`
+  and `test_hooks.py`), registry sync (`sync_hook_registry.py` +
+  `hooks/hooks.lock.yaml`, 26 entries), prompt composer
+  (`compose_hook_prompts.py`), and installer (`install_hooks.py`) now discover,
+  read, and emit `*.json` v1 definitions
+- Re-expressed the onboarding hook-creation path, steering files, and
+  documentation (`hooks/README.md`, `docs/guides/HOOKS_INSTALLATION_GUIDE.md`,
+  `steering/hook-architecture.md`, hook-registry slices) in 1.0
+  trigger/matcher/action terminology, and repointed references to the removed
+  manual hooks at their slash-command files
+- Populated `mcp.json` `autoApprove` with the 12 read-only active Senzing MCP
+  tools while keeping `submit_feedback` disabled and `mcp.json` the sole source
+  of the server URL
+- Bumped `VERSION` to `0.2.0` and set the `POWER.md` frontmatter version to match
+
+### Removed
+
+- Legacy `hooks/*.kiro.hook` files — only v1 `*.json` hook definitions ship now
 
 ## [0.1.3] - 2026-07-07
 
@@ -76,6 +139,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   output paths
 
 ## [1.0.0] - 2026-06-24
+
+> **Superseded / withdrawn.** This `1.0.0` was tagged prematurely and later
+> withdrawn; the Power re-based to the `0.x` line (see the Versioning note near
+> the top of this file). Retained for historical continuity only.
 
 ### Production release
 

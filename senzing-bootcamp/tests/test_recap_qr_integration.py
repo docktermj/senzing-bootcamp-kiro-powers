@@ -218,10 +218,12 @@ class TestRecapQRIntegration:
         """The Inline_Generator holds no duplicated schema-parsing logic.
 
         Confirms by reading the source that ``generate_recap_pdf_inline.py``
-        reuses the bundled parser/renderer (imports ``parse_recap_markdown`` /
-        ``render_pdf`` from ``generate_recap_pdf``) and does not re-implement the
-        Paired_Schema classification/parsing (no ``classify_section`` /
-        ``parse_qr_section`` / ``format_qr_section`` definitions of its own).
+        reuses the bundled parser (imports ``parse_recap_markdown`` from
+        ``generate_recap_pdf``) and routes rendering through the guaranteed tier
+        strategy (``ensure_recap_pdf`` from ``pdf_render_strategy``) rather than
+        re-implementing the Paired_Schema classification/parsing (no
+        ``classify_section`` / ``parse_qr_section`` / ``format_qr_section``
+        definitions of its own).
 
         Validates: Requirements 5.5
         """
@@ -229,10 +231,13 @@ class TestRecapQRIntegration:
             generate_recap_pdf_inline.__file__
         ).read_text(encoding="utf-8")
 
-        # It reuses the bundled parser/renderer rather than duplicating it.
+        # It reuses the bundled parser rather than duplicating it.
         assert "from generate_recap_pdf import" in inline_source
         assert "parse_recap_markdown" in inline_source
-        assert "render_pdf" in inline_source
+        # PDF production is routed through the guaranteed tier strategy — the
+        # inline generator no longer references the rich ``render_pdf`` directly.
+        assert "ensure_recap_pdf" in inline_source
+        assert "pdf_render_strategy" in inline_source
 
         # It defines no schema-parsing helpers of its own — those live only in
         # the bundled generator / shared renderer.

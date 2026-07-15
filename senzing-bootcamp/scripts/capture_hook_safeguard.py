@@ -2,12 +2,14 @@
 """Senzing Bootcamp - Capture-Hook Completion Safeguard.
 
 Runs at each module-completion boundary to detect any absent
-*capture-critical* hook (``session-log-events``, ``module-recap-append``,
-``ask-bootcamper``) and return a decision the completion steering renders:
-a silent no-op when all three hooks are present, or a recurring, overridable
-Soft_Block reminder (never a Mandatory_Gate) when any are missing.
+*capture-critical* hook (``session-log-events``, ``ask-bootcamper``) and return
+a decision the completion steering renders: a silent no-op when the
+capture-critical hooks are present, or a recurring, overridable Soft_Block
+reminder (never a Mandatory_Gate) when any are missing. (The former
+``module-recap-append`` recap hook was folded into ``ask-bootcamper`` Phase 0 by
+the stop-hook-ux bugfix, so ``ask-bootcamper`` now feeds the recap too.)
 
-The three capture-critical ids come from ``install_hooks.CAPTURE_CRITICAL`` —
+The capture-critical ids come from ``install_hooks.CAPTURE_CRITICAL`` —
 the single source of truth shared with the session-start Warn_On_Absence_Check
 so the two checks can never drift apart. This script only *names* the two
 install options; it never installs on the bootcamper's behalf.
@@ -80,9 +82,8 @@ DEFAULT_PROGRESS = POWER_ROOT / "config" / "bootcamp_progress.json"
 # hook always reports a concrete degraded deliverable.
 
 HOOK_OUTPUTS: dict[str, tuple[str, ...]] = {
-    "module-recap-append": ("recap",),
     "session-log-events": ("transcript", "completion summary"),
-    "ask-bootcamper": ("transcript", "completion summary"),
+    "ask-bootcamper": ("recap", "transcript", "completion summary"),
 }
 
 
@@ -94,7 +95,7 @@ HOOK_OUTPUTS: dict[str, tuple[str, ...]] = {
 INSTALL_OPTION_RECREATE = (
     "Re-create the missing hook(s) with createHook from the hook registry "
     "(ask-bootcamper -> hook-registry-critical.md; "
-    "module-recap-append, session-log-events -> hook-registry-module-any.md)"
+    "session-log-events -> hook-registry-module-any.md)"
 )
 INSTALL_OPTION_INSTALLER = (
     "Run: python3 senzing-bootcamp/scripts/install_hooks.py --essential"
@@ -111,7 +112,7 @@ INSTALL_OPTIONS: tuple[str, str] = (INSTALL_OPTION_RECREATE, INSTALL_OPTION_INST
 class MissingHook:
     """A single absent capture-critical hook and the outputs it feeds."""
 
-    hook_id: str  # e.g. "module-recap-append"
+    hook_id: str  # e.g. "ask-bootcamper"
     outputs: tuple[str, ...]  # subset of ("recap", "transcript", "completion summary")
 
 
@@ -133,24 +134,29 @@ class ReminderPlan:
 def detect_missing_capture_hooks(hooks_dir: Path) -> list[str]:
     """Return the sorted capture-critical ids whose hook file is absent.
 
-    Inspects ``hooks_dir`` (the bootcamper's ``.kiro/hooks`` directory) for an
-    ``<id>.kiro.hook`` file for each id in ``CAPTURE_CRITICAL``. Detection keys
-    only on the three ``<id>.kiro.hook`` filenames, so unrelated ``*.kiro.hook``
-    files never affect the result. A missing or unreadable directory yields all
-    three ids as missing. This function never raises.
+    Inspects ``hooks_dir`` (the bootcamper's ``.kiro/hooks`` directory) for a
+    hook file for each id in ``CAPTURE_CRITICAL``, accepting either the v1
+    format ``<id>.json`` or the legacy format ``<id>.kiro.hook``. A hook is
+    considered present when *either* filename exists, and missing only when
+    *neither* exists. Detection keys only on those two per-id filenames, so
+    unrelated ``*.json`` or ``*.kiro.hook`` files never affect the result. A
+    missing or unreadable directory yields all ids as missing. This function
+    never raises.
 
     Args:
         hooks_dir: Path to the bootcamper's ``.kiro/hooks`` directory.
 
     Returns:
-        The sorted list of capture-critical ids whose ``<id>.kiro.hook`` file is
-        absent (empty when all three are present).
+        The sorted list of capture-critical ids for which neither the v1
+        ``<id>.json`` nor the legacy ``<id>.kiro.hook`` file exists (empty when
+        every capture-critical hook is present in at least one format).
     """
     try:
         missing = [
             hook_id
             for hook_id in CAPTURE_CRITICAL
-            if not (hooks_dir / f"{hook_id}.kiro.hook").is_file()
+            if not (hooks_dir / f"{hook_id}.json").is_file()
+            and not (hooks_dir / f"{hook_id}.kiro.hook").is_file()
         ]
     except OSError:
         # Missing or unreadable directory — treat every hook as absent.
@@ -167,7 +173,7 @@ def outputs_for_hook(hook_id: str) -> tuple[str, ...]:
     deliverable.
 
     Args:
-        hook_id: A capture-critical hook id (e.g. ``"module-recap-append"``).
+        hook_id: A capture-critical hook id (e.g. ``"ask-bootcamper"``).
 
     Returns:
         The tuple of outputs the hook feeds.

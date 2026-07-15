@@ -31,7 +31,7 @@ from hook_test_helpers import parse_categories_yaml
 # Constants
 # ---------------------------------------------------------------------------
 
-HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.kiro.hook")
+HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.json")
 AGENT_INSTRUCTIONS_PATH = Path("senzing-bootcamp/steering/agent-instructions.md")
 CATEGORIES_PATH = Path("senzing-bootcamp/hooks/hook-categories.yaml")
 
@@ -127,7 +127,7 @@ def load_hook_prompt() -> str:
     """
     with open(HOOK_PATH, encoding="utf-8") as f:
         data = json.load(f)
-    full_prompt = data["then"]["prompt"]
+    full_prompt = data["hooks"][0]["action"]["prompt"]
 
     # Extract preamble (before Phase 1) which contains zero-output directives
     preamble_match = re.search(

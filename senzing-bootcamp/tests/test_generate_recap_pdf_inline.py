@@ -199,28 +199,29 @@ class TestInlineNonEmptyBody:
 
 
 class TestGracefulDegradationWithoutFpdf2:
-    """Inline fallback degrades gracefully when ``fpdf2`` is absent.
+    """Inline fallback still guarantees a PDF when ``fpdf2`` is absent.
 
-    **Validates: Requirements 5.2, 2.4, 3.1**
+    **Validates: guaranteed-recap-pdf Requirements 1.1, 1.3, 2.3, 5.2**
 
-    For environments where ``import fpdf`` raises ``ImportError``, the inline
-    fallback prints the ``pip install fpdf2`` hint to stderr, returns exit code
-    1, and writes no PDF — without letting a traceback/exception propagate.
+    For environments where ``import fpdf`` raises ``ImportError`` and autoinstall
+    is disabled, the inline fallback routes through the guaranteed tier strategy
+    and produces a valid PDF via the stdlib-only writer (Tier 3): it exits 0,
+    prints ``PDF generated:``, and writes a ``%PDF-`` file — without letting a
+    traceback/exception propagate. A missing fpdf2 is no longer a "no PDF" path.
 
-    Both render paths import ``fpdf`` lazily: the bundled-renderer delegate
-    (``generate_recap_pdf.render_pdf``) and the shared raw renderer
-    (``recap_pdf_render.render_markdown_pdf``). Forcing ``sys.modules['fpdf'] =
-    None`` makes any ``import fpdf`` / ``from fpdf import ...`` raise
-    ``ImportError`` regardless of which path runs, so the test reliably triggers
-    the degradation branch.
+    Forcing ``sys.modules['fpdf'] = None`` makes any ``import fpdf`` /
+    ``from fpdf import ...`` raise ``ImportError`` regardless of which render
+    path runs, so the test reliably drives the fpdf2-absent branch; passing
+    ``allow_autoinstall=False`` keeps the stdlib tier deterministic and performs
+    no real install.
     """
 
-    def test_missing_fpdf2_prints_hint_exits_one_no_pdf(
+    def test_missing_fpdf2_writes_guaranteed_pdf(
         self, tmp_path: Path, monkeypatch, capsys
     ) -> None:
-        """Simulate fpdf2 absent and assert the graceful-degradation contract.
+        """Simulate fpdf2 absent and assert the guaranteed-PDF contract.
 
-        **Validates: Requirements 5.2, 2.4, 3.1**
+        **Validates: guaranteed-recap-pdf Requirements 1.1, 1.3, 2.3, 5.2**
         """
         recap_md = _representative_recap()
         input_path = tmp_path / "bootcamp_recap.md"
@@ -228,23 +229,36 @@ class TestGracefulDegradationWithoutFpdf2:
         input_path.write_text(recap_md, encoding="utf-8")
 
         # Force ``import fpdf`` (and ``from fpdf import ...``) to raise
-        # ImportError in both the bundled and embedded render paths.
+        # ImportError so the fpdf2-absent tier is exercised.
         monkeypatch.setitem(sys.modules, "fpdf", None)
 
-        # No exception/traceback should propagate out of generate_inline.
-        rc = generate_inline(str(input_path), str(output_path))
-
-        assert rc == 1, f"Expected exit code 1 when fpdf2 is absent, got {rc}"
-
-        captured = capsys.readouterr()
-        assert "pip install fpdf2" in captured.err, (
-            "Expected the 'pip install fpdf2' hint on stderr when fpdf2 is "
-            f"absent; got stderr: {captured.err!r}"
+        # allow_autoinstall=False → straight to the stdlib writer (no install).
+        rc = generate_inline(
+            str(input_path), str(output_path), allow_autoinstall=False
         )
 
-        assert not output_path.exists(), (
-            "No PDF should be written when fpdf2 is absent, but a file exists "
-            f"at {output_path}"
+        assert rc == 0, (
+            f"Expected exit code 0 (guaranteed stdlib PDF) when fpdf2 absent, "
+            f"got {rc}"
+        )
+
+        captured = capsys.readouterr()
+        assert "PDF generated:" in captured.out, (
+            "Expected the 'PDF generated:' line on stdout when the guaranteed "
+            f"PDF is written; got stdout: {captured.out!r}"
+        )
+        # Clean, non-blocking flow: no traceback leaks.
+        assert "Traceback (most recent call last)" not in captured.err, (
+            f"a traceback leaked to stderr instead of the guaranteed PDF: "
+            f"{captured.err!r}"
+        )
+
+        assert output_path.exists(), (
+            "A guaranteed PDF should be written via the stdlib tier when fpdf2 "
+            f"is absent, but no file exists at {output_path}"
+        )
+        assert output_path.read_bytes().startswith(b"%PDF"), (
+            "the guaranteed output must be a valid PDF"
         )
 
 
@@ -254,41 +268,47 @@ class TestGracefulDegradationWithoutFpdf2:
 
 
 class TestHelperIndependence:
-    """Inline fallback works without the bundled ``generate_recap_pdf`` module.
+    """Inline fallback works without the tier strategy / bundled modules.
 
     **Validates: Requirements 5.3, 2.2**
 
-    For workspaces where ``generate_recap_pdf`` is not importable, the inline
+    For workspaces where the guaranteed tier strategy (``pdf_render_strategy``)
+    and the bundled ``generate_recap_pdf`` module are not importable, the inline
     fallback still produces a non-empty PDF (when ``fpdf2`` is present) using the
     shared raw renderer (``recap_pdf_render.render_markdown_pdf``) rather than the
-    bundled helper's structured renderer.
+    tier strategy's structured renderer.
 
-    Simulation strategy: forcing ``sys.modules['generate_recap_pdf'] = None``
-    makes any ``from generate_recap_pdf import ...`` raise ``ImportError``, which
-    drives ``_import_bundled_renderer()`` to return ``None`` and routes
-    ``generate_inline`` through the shared ``render_markdown_pdf`` path. The
-    ``monkeypatch`` fixture auto-undoes the patch after the test, and the
-    module-level ``RecapDocument`` / ``parse_recap_markdown`` names imported at
-    load time remain bound (only *new* imports are affected).
+    Simulation strategy: forcing ``sys.modules['pdf_render_strategy'] = None``
+    (or ``sys.modules['generate_recap_pdf'] = None``) makes the corresponding
+    ``from ... import ...`` raise ``ImportError``, which drives
+    ``_import_tier_strategy()`` to return ``None`` and routes ``generate_inline``
+    through the shared ``render_markdown_pdf`` path. The ``monkeypatch`` fixture
+    auto-undoes the patch after the test, and the module-level ``RecapDocument``
+    / ``parse_recap_markdown`` names imported at load time remain bound (only
+    *new* imports are affected).
     """
 
-    def test_import_bundled_renderer_returns_none_when_unimportable(
+    def test_import_tier_strategy_returns_none_when_unimportable(
         self, monkeypatch
     ) -> None:
-        """Under the patch, ``_import_bundled_renderer`` returns ``None``.
+        """Under the patch, ``_import_tier_strategy`` returns ``None``.
 
-        This proves the embedded renderer path is the one exercised when the
-        bundled module is not importable.
+        This proves the embedded raw-renderer path is the one exercised when the
+        guaranteed tier strategy (and the bundled parser/model it depends on) is
+        not importable.
 
         **Validates: Requirements 5.3, 2.2**
         """
-        from generate_recap_pdf_inline import _import_bundled_renderer  # noqa: PLC0415
+        from generate_recap_pdf_inline import _import_tier_strategy  # noqa: PLC0415
 
-        monkeypatch.setitem(sys.modules, "generate_recap_pdf", None)
+        # Force ``from pdf_render_strategy import ...`` to raise ImportError so
+        # the guaranteed tier strategy cannot be resolved and the caller falls
+        # back to the embedded raw renderer.
+        monkeypatch.setitem(sys.modules, "pdf_render_strategy", None)
 
-        assert _import_bundled_renderer() is None, (
-            "Expected _import_bundled_renderer() to return None when "
-            "generate_recap_pdf is not importable"
+        assert _import_tier_strategy() is None, (
+            "Expected _import_tier_strategy() to return None when "
+            "pdf_render_strategy is not importable"
         )
 
     def test_embedded_renderer_writes_nonempty_pdf_without_bundled_helper(
@@ -337,10 +357,12 @@ class TestNoFalseSuccess:
 
     This class focuses specifically on the stdout success-line contract: the
     ``PDF generated:`` signal appears on stdout exactly when a PDF file is
-    written and ``generate_inline`` returns 0; every no-PDF path (missing input,
-    empty input, ``fpdf2`` absent) returns 1 and leaves stdout free of the
-    success line. ``capsys`` captures stdout/stderr so we can assert the
-    success line's presence/absence directly.
+    written and ``generate_inline`` returns 0. The remaining no-PDF paths
+    (missing input, empty input) return 1 and leave stdout free of the success
+    line. Under the guaranteed-recap-pdf tiered strategy an absent ``fpdf2`` is
+    no longer a no-PDF path — the stdlib writer produces a valid PDF — so that
+    case now asserts the success line IS printed. ``capsys`` captures
+    stdout/stderr so we can assert the success line's presence/absence directly.
     """
 
     _SUCCESS_PREFIX = "PDF generated:"
@@ -415,16 +437,19 @@ class TestNoFalseSuccess:
             f"got stdout: {captured.out!r}"
         )
 
-    def test_missing_fpdf2_returns_one_without_success_line(
+    def test_missing_fpdf2_still_writes_pdf_with_success_line(
         self, tmp_path: Path, monkeypatch, capsys
     ) -> None:
-        """When ``fpdf2`` is absent the run returns 1 and prints no success line.
+        """When ``fpdf2`` is absent the run still writes a PDF and prints success.
 
         Forcing ``sys.modules['fpdf'] = None`` makes any ``import fpdf`` /
-        ``from fpdf import ...`` raise ``ImportError`` in both the bundled and
-        embedded render paths, so the no-PDF branch is reliably taken.
+        ``from fpdf import ...`` raise ``ImportError`` so the fpdf2-absent tier is
+        exercised; with autoinstall disabled the stdlib writer (Tier 3) produces
+        a valid PDF, so ``generate_inline`` returns 0 and the ``PDF generated:``
+        success line IS printed — consistent with the "success line iff a PDF was
+        written" contract.
 
-        **Validates: Requirements 3.4**
+        **Validates: guaranteed-recap-pdf Requirements 1.1, 1.3, 2.3**
         """
         input_path = tmp_path / "bootcamp_recap.md"
         output_path = tmp_path / "bootcamp_recap.pdf"
@@ -432,15 +457,23 @@ class TestNoFalseSuccess:
 
         monkeypatch.setitem(sys.modules, "fpdf", None)
 
-        rc = generate_inline(str(input_path), str(output_path))
+        rc = generate_inline(
+            str(input_path), str(output_path), allow_autoinstall=False
+        )
 
-        assert rc == 1, f"Expected exit code 1 when fpdf2 is absent, got {rc}"
-        assert not output_path.exists(), "No PDF should be written when fpdf2 is absent"
+        assert rc == 0, (
+            f"Expected exit code 0 (guaranteed stdlib PDF) when fpdf2 absent, "
+            f"got {rc}"
+        )
+        assert output_path.exists(), (
+            "A guaranteed PDF should be written via the stdlib tier when fpdf2 "
+            "is absent"
+        )
 
         captured = capsys.readouterr()
-        assert self._SUCCESS_PREFIX not in captured.out, (
-            "The 'PDF generated:' line must not appear when fpdf2 is absent; "
-            f"got stdout: {captured.out!r}"
+        assert self._SUCCESS_PREFIX in captured.out, (
+            "The 'PDF generated:' line must appear when a guaranteed PDF was "
+            f"written; got stdout: {captured.out!r}"
         )
 
 

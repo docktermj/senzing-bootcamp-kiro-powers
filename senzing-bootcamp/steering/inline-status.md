@@ -23,7 +23,7 @@ Track: [Track Display Name] — [X]% complete
 Data sources: [count] registered ([names])
 Next milestone: [what completing current step unlocks]
 
-👉 Ready to continue with [current step description]?
+👉 **Ready to continue with [current step description]?**
 ```
 
 ## Format Rules

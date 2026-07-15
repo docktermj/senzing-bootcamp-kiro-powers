@@ -94,12 +94,12 @@ _WAIT_BLOCKS: list[str] = _extract_wait_blocks(_STEERING_CONTENT)
 
 
 def _discover_hook_files() -> list[Path]:
-    """Return all ``.kiro.hook`` files in the hooks directory.
+    """Return all v1 ``*.json`` hook files in the hooks directory.
 
     Returns:
         Sorted list of Path objects for each hook file found.
     """
-    return sorted(_HOOKS_DIR.glob("*.kiro.hook"))
+    return sorted(_HOOKS_DIR.glob("*.json"))
 
 
 _HOOK_FILES: list[Path] = _discover_hook_files()
@@ -279,11 +279,12 @@ class TestWaitBlockBehavioralCompleteness:
 class TestHookJsonSchemaConformance:
     """Feature: module8-visualization-enforcement, Property 3: Hook JSON schema conformance
 
-    For any .kiro.hook file in senzing-bootcamp/hooks/, parsing it as JSON
-    succeeds and the resulting object contains all required fields: name
-    (string), version (string), description (string), when.type (string),
-    then.type (string), and then.prompt (string when then.type is
-    "askAgent").
+    For any ``*.json`` v1 hook file in senzing-bootcamp/hooks/, parsing it as
+    JSON succeeds and the wrapper declares ``version == "v1"`` with a non-empty
+    ``hooks`` array whose single entry contains: name (string), trigger
+    (string), action.type (string), and action.prompt (non-empty string when
+    action.type is "agent") or action.command (non-empty string when
+    action.type is "command").
 
     Validates: Requirements 2.5
     """
@@ -296,66 +297,68 @@ class TestHookJsonSchemaConformance:
     def test_hook_file_conforms_to_schema(
         self, hook_path: Path
     ) -> None:
-        """Each hook file is valid JSON with all required fields.
+        """Each hook file is a valid v1 wrapper with all required fields.
 
         Args:
-            hook_path: Path to a ``.kiro.hook`` file.
+            hook_path: Path to a ``<id>.json`` v1 hook file.
         """
         raw = hook_path.read_text(encoding="utf-8")
         data = json.loads(raw)
         violations: list[str] = []
         fname = hook_path.name
 
-        # Top-level required string fields
-        for field in ("name", "version", "description"):
-            if field not in data:
-                violations.append(f"{fname}: missing field '{field}'")
-            elif not isinstance(data[field], str):
-                violations.append(
-                    f"{fname}: '{field}' is not a string"
-                )
-            elif not data[field].strip():
-                violations.append(
-                    f"{fname}: '{field}' is empty"
-                )
+        # Wrapper-level schema tag and hooks array.
+        if data.get("version") != "v1":
+            violations.append(f"{fname}: wrapper version is not 'v1'")
+        hooks = data.get("hooks")
+        if not isinstance(hooks, list) or not hooks:
+            violations.append(f"{fname}: 'hooks' is not a non-empty array")
+            assert violations == [], f"Hook schema violations: {violations}"
+            return
 
-        # when.type
-        when = data.get("when")
-        if not isinstance(when, dict):
-            violations.append(f"{fname}: 'when' is not an object")
-        elif "type" not in when:
-            violations.append(f"{fname}: missing 'when.type'")
-        elif not isinstance(when["type"], str):
-            violations.append(f"{fname}: 'when.type' is not a string")
+        entry = hooks[0]
 
-        # then.type and then.prompt
-        then = data.get("then")
-        if not isinstance(then, dict):
-            violations.append(f"{fname}: 'then' is not an object")
+        # name (required string).
+        if "name" not in entry:
+            violations.append(f"{fname}: missing field 'name'")
+        elif not isinstance(entry["name"], str) or not entry["name"].strip():
+            violations.append(f"{fname}: 'name' is not a non-empty string")
+
+        # trigger (required string).
+        if "trigger" not in entry:
+            violations.append(f"{fname}: missing 'trigger'")
+        elif not isinstance(entry["trigger"], str):
+            violations.append(f"{fname}: 'trigger' is not a string")
+
+        # action.type and its payload.
+        action = entry.get("action")
+        if not isinstance(action, dict):
+            violations.append(f"{fname}: 'action' is not an object")
         else:
-            if "type" not in then:
-                violations.append(f"{fname}: missing 'then.type'")
-            elif not isinstance(then["type"], str):
-                violations.append(
-                    f"{fname}: 'then.type' is not a string"
-                )
+            action_type = action.get("type")
+            if "type" not in action:
+                violations.append(f"{fname}: missing 'action.type'")
+            elif not isinstance(action_type, str):
+                violations.append(f"{fname}: 'action.type' is not a string")
 
-            # When then.type is "askAgent", then.prompt must be a
-            # non-empty string
-            if then.get("type") == "askAgent":
-                if "prompt" not in then:
+            if action_type == "agent":
+                prompt = action.get("prompt")
+                if "prompt" not in action:
                     violations.append(
-                        f"{fname}: missing 'then.prompt' "
-                        f"(required when then.type is 'askAgent')"
+                        f"{fname}: missing 'action.prompt' "
+                        f"(required when action.type is 'agent')"
                     )
-                elif not isinstance(then["prompt"], str):
+                elif not isinstance(prompt, str) or not prompt.strip():
+                    violations.append(f"{fname}: 'action.prompt' is not a non-empty string")
+            elif action_type == "command":
+                command = action.get("command")
+                if "command" not in action:
                     violations.append(
-                        f"{fname}: 'then.prompt' is not a string"
+                        f"{fname}: missing 'action.command' "
+                        f"(required when action.type is 'command')"
                     )
-                elif not then["prompt"].strip():
-                    violations.append(
-                        f"{fname}: 'then.prompt' is empty"
-                    )
+                elif not isinstance(command, str) or not command.strip():
+                    violations.append(f"{fname}: 'action.command' is not a non-empty string")
 
         assert violations == [], (
             f"Hook schema violations: {violations}"

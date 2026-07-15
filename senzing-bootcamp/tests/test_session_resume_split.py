@@ -866,34 +866,62 @@ class TestUnitTokenBudgets:
     """
 
     def test_phase1_token_budget(self) -> None:
-        """Phase-1 file token count ≤ 3,400.
+        """Phase-1 file token count ≤ 4,197.
 
         The session-resume split + the added "Preference Loading on Session
         Start" content grew the phase-1 file (session-resume.md) past the
         original 2,700 budget. The shipped steering-index.yaml records this
-        file as ``token_count: 3380`` / ``size_category: large``. The threshold
-        is raised ONLY to match that intentional shipped split (3,380 tokens,
-        rounded up to a 3,400 ceiling); the per-file ±10% budget enforcement in
-        measure_steering.py is unchanged. Paired with an independent content
-        assertion below so the relaxed ceiling can never mask unbounded growth.
+        file as ``token_count: 3463`` / ``size_category: large``. The value
+        moved 3384 -> 3385 when the steering-inclusion-auto-audit spec
+        re-classified session-resume.md from the non-standard ``inclusion:
+        auto`` to the standard ``inclusion: manual`` (the two extra characters
+        nudge ``round(len(content) / 4)`` up by one), then 3385 -> 3386 when a
+        follow-up doc fix refreshed the stale Protocol Confirmation parenthetical
+        (``inclusion: auto`` -> ``inclusion: always``, two more characters) and
+        measure_steering.py was re-run in update mode to re-sync the index. Most
+        recently, the onboarding-session-ux spec added Rule 6 (the bold-question
+        convention) to session-resume.md Step 2b's Core Rules to satisfy
+        Requirement 4.x — the convention must be stated inline / self-contained
+        so it survives context compaction (Req 4.3), so it is not trimmed —
+        growing the file 3386 -> 3463 tokens, re-measured by measure_steering.py
+        and re-synced into steering-index.yaml. Most recently, the
+        preface-flow-and-banners spec updated session-resume.md's missing-field
+        prompt-ordering note to the new capture order (track, language, verbosity)
+        to match the reordered preface, growing it 3463 -> 3506 tokens, re-measured
+        by measure_steering.py and re-synced into steering-index.yaml. The
+        threshold moves to 3,506 to match that intentional shipped value (3,506
+        tokens); the per-file ±10% budget enforcement in measure_steering.py is
+        unchanged. Paired with an independent content assertion below so the
+        ceiling can never mask unbounded growth.
         """
+        # Re-pinned 3586 -> 4197 for the setup-summary-persistence spec: a new
+        # "Step 2f: Setup Summary Replay" section (plus a one-word fast-path
+        # jump addition) was added to session-resume.md so resume replays the
+        # persisted setup_summary as a verbosity-aware "your environment already
+        # has…" recap, re-measured by measure_steering.py and re-synced into
+        # steering-index.yaml (still well under the 5,000-token split threshold).
+        # Re-pinned 3506 -> 3586 for the single-ask-question-guarantee spec: a
+        # one-line Ask-Once Guarantee cross-reference was added to the existing
+        # "do not re-ask loaded preference fields" note in Step 4, re-measured by
+        # measure_steering.py and re-synced into steering-index.yaml.
         token_count = _calculate_token_count(_PHASE1_FILE)
-        assert token_count <= 3400, (
-            f"Phase-1 file has {token_count} tokens, exceeds budget of 3,400"
+        assert token_count <= 4197, (
+            f"Phase-1 file has {token_count} tokens, exceeds budget of 4,197"
         )
 
         # Independent content assertion: the shipped steering-index.yaml declares
-        # the same token_count for session-resume.md, confirming 3,380 is the
-        # intentional shipped value (relocation/split artifact), not drift.
+        # the same token_count for session-resume.md, confirming 4,197 is the
+        # intentional shipped value (the setup-summary-persistence replay section
+        # added to session-resume.md, re-measured and re-synced), not drift.
         index = _read_steering_index()
         assert "session-resume.md:" in index, (
             "steering-index.yaml must contain a session-resume.md entry"
         )
         idx_pos = index.find("session-resume.md:")
         entry = index[idx_pos:idx_pos + 200]
-        assert "token_count: 3380" in entry, (
-            "steering-index.yaml must record session-resume.md token_count: 3380 "
-            "(the shipped post-split value)"
+        assert "token_count: 4197" in entry, (
+            "steering-index.yaml must record session-resume.md token_count: 4197 "
+            "(the shipped post-setup-summary-replay value)"
         )
 
     def test_phase2_mapping_token_budget(self) -> None:
@@ -940,19 +968,19 @@ class TestUnitFrontmatter:
     def test_phase1_has_inclusion_frontmatter(self) -> None:
         """Phase-1 file has valid YAML frontmatter with an explicit inclusion mode.
 
-        NOTE (task 7.4b — "changed, not just moved"): the phase-1 file
-        (session-resume.md) frontmatter intentionally changed from
-        ``inclusion: manual`` to ``inclusion: auto`` on this branch
-        (commit 6810c67 "#1 Added feedback"), which also added the auto-loaded
+        NOTE: the phase-1 file (session-resume.md) had briefly shipped as the
+        non-standard ``inclusion: auto`` (added alongside the auto-loaded
         "Preference Loading on Session Start" section and a frontmatter
-        ``description``. session-resume.md is now auto-included so its preference
-        loading runs on every session start — a deliberate shipped design
-        change, not test drift over a pure relocation. The method was renamed
-        from ``test_phase1_has_inclusion_manual_frontmatter`` to match the
-        shipped frontmatter. The assertion now pins the shipped ``inclusion:
-        auto`` and is paired with an independent content assertion that the
-        session-resume workflow body is intact (so this is not masking a
-        regression).
+        ``description``). The steering-inclusion-auto-audit spec verified that
+        the Kiro runtime treats ``auto`` as on-explicit-reference loading, so
+        session-resume.md was re-classified to the standard ``inclusion:
+        manual`` (Decision_Record: keyword-routed via the ``resume`` keyword and
+        the ``session-resume:`` index root; loaded at resume time or on explicit
+        reference). The assertion now pins the shipped ``inclusion: manual`` and
+        is paired with an independent content assertion that the description and
+        the session-resume workflow body are intact (so this is not masking a
+        regression). The added description is preserved unchanged by the
+        re-classification (Req 3.2).
         """
         content = _PHASE1_FILE.read_text(encoding="utf-8")
         assert content.startswith("---"), (
@@ -962,16 +990,16 @@ class TestUnitFrontmatter:
         end_idx = content.find("---", 3)
         assert end_idx != -1, "Phase-1 file frontmatter not properly closed"
         frontmatter = content[3:end_idx]
-        assert "inclusion: auto" in frontmatter, (
-            "Phase-1 file must have 'inclusion: auto' in frontmatter (shipped "
-            "post-refactor value — session-resume.md is now auto-included for "
-            "preference loading)"
+        assert "inclusion: manual" in frontmatter, (
+            "Phase-1 file must have 'inclusion: manual' in frontmatter (shipped "
+            "post-audit value — session-resume.md was re-classified from the "
+            "non-standard 'auto' to the standard 'manual' mode)"
         )
-        # Independent content assertion: the auto-load change is paired with the
-        # new preference-loading behavior and the workflow body is preserved.
+        # Independent content assertion: the description added alongside the
+        # earlier change is preserved by re-classification and the body is intact.
         assert "description:" in frontmatter, (
-            "Phase-1 frontmatter must include the description added alongside "
-            "the inclusion: auto change"
+            "Phase-1 frontmatter must retain the description preserved across "
+            "the inclusion re-classification"
         )
         assert "# Session Resume Workflow" in content, (
             "Phase-1 session-resume workflow body must remain intact"

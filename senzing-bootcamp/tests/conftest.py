@@ -122,7 +122,7 @@ def mock_no_color(monkeypatch):
 # ---------------------------------------------------------------------------
 #
 # The generate_power_docs.py generator reads a self-consistent set of sources
-# (the real MCP tool inventory, discovered ``*.kiro.hook`` files plus
+# (the real MCP tool inventory, discovered ``*.json`` hook files plus
 # ``hook-categories.yaml``, a ``steering-index.yaml`` with per-file metadata,
 # and a ``module-dependencies.yaml`` module map) and regenerates four marker-
 # delimited regions in ``POWER.md``. These helpers let property tests build an
@@ -193,7 +193,7 @@ class WorldSpec:
     ``@given`` and materialize into many different directories.
 
     Attributes:
-        hook_ids: Unique hook ids; each gets a ``<id>.kiro.hook`` file.
+        hook_ids: Unique hook ids; each gets a ``<id>.json`` file.
         critical_ids: Subset of ``hook_ids`` listed under ``critical:``.
         steering: Per-file steering metadata records.
         modules: Module records with distinct numbers.
@@ -237,7 +237,7 @@ def st_hook_id(draw) -> str:
         draw: The Hypothesis draw callable.
 
     Returns:
-        A non-empty hook id usable as a ``*.kiro.hook`` filename stem.
+        A non-empty hook id usable as a ``*.json`` filename stem.
     """
     raw = draw(st.text(alphabet=_HOOK_ID_ALPHABET, min_size=1, max_size=12))
     cleaned = raw.strip("-")
@@ -391,7 +391,7 @@ def _hook_categories_yaml(spec: WorldSpec) -> str:
 
     # Hook ids are emitted as double-quoted scalars so YAML never coerces a
     # boolean-like id (``true``, ``no``, ``on``, ...) or a digit-like id into a
-    # non-string type; the generator compares them against ``.kiro.hook``
+    # non-string type; the generator compares them against ``.json``
     # filename stems, which are always strings.
     lines: list[str] = []
     if critical:
@@ -507,7 +507,7 @@ def build_power_md_skeleton(spec: WorldSpec) -> str:
 def materialize_world(spec: WorldSpec, base_dir: Path | str) -> MaterializedWorld:
     """Write ``spec`` to disk under ``base_dir`` and return the located sources.
 
-    Creates the hooks directory (with one ``<id>.kiro.hook`` file per hook id
+    Creates the hooks directory (with one ``<id>.json`` file per hook id
     and a consistent ``hook-categories.yaml``), the steering directory (with one
     ``.md`` file per steering entry and a ``steering-index.yaml``), the config
     directory (with ``module-dependencies.yaml``), and a ``POWER.md`` skeleton.
@@ -529,7 +529,19 @@ def materialize_world(spec: WorldSpec, base_dir: Path | str) -> MaterializedWorl
     hooks_dir = world / "hooks"
     hooks_dir.mkdir(parents=True, exist_ok=True)
     for hook_id in spec.hook_ids:
-        (hooks_dir / f"{hook_id}.kiro.hook").write_text("{}\n", encoding="utf-8")
+        wrapper = {
+            "version": "v1",
+            "hooks": [
+                {
+                    "name": f"to run {hook_id}",
+                    "trigger": "Stop",
+                    "action": {"type": "agent", "prompt": "fixture prompt"},
+                }
+            ],
+        }
+        (hooks_dir / f"{hook_id}.json").write_text(
+            json.dumps(wrapper) + "\n", encoding="utf-8"
+        )
     hook_categories = hooks_dir / "hook-categories.yaml"
     hook_categories.write_text(_hook_categories_yaml(spec), encoding="utf-8")
 

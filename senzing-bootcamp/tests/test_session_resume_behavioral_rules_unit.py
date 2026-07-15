@@ -541,15 +541,25 @@ class TestStep2bProtocolConfirmation:
             "conversation-protocol.md is loaded and active"
         )
 
-    def test_step_2b_mentions_auto_inclusion(self) -> None:
-        """Step 2b references the auto-inclusion mechanism for the protocol."""
+    def test_step_2b_mentions_always_inclusion(self) -> None:
+        """Step 2b references the always-inclusion mechanism for the protocol.
+
+        The Protocol Confirmation parenthetical originally described
+        conversation-protocol.md as loaded ``via its inclusion: auto setting``.
+        conversation-protocol.md was re-classified to ``inclusion: always``
+        (verified by validate_power.py: ``conversation-protocol.md: inclusion
+        'always' is valid``), so the parenthetical was refreshed to
+        ``inclusion: always``. This asserts the current, correct mechanism name
+        so Step 2b keeps naming how the protocol is loaded — it is not weakened,
+        only re-pointed at the intentionally-updated ``always`` classification.
+        """
         content = _read_file(_SESSION_RESUME)
         section = _extract_section(content, "Step 2b: Behavioral Rules Reload")
         assert section, "Step 2b section not found"
 
-        # Should mention the inclusion: auto mechanism
-        assert "auto" in section.lower(), (
-            "Step 2b should reference the auto-inclusion mechanism"
+        # Should mention the inclusion: always mechanism
+        assert "always" in section.lower(), (
+            "Step 2b should reference the always-inclusion mechanism"
         )
 
     def test_step_2b_provides_fallback_if_protocol_unavailable(self) -> None:

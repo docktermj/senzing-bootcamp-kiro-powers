@@ -1,5 +1,5 @@
 ---
-inclusion: auto
+inclusion: manual
 description: Context reset communication rules and message formatting
 ---
 
@@ -103,3 +103,12 @@ The context reset message MUST NOT contain any of the following phrases:
 ### Example Message
 
 > My conversation memory is getting full from our work so far. You can start a fresh chat right now — no waiting needed. All your progress is saved in the project files and will be picked up automatically. Just say "continue the bootcamp from module 5" in the new chat.
+
+### Session Handoff Offer
+
+Before emitting the Context_Reset_Message, offer to produce a Session_Handoff so the bootcamper can carry this session's in-session decisions and open questions into the fresh chat — these are not written to any state file, so they are lost on reset unless captured. Make the offer as a separate turn that precedes the reset message: a single question per the one-question-per-turn rule in `conversation-protocol.md`, then wait. This offer does not alter the Context_Reset_Message's four required elements, forbidden temporal phrases, or format constraints.
+
+- If the bootcamper accepts, produce the Handoff_Summary by following the Session_Handoff behavior (#[[file:senzing-bootcamp/steering/session-handoff.md]]), then emit the Context_Reset_Message.
+- If the bootcamper declines, emit the Context_Reset_Message unchanged.
+
+The Handoff_Summary reuses the Continuation_Phrase and current-module convention defined above rather than introducing a new resume mechanism: its "Pick up here" section quotes the same phrase (for example, "continue the bootcamp from module 5"), read from the `current_module` field of the Progress_File.

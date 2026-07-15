@@ -18,8 +18,11 @@ import pytest
 
 _ROOT = Path(__file__).resolve().parent.parent
 PROTOCOL_PATH = _ROOT / "senzing-bootcamp" / "steering" / "visualization-guide.md"
-HOOK_PATH = _ROOT / "senzing-bootcamp" / "hooks" / "enforce-visualization-offers.kiro.hook"
-REMOVED_HOOK_PATH = _ROOT / "senzing-bootcamp" / "hooks" / "offer-visualization.kiro.hook"
+HOOK_PATH = _ROOT / "senzing-bootcamp" / "hooks" / "enforce-visualization-offers.json"
+REMOVED_HOOK_PATH = _ROOT / "senzing-bootcamp" / "hooks" / "offer-visualization.json"
+REMOVED_HOOK_LEGACY_PATH = (
+    _ROOT / "senzing-bootcamp" / "hooks" / "offer-visualization.kiro.hook"
+)
 CATEGORIES_PATH = _ROOT / "senzing-bootcamp" / "hooks" / "hook-categories.yaml"
 TRACKER_PATH = _ROOT / "config" / "visualization_tracker.json"
 
@@ -153,9 +156,9 @@ def checkpoint_map(protocol_text: str) -> dict[str, list[dict[str, str | list[st
 
 @pytest.fixture
 def hook_data() -> dict:
-    """Load and parse the enforcement hook JSON."""
+    """Load and parse the enforcement hook's single v1 entry (hooks[0])."""
     with open(HOOK_PATH, encoding="utf-8") as f:
-        return json.load(f)
+        return json.load(f)["hooks"][0]
 
 
 @pytest.fixture
@@ -308,29 +311,33 @@ class TestCheckpointMap:
 
 
 class TestEnforcementHook:
-    """Verify enforcement hook file is valid JSON with version 2.0.0."""
+    """Verify enforcement hook file is a valid v1 wrapper with a Stop trigger."""
 
     def test_hook_file_exists(self) -> None:
-        """enforce-visualization-offers.kiro.hook exists on disk."""
+        """enforce-visualization-offers.json exists on disk."""
         assert HOOK_PATH.is_file(), f"Missing: {HOOK_PATH}"
 
     def test_hook_is_valid_json(self) -> None:
-        """Hook file parses as valid JSON."""
+        """Hook file parses as a valid v1 wrapper."""
         with open(HOOK_PATH, encoding="utf-8") as f:
             data = json.load(f)
         assert isinstance(data, dict)
+        assert data.get("version") == "v1"
+        assert isinstance(data.get("hooks"), list) and data["hooks"]
 
-    def test_hook_version_is_2_0_0(self, hook_data: dict) -> None:
-        """Hook version is 2.0.0."""
-        assert hook_data["version"] == "2.0.0"
+    def test_hook_version_is_2_0_0(self) -> None:
+        """The wrapper declares the v1 schema version."""
+        with open(HOOK_PATH, encoding="utf-8") as f:
+            wrapper = json.load(f)
+        assert wrapper["version"] == "v1"
 
     def test_hook_when_type_is_agent_stop(self, hook_data: dict) -> None:
-        """Hook when.type is agentStop."""
-        assert hook_data["when"]["type"] == "agentStop"
+        """Hook trigger is Stop (1.0 rename of agentStop)."""
+        assert hook_data["trigger"] == "Stop"
 
     def test_hook_then_type_is_ask_agent(self, hook_data: dict) -> None:
-        """Hook then.type is askAgent."""
-        assert hook_data["then"]["type"] == "askAgent"
+        """Hook action.type is agent (1.0 rename of askAgent)."""
+        assert hook_data["action"]["type"] == "agent"
 
     def test_hook_has_name(self, hook_data: dict) -> None:
         """Hook has a non-empty name field."""
@@ -338,28 +345,31 @@ class TestEnforcementHook:
         assert len(hook_data["name"]) > 0
 
     def test_hook_has_description(self, hook_data: dict) -> None:
-        """Hook has a non-empty description field."""
-        assert "description" in hook_data
-        assert len(hook_data["description"]) > 0
+        """Hook entry carries a non-empty action prompt (no description field in v1)."""
+        assert "prompt" in hook_data["action"]
+        assert len(hook_data["action"]["prompt"]) > 0
 
     def test_hook_has_prompt(self, hook_data: dict) -> None:
-        """Hook has a non-empty prompt in then block."""
-        assert "prompt" in hook_data["then"]
-        assert len(hook_data["then"]["prompt"]) > 20
+        """Hook has a non-empty prompt in the action block."""
+        assert "prompt" in hook_data["action"]
+        assert len(hook_data["action"]["prompt"]) > 20
 
 
 # ===========================================================================
-# 11.4: offer-visualization.kiro.hook no longer exists
+# 11.4: offer-visualization hook no longer exists
 # ===========================================================================
 
 
 class TestRemovedHook:
-    """Verify offer-visualization.kiro.hook has been removed."""
+    """Verify the offer-visualization hook has been removed (v1 and legacy)."""
 
     def test_offer_visualization_hook_does_not_exist(self) -> None:
-        """offer-visualization.kiro.hook must not exist on disk."""
+        """Neither offer-visualization.json nor .kiro.hook may exist on disk."""
         assert not REMOVED_HOOK_PATH.exists(), (
             f"Hook should have been removed: {REMOVED_HOOK_PATH}"
+        )
+        assert not REMOVED_HOOK_LEGACY_PATH.exists(), (
+            f"Legacy hook should have been removed: {REMOVED_HOOK_LEGACY_PATH}"
         )
 
 

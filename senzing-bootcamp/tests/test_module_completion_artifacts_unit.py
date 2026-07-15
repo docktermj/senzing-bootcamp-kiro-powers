@@ -24,8 +24,11 @@ Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.6
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
+
+import pytest
 
 # ---------------------------------------------------------------------------
 # Make scripts importable (scripts aren't packages).
@@ -212,7 +215,9 @@ class TestDetectArtifactGaps:
         inv = _inventory(recap={1, 2, 3, 4, 5, 6}, journal={3, 6, 7}, certs={6, 7})
         report = detect_artifact_gaps([1, 2, 3, 4, 5, 6, 7], inv)
         assert report.missing_recap == [7]
-        assert report.missing_journal == [1, 2, 4, 5]
+        # Journal content is consolidated into the recap; journal gaps are no
+        # longer detected regardless of the (ignored) journal inventory.
+        assert report.missing_journal == []
         assert report.missing_certificate == [1, 2, 3, 4, 5]
 
     def test_complete_set_has_no_gaps(self) -> None:
@@ -266,7 +271,8 @@ class TestPlanBackfill:
         inv = _inventory(recap={1, 2, 3, 4, 5, 6}, journal={3, 6, 7}, certs={6, 7})
         plan = plan_backfill(progress, inv)
         assert plan.recap_modules == [7]
-        assert plan.journal_modules == [1, 2, 4, 5]
+        # Journal is consolidated into the recap; it is never planned separately.
+        assert plan.journal_modules == []
         assert plan.certificate_modules == [1, 2, 3, 4, 5]
         # Nothing already on disk is in the plan.
         assert set(plan.recap_modules).isdisjoint({1, 2, 3, 4, 5, 6})
@@ -387,3 +393,136 @@ class TestIsBugCondition:
         assert not is_bug_condition(
             progress, self._clean_inventory(), durations, "Module N session"
         )
+
+
+# ===========================================================================
+# render_backfill_section — consolidated ### Journal scaffold
+# ===========================================================================
+
+
+class TestBackfillSectionJournalScaffold:
+    """Every backfilled section carries a ``### Journal`` N/A scaffold.
+
+    Feature: journal-recap-consolidation — task 1.4. A backfilled section has no
+    original transcript, so its Journal subsection is scaffolded with ``N/A`` for
+    all four narrative fields, keeping the Consolidated_Log contract (design
+    Property 3) uniform across hook-appended and backfilled sections.
+
+    Validates: Requirements 1.4, 5.4
+    """
+
+    _JOURNAL_LABELS = (
+        "What we did",
+        "What was produced",
+        "Why it matters",
+        "Bootcamper's takeaway",
+    )
+
+    def test_scaffold_includes_journal_heading_and_all_four_na_fields(self) -> None:
+        """The section emits ``### Journal`` with all four fields set to N/A."""
+        rendered = planner.render_backfill_section(3, name="System Verification")
+        assert "### Journal" in rendered
+        for label in self._JOURNAL_LABELS:
+            assert f"**{label}:** N/A" in rendered
+
+    def test_journal_follows_duration_when_present(self) -> None:
+        """When a Duration is supplied, ``### Journal`` comes after it."""
+        rendered = planner.render_backfill_section(
+            2, name="SDK Setup", duration="1h 12m"
+        )
+        assert rendered.index("### Duration") < rendered.index("### Journal")
+
+    def test_journal_present_even_without_duration(self) -> None:
+        """The Journal scaffold appears whether or not a Duration is emitted."""
+        rendered = planner.render_backfill_section(4)
+        assert "### Duration" not in rendered
+        assert "### Journal" in rendered
+
+    def test_journal_precedes_trailing_separator(self) -> None:
+        """The Journal subsection is emitted before the section's ``---`` rule."""
+        rendered = planner.render_backfill_section(5, name="Loading Records")
+        assert rendered.index("### Journal") < rendered.rindex("---")
+
+    def test_parsed_backfill_section_yields_na_journal_fields(self) -> None:
+        """Parsing the rendered section recovers a JournalFields of all N/A."""
+        rendered = planner.render_backfill_section(1, name="Business Problem")
+        section = planner.parse_recap_sections(rendered)[0]
+        assert section.journal == planner.JournalFields(
+            what_we_did="N/A",
+            what_was_produced="N/A",
+            why_it_matters="N/A",
+            bootcamper_takeaway="N/A",
+        )
+
+
+# ===========================================================================
+# --journal deprecation / no-op CLI behavior
+# ===========================================================================
+
+
+class TestJournalArgDeprecation:
+    """``--journal`` is accepted but ignored (no-op) with a deprecation notice.
+
+    Feature: journal-recap-consolidation — task 3.1. Journal content is folded
+    into the consolidated recap, so ``--journal`` is a no-op on the
+    plan/check/backfill paths and emits a stderr deprecation warning. The
+    one-time ``--migrate`` mode still legitimately consumes ``--journal`` and is
+    not covered here.
+
+    Validates: Requirements 5.1, 5.2
+    """
+
+    _DEPRECATION = (
+        "Warning: --journal is deprecated; journal content is now part of "
+        "the consolidated recap."
+    )
+
+    def _write_progress(self, tmp_path: Path) -> Path:
+        """Write a minimal progress file with two completed modules."""
+        progress = tmp_path / "progress.json"
+        progress.write_text(
+            json.dumps(
+                {"modules_completed": [1, 2], "step_history": {}, "started_at": None}
+            ),
+            encoding="utf-8",
+        )
+        return progress
+
+    def test_check_emits_deprecation_warning_for_journal(
+        self, tmp_path: Path, capsys
+    ) -> None:
+        """Passing --journal on the --check path prints the deprecation note."""
+        progress = self._write_progress(tmp_path)
+        journal = tmp_path / "journal.md"
+        journal.write_text("## Module 1: X\n\n## Module 2: Y\n", encoding="utf-8")
+        with pytest.raises(SystemExit):
+            planner.main(
+                ["--progress", str(progress), "--journal", str(journal), "--check"]
+            )
+        assert self._DEPRECATION in capsys.readouterr().err
+
+    def test_journal_inventory_is_ignored_for_plan(
+        self, tmp_path: Path, capsys
+    ) -> None:
+        """Journal sections on disk never yield journal backfill work."""
+        progress = self._write_progress(tmp_path)
+        journal = tmp_path / "journal.md"
+        # Only Module 1 has a journal section, yet the plan reports no journal
+        # gap because journal is no longer a separately tracked artifact.
+        journal.write_text("## Module 1: X\n", encoding="utf-8")
+        with pytest.raises(SystemExit) as exc:
+            planner.main(
+                ["--progress", str(progress), "--journal", str(journal), "--plan"]
+            )
+        assert exc.value.code == 0
+        payload = json.loads(capsys.readouterr().out)
+        assert payload["journal_modules"] == []
+
+    def test_no_warning_when_journal_arg_absent(
+        self, tmp_path: Path, capsys
+    ) -> None:
+        """Without --journal, no deprecation warning is emitted."""
+        progress = self._write_progress(tmp_path)
+        with pytest.raises(SystemExit):
+            planner.main(["--progress", str(progress), "--check"])
+        assert "deprecated" not in capsys.readouterr().err

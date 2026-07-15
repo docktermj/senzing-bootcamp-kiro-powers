@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
-"""Generate hook-registry.md from .kiro.hook JSON files.
+"""Generate hook-registry.md from Kiro 1.0 ``v1`` hook JSON files.
 
-This script makes the .kiro.hook files the single source of truth for the
-hook registry.  It reads every ``*.kiro.hook`` file under the hooks directory,
-categorises each hook using ``hook-categories.yaml``, and produces a
-deterministic Markdown registry.
+This script makes the shipped ``v1`` hook definitions the single source of
+truth for the hook registry.  It reads every ``*.json`` file under the hooks
+directory — each a ``{"version": "v1", "hooks": [ ... ]}`` wrapper — categorises
+each hook using ``hook-categories.yaml``, and produces a deterministic Markdown
+registry that renders the 1.0 trigger, the single matcher, and the full prompt
+text plus 1.0 ``createHook`` parameters.
+
+The discovery glob (``*.json``) naturally excludes any legacy ``*.kiro.hook``
+files that may still be present, so only the migrated 1.0 hooks are read. The
+three manual (``userTriggered``) hooks no longer exist as hook files — they were
+converted to slash-command steering files — so the generator lists exactly the
+migrated non-manual hook set.
 
 Modes
 -----
@@ -48,7 +56,21 @@ DEPRECATED_REGISTRY_PATHS = (REGISTRY_MODULES_PATH,)
 
 @dataclass
 class HookEntry:
-    """Parsed representation of a single ``.kiro.hook`` file."""
+    """Parsed representation of a single ``v1`` hook file.
+
+    Field semantics follow the Kiro 1.0 hook model:
+
+    - ``event_type`` holds the 1.0 trigger name (e.g. ``PostFileSave``, ``Stop``,
+      ``PreToolUse``).
+    - ``action_type`` holds the 1.0 action type (``agent`` or ``command``).
+    - ``matcher`` is the single 1.0 regex matcher (a file-path or tool-name
+      regex), or ``None`` for an unscoped trigger. It replaces the separate
+      legacy ``file_patterns`` / ``tool_types`` display fields.
+
+    Because the 1.0 hook schema carries no ``description`` field, ``description``
+    falls back to the hook ``name`` when the source file omits it (see
+    :func:`parse_hook_file`).
+    """
 
     hook_id: str
     name: str
@@ -56,8 +78,7 @@ class HookEntry:
     event_type: str
     action_type: str
     prompt: Optional[str] = None
-    file_patterns: Optional[str] = None
-    tool_types: Optional[str] = None
+    matcher: Optional[str] = None
 
 
 @dataclass
@@ -75,72 +96,84 @@ class CategoryMapping:
 
 
 def discover_hook_files(hooks_dir: Path) -> list[Path]:
-    """Return all ``*.kiro.hook`` file paths in *hooks_dir*, sorted by name."""
-    return sorted(hooks_dir.glob("*.kiro.hook"))
+    """Return all ``*.json`` v1 hook file paths in *hooks_dir*, sorted by name.
+
+    The ``*.json`` glob deliberately excludes any legacy ``*.kiro.hook`` files
+    that may still be present, so only the migrated 1.0 hooks are discovered.
+    """
+    return sorted(hooks_dir.glob("*.json"))
 
 
 def parse_hook_file(hook_path: Path) -> HookEntry:
-    """Parse a single ``.kiro.hook`` JSON file into a :class:`HookEntry`.
+    """Parse a single ``v1`` hook JSON file into a :class:`HookEntry`.
+
+    Reads the 1.0 wrapper ``{"version": "v1", "hooks": [ ... ]}``, takes the hook
+    entry (the migration keeps a 1:1 file-to-hook-id mapping, so the array holds
+    a single entry), and maps its ``trigger`` / ``action.type`` / ``matcher``
+    onto the :class:`HookEntry` fields. A hook-level ``timeout`` (present only on
+    ``session-log-events``) is not needed for the registry and is ignored.
 
     Raises
     ------
     ValueError
-        If the file contains invalid JSON or is missing required fields.
+        If the file contains invalid JSON, is not a ``v1`` wrapper, has an empty
+        ``hooks`` array, or is missing required entry fields.
     """
     try:
         data = json.loads(hook_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         raise ValueError(f"{hook_path.name}: invalid JSON — {exc}") from exc
 
-    # Required top-level fields
-    for field in ("name", "description"):
-        if field not in data:
-            raise ValueError(f"{hook_path.name}: missing required field '{field}'")
+    if data.get("version") != "v1":
+        raise ValueError(
+            f"{hook_path.name}: not a v1 hook file (top-level 'version' must be 'v1')"
+        )
 
-    when = data.get("when", {})
-    then = data.get("then", {})
+    hooks = data.get("hooks")
+    if not isinstance(hooks, list) or not hooks:
+        raise ValueError(
+            f"{hook_path.name}: missing or empty 'hooks' array"
+        )
 
-    if "type" not in when:
-        raise ValueError(f"{hook_path.name}: missing required field 'when.type'")
-    if "type" not in then:
-        raise ValueError(f"{hook_path.name}: missing required field 'then.type'")
+    # One hook per file (the migration preserves the 1:1 file-to-id mapping).
+    entry = hooks[0]
 
-    # Optional fields
-    prompt = then.get("prompt")
+    # Required entry fields
+    for field in ("name", "trigger", "action"):
+        if field not in entry:
+            raise ValueError(
+                f"{hook_path.name}: hook is missing required field '{field}'"
+            )
 
-    # File patterns: stored as array in JSON, join with ", " for display
-    raw_patterns = when.get("patterns")
-    file_patterns: Optional[str] = None
-    if raw_patterns is not None:
-        if isinstance(raw_patterns, list):
-            file_patterns = ", ".join(raw_patterns)
-        else:
-            file_patterns = str(raw_patterns)
+    action = entry["action"]
+    if not isinstance(action, dict) or "type" not in action:
+        raise ValueError(
+            f"{hook_path.name}: hook 'action' is missing required field 'type'"
+        )
 
-    # Tool types: stored as array in JSON, join with ", " for display
-    raw_tool_types = when.get("toolTypes")
-    tool_types: Optional[str] = None
-    if raw_tool_types is not None:
-        if isinstance(raw_tool_types, list):
-            tool_types = ", ".join(raw_tool_types)
-        else:
-            tool_types = str(raw_tool_types)
+    # Agent actions carry a prompt; command actions carry a command instead.
+    prompt = action.get("prompt")
 
-    hook_id = hook_path.stem  # e.g. "ask-bootcamper.kiro" → need to strip ".kiro"
-    # The filename is like "ask-bootcamper.kiro.hook", stem gives "ask-bootcamper.kiro"
-    # We need just "ask-bootcamper"
-    if hook_id.endswith(".kiro"):
-        hook_id = hook_id[: -len(".kiro")]
+    # The single 1.0 matcher (a file-path or tool-name regex), or None for an
+    # unscoped trigger. Replaces the legacy patterns/toolTypes display fields.
+    matcher = entry.get("matcher")
+
+    # The 1.0 hook schema has no description field. Fall back to the hook name
+    # so the registry's Description column stays meaningful and fully sourced
+    # from the v1 file.
+    description = entry.get("description") or entry["name"]
+
+    # Filename "ask-bootcamper.json" → hook id "ask-bootcamper".
+    hook_id = hook_path.stem
 
     return HookEntry(
         hook_id=hook_id,
-        name=data["name"],
-        description=data["description"],
-        event_type=when["type"],
-        action_type=then["type"],
+        name=entry["name"],
+        description=description,
+        event_type=entry["trigger"],
+        action_type=action["type"],
         prompt=prompt,
-        file_patterns=file_patterns,
-        tool_types=tool_types,
+        matcher=matcher,
     )
 
 
@@ -317,7 +350,11 @@ def categorize_hooks(
 
 
 def _format_event_flow(entry: HookEntry) -> str:
-    """Return a compact event flow string like ``agentStop → askAgent``."""
+    """Return a compact 1.0 event flow string like ``Stop → agent``.
+
+    ``event_type`` holds the 1.0 trigger and ``action_type`` holds the 1.0
+    action type (``agent`` / ``command``), so this renders 1.0 terminology.
+    """
     return f"{entry.event_type} → {entry.action_type}"
 
 
@@ -509,7 +546,11 @@ def generate_registry_summary(
 
 
 def format_hook_entry(entry: HookEntry) -> str:
-    """Format a single hook entry as Markdown.
+    """Format a single v1 hook entry as Markdown.
+
+    Renders the 1.0 event flow (``trigger → action`` plus the single matcher
+    when the trigger is scoped), the full prompt text for agent actions, and the
+    1.0 ``createHook`` parameters (id, name, trigger, matcher, action type).
 
     The hook prompt is rendered inside a fenced ``text`` code block so that
     markdown inside the prompt (lists, headings, inline links) does not
@@ -517,12 +558,10 @@ def format_hook_entry(entry: HookEntry) -> str:
     fence is used so prompts containing their own triple-backtick blocks
     can be included verbatim without breaking the outer fence.
     """
-    # Build the event flow string
+    # Build the 1.0 event flow string: trigger → action (+ single matcher).
     flow = f"{entry.event_type} → {entry.action_type}"
-    if entry.file_patterns:
-        flow += f", filePatterns: `{entry.file_patterns}`"
-    if entry.tool_types:
-        flow += f", toolTypes: {entry.tool_types}"
+    if entry.matcher:
+        flow += f", matcher: `{entry.matcher}`"
 
     lines: list[str] = []
     lines.append(f"**{entry.hook_id}** ({flow})")
@@ -536,9 +575,13 @@ def format_hook_entry(entry: HookEntry) -> str:
         lines.append("````")
         lines.append("")
 
+    # 1.0 createHook parameters.
     lines.append(f"- id: `{entry.hook_id}`")
     lines.append(f"- name: `{entry.name}`")
-    lines.append(f"- description: `{entry.description}`")
+    lines.append(f"- trigger: `{entry.event_type}`")
+    if entry.matcher:
+        lines.append(f"- matcher: `{entry.matcher}`")
+    lines.append(f"- action: `{entry.action_type}`")
 
     return "\n".join(lines)
 
@@ -738,7 +781,10 @@ def generate_lockfile(
     """Generate the ``hooks.lock.yaml`` content.
 
     Produces a deterministic YAML lockfile listing all hooks with their
-    ID, version, category, and event type.
+    ID, schema version, category, and 1.0 trigger (``event_type``).
+
+    The 1.0 hook schema carries no per-hook semantic version, so ``version``
+    records the wrapper schema version (``v1``) read from the source file.
     """
     from datetime import datetime, timezone
 
@@ -760,13 +806,13 @@ def generate_lockfile(
         else:
             category = "uncategorized"
 
-        # Get version from the hook file
-        hook_path = HOOKS_DIR / f"{hook.hook_id}.kiro.hook"
-        version = "1.0.0"
+        # Get the schema version from the v1 hook file (always "v1").
+        hook_path = HOOKS_DIR / f"{hook.hook_id}.json"
+        version = "v1"
         if hook_path.exists():
             try:
                 data = json.loads(hook_path.read_text(encoding="utf-8"))
-                version = data.get("version", "1.0.0")
+                version = data.get("version", "v1")
             except (json.JSONDecodeError, OSError):
                 pass
 
@@ -815,7 +861,7 @@ def verify_registry(content: str, existing_path: Path) -> tuple[bool, str]:
 def main() -> None:
     """CLI entry point."""
     parser = argparse.ArgumentParser(
-        description="Generate hook-registry.md from .kiro.hook files."
+        description="Generate hook-registry.md from v1 hook (*.json) files."
     )
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument(

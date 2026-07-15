@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "to remind you to run tests",
+      "trigger": "PostFileSave",
+      "matcher": "^(?:src/load/[^/]*\\.[^/]*|src/query/[^/]*\\.[^/]*|src/transform/[^/]*\\.[^/]*)$",
+      "action": {
+        "type": "agent",
+        "prompt": "Source code was modified. If tests exist in the tests/ directory, remind the user to run them to verify the change didn't break anything. Suggest the appropriate test command for the chosen language."
+      }
+    }
+  ]
+}

@@ -10,9 +10,9 @@ Steps 1–9 of Module 1. Discovery and gap-filling — continues into Phase 2 (d
 
 Use this workflow when starting the bootcamp or when a user wants to explore how Senzing can solve their specific challenge.
 
-**Prerequisites**: None (or Module 3 complete if they did the demo)
+**Prerequisites:** None (or Module 3 complete if they did the demo)
 
-**Before/After**: You may have seen the demo, but you don't yet have a defined problem or plan. After this module, you'll have a documented business problem, identified data sources, and clear success criteria — the roadmap for everything that follows.
+**Before/After:** You may have seen the demo, but you don't yet have a defined problem or plan. After this module, you'll have a documented business problem, identified data sources, and clear success criteria — the roadmap for everything that follows.
 
 1. **Initialize version control** (if not already done):
 
@@ -32,7 +32,7 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    **If not a repo:** Ask the bootcamper:
 
-   👉 "If you don't know what 'git' is, just skip this. This is optional, but would you like me to initialize a git repository for version control? You can skip this without affecting the bootcamp."
+   👉 **"If you don't know what 'git' is, just skip this. This is optional, but would you like me to initialize a git repository for version control? You can skip this without affecting the bootcamp."**
 
    > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
@@ -194,7 +194,13 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    **6a. Record count threshold check:**
 
-   After completing the five-category inference above, calculate the total record count across all sources mentioned by the bootcamper. If the total record count exceeds 500 (i.e., more than 500 records total), the built-in 500-record evaluation limit will be exceeded and license guidance is required — proceed to Step 6b. If the total is 500 or fewer, skip Steps 6b–6e and proceed directly to Step 7.
+   After completing the five-category inference above, calculate the total record count across all sources mentioned by the bootcamper, then decide whether license guidance is required by comparing that total against the effective record limit.
+
+   **Read** `license_record_limit` from `config/bootcamp_progress.json` (Module 2 Step 5e writes it via `detect_license_limit.py` after a custom license is configured) and branch on its value:
+
+   - **Present and greater than 0** (custom license with a finite record cap): compare the total against that limit. If the total exceeds the limit, license guidance is required — proceed to Step 6b; otherwise skip Steps 6b–6e and proceed directly to Step 7.
+   - **Present and equal to 0** (custom license with no record cap): skip license guidance entirely — proceed directly to Step 7, and do not recommend sampling for license reasons.
+   - **Absent or null** (no custom license detected yet): compare the total against the built-in evaluation capacity, confirmed via the Senzing MCP server (never a hardcoded or remembered figure). If the total exceeds that capacity, license guidance is required — proceed to Step 6b; otherwise skip Steps 6b–6e and proceed directly to Step 7.
 
    **6b. License Guidance Trigger** (conditional — only when total records exceed the 500-record evaluation limit):
 
@@ -202,7 +208,7 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    Licensing options include applying an existing license, requesting one through the external request path, and — when available — the in-flow MCP license-request path that asks the Senzing MCP server to generate an evaluation license for you (covered in Step 6d).
 
-   👉 "Do you already have a Senzing license?"
+   👉 **"Do you already have a Senzing license?"**
 
    > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
@@ -246,7 +252,7 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    When presenting the evaluation license's validity period or record capacity, retrieve those values from a Senzing MCP server tool during this session and present exactly what the tool returns. If the tool does not return a value, or the MCP server cannot be reached, omit the specific figure and tell the bootcamper that the current value is unavailable from the MCP server — never substitute a hardcoded or remembered figure.
 
-   👉 "Which would you like to do — request an evaluation license through the MCP server, request one through the external channel, apply a license you already have, or defer and continue Module 1 for now?"
+   👉 **"Which would you like to do — request an evaluation license through the MCP server, request one through the external channel, apply a license you already have, or defer and continue Module 1 for now?"**
 
    > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 

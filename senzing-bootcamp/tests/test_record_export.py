@@ -1358,51 +1358,106 @@ class TestCollectQueryPrograms:
 class TestCollectBusinessProblem:
     """Unit tests for DecisionCollector.collect_business_problem().
 
-    **Validates: Requirement 3.1, 3.2, 12.4**
+    Module 1 content now lives in the Consolidated_Log (docs/bootcamp_recap.md):
+    the problem statement comes from the ``### Journal`` subsection's
+    ``**What we did:**`` field, while identified data sources and success
+    criteria come from the ``### Information Shared`` items.
+
+    **Validates: Requirements 7.1, 7.3, 7.5, 7.6**
     """
 
-    def test_returns_none_when_journal_missing(self) -> None:
-        """collect_business_problem returns None when journal file doesn't exist."""
+    @staticmethod
+    def _module1_recap(
+        *,
+        what_we_did: str = (
+            "Deduplicate customer records across CRM and billing systems."
+        ),
+        information_shared: str = (
+            "- Data source: CRM export\n"
+            "- Data source: Billing database dump\n"
+            "- Success criteria: Achieve >90% precision on known duplicates\n"
+        ),
+        include_journal: bool = True,
+        trailing_module: bool = True,
+    ) -> str:
+        """Build a Consolidated_Log fixture containing a Module 1 section."""
+        recap = (
+            "# Senzing Bootcamp Recap\n\n"
+            "**Bootcamper:** Bootcamper\n"
+            "**Started:** 2026-05-14T10:30:00-05:00\n\n"
+            "---\n\n"
+            "## Module 1: Business Problem \u2014 2026-05-14T10:45:00-05:00\n\n"
+            "### Information Shared\n"
+            f"{information_shared}\n"
+            "### Questions & Responses\n\n"
+            "- None\n\n"
+            "### Actions Taken\n"
+            "- Created docs/business_problem.md\n\n"
+            "### Duration\n"
+            "15m\n\n"
+        )
+        if include_journal:
+            recap += (
+                "### Journal\n"
+                f"**What we did:** {what_we_did}\n"
+                "**What was produced:** docs/business_problem.md\n"
+                "**Why it matters:** Establishes the entity resolution goal.\n"
+                "**Bootcamper's takeaway:** N/A\n\n"
+            )
+        recap += "---\n"
+        if trailing_module:
+            recap += (
+                "\n## Module 2: SDK Setup \u2014 2026-05-14T11:00:00-05:00\n\n"
+                "### Journal\n"
+                "**What we did:** Installed the Senzing SDK.\n"
+                "**What was produced:** src/\n"
+                "**Why it matters:** Enables coding.\n"
+                "**Bootcamper's takeaway:** N/A\n\n"
+                "---\n"
+            )
+        return recap
+
+    @staticmethod
+    def _reader_for(recap: str):
+        """Return a file_reader that serves recap only for the recap path."""
+
+        def reader(path: str) -> str | None:
+            if "bootcamp_recap.md" in path:
+                return recap
+            return None
+
+        return reader
+
+    def test_returns_none_when_recap_missing(self) -> None:
+        """Returns None when the Consolidated_Log does not exist."""
         collector = DecisionCollector("/project", file_reader=lambda p: None)
-        result = collector.collect_business_problem()
-        assert result is None
+        assert collector.collect_business_problem() is None
 
     def test_returns_none_when_no_module1_section(self) -> None:
-        """collect_business_problem returns None when journal has no Module 1."""
-        journal = "# Bootcamp Journal\n\n## Module 2: SDK Setup\n\nSome content.\n"
-
-        def reader(path: str) -> str | None:
-            if "bootcamp_journal.md" in path:
-                return journal
-            return None
-
-        collector = DecisionCollector("/project", file_reader=reader)
-        result = collector.collect_business_problem()
-        assert result is None
-
-    def test_parses_full_module1_with_all_subsections(self) -> None:
-        """collect_business_problem extracts all subsections from Module 1."""
-        journal = (
-            "# Bootcamp Journal\n\n"
-            "## Module 1: Business Problem\n\n"
-            "### Problem Statement\n\n"
-            "Deduplicate customer records across CRM and billing systems.\n\n"
-            "### Data Sources\n\n"
-            "- CRM export\n"
-            "- Billing database dump\n\n"
-            "### Success Criteria\n\n"
-            "- Identify duplicate customers across systems\n"
-            "- Achieve >90% precision on known duplicates\n\n"
-            "## Module 2: SDK Setup\n\n"
-            "Some other content.\n"
+        """Returns None when the recap has no Module 1 section."""
+        recap = (
+            "# Senzing Bootcamp Recap\n\n---\n\n"
+            "## Module 2: SDK Setup \u2014 2026-05-14T11:00:00-05:00\n\n"
+            "### Journal\n"
+            "**What we did:** Set up the SDK.\n"
+            "**What was produced:** src/\n"
+            "**Why it matters:** Enables coding.\n"
+            "**Bootcamper's takeaway:** N/A\n\n"
+            "---\n"
         )
+        collector = DecisionCollector("/project", file_reader=self._reader_for(recap))
+        assert collector.collect_business_problem() is None
 
-        def reader(path: str) -> str | None:
-            if "bootcamp_journal.md" in path:
-                return journal
-            return None
+    def test_returns_none_when_module1_has_no_journal(self) -> None:
+        """Returns None when Module 1 exists but has no ### Journal subsection."""
+        recap = self._module1_recap(include_journal=False, trailing_module=False)
+        collector = DecisionCollector("/project", file_reader=self._reader_for(recap))
+        assert collector.collect_business_problem() is None
 
-        collector = DecisionCollector("/project", file_reader=reader)
+    def test_parses_module1_journal_and_information_shared(self) -> None:
+        """Extracts problem statement, sources, and criteria from the recap."""
+        recap = self._module1_recap()
+        collector = DecisionCollector("/project", file_reader=self._reader_for(recap))
         result = collector.collect_business_problem()
 
         assert result is not None
@@ -1410,107 +1465,72 @@ class TestCollectBusinessProblem:
         assert result.problem_statement == (
             "Deduplicate customer records across CRM and billing systems."
         )
-        assert result.identified_sources == ["CRM export", "Billing database dump"]
+        assert result.identified_sources == [
+            "CRM export",
+            "Billing database dump",
+        ]
         assert result.success_criteria == [
-            "Identify duplicate customers across systems",
             "Achieve >90% precision on known duplicates",
         ]
 
-    def test_fallback_to_first_paragraph_when_no_problem_heading(self) -> None:
-        """collect_business_problem uses first paragraph as problem statement."""
-        journal = (
-            "# Journal\n\n"
-            "## Module 1\n\n"
-            "We want to match customer records from multiple systems.\n\n"
-            "## Module 2\n"
+    def test_unlabeled_information_shared_items_are_sources(self) -> None:
+        """Unlabeled Information Shared items become identified sources."""
+        recap = self._module1_recap(
+            information_shared="- CRM export\n- Billing database dump\n"
         )
-
-        def reader(path: str) -> str | None:
-            if "bootcamp_journal.md" in path:
-                return journal
-            return None
-
-        collector = DecisionCollector("/project", file_reader=reader)
+        collector = DecisionCollector("/project", file_reader=self._reader_for(recap))
         result = collector.collect_business_problem()
 
         assert result is not None
-        assert result.module == 1
-        assert result.problem_statement == (
-            "We want to match customer records from multiple systems."
-        )
-        assert result.identified_sources == []
+        assert result.identified_sources == ["CRM export", "Billing database dump"]
         assert result.success_criteria == []
 
-    def test_handles_identified_sources_heading_variant(self) -> None:
-        """collect_business_problem recognizes '### Identified Sources' heading."""
-        journal = (
-            "## Module 1: Business Problem\n\n"
-            "### Problem Statement\n\n"
-            "Match records.\n\n"
-            "### Identified Sources\n\n"
-            "* Source A\n"
-            "* Source B\n\n"
-            "## Module 2\n"
+    def test_source_label_variants_are_recognized(self) -> None:
+        """'Data sources', 'Identified source', and 'Source' labels are stripped."""
+        recap = self._module1_recap(
+            information_shared=(
+                "- Data sources: CRM export\n"
+                "- Identified source: Billing dump\n"
+                "- Source: Support tickets\n"
+            )
         )
-
-        def reader(path: str) -> str | None:
-            if "bootcamp_journal.md" in path:
-                return journal
-            return None
-
-        collector = DecisionCollector("/project", file_reader=reader)
+        collector = DecisionCollector("/project", file_reader=self._reader_for(recap))
         result = collector.collect_business_problem()
 
         assert result is not None
-        assert result.identified_sources == ["Source A", "Source B"]
+        assert result.identified_sources == [
+            "CRM export",
+            "Billing dump",
+            "Support tickets",
+        ]
+        assert result.success_criteria == []
 
     def test_module1_at_end_of_file(self) -> None:
-        """collect_business_problem works when Module 1 is the last section."""
-        journal = (
-            "# Journal\n\n"
-            "## Module 1: Business Problem\n\n"
-            "### Problem Statement\n\n"
-            "Final module content.\n\n"
-            "### Success Criteria\n\n"
-            "- Done\n"
-        )
-
-        def reader(path: str) -> str | None:
-            if "bootcamp_journal.md" in path:
-                return journal
-            return None
-
-        collector = DecisionCollector("/project", file_reader=reader)
+        """Works when Module 1 is the last section in the recap."""
+        recap = self._module1_recap(trailing_module=False)
+        collector = DecisionCollector("/project", file_reader=self._reader_for(recap))
         result = collector.collect_business_problem()
 
         assert result is not None
-        assert result.problem_statement == "Final module content."
-        assert result.success_criteria == ["Done"]
-
-    def test_empty_subsections_return_empty_lists(self) -> None:
-        """collect_business_problem returns empty lists for missing subsections."""
-        journal = (
-            "## Module 1: Business Problem\n\n"
-            "### Problem Statement\n\n"
-            "Some problem.\n\n"
-            "## Module 2\n"
+        assert result.problem_statement == (
+            "Deduplicate customer records across CRM and billing systems."
         )
 
-        def reader(path: str) -> str | None:
-            if "bootcamp_journal.md" in path:
-                return journal
-            return None
-
-        collector = DecisionCollector("/project", file_reader=reader)
+    def test_empty_what_we_did_yields_none_problem_statement(self) -> None:
+        """A present-but-empty ``What we did`` yields a None problem statement."""
+        recap = self._module1_recap(what_we_did="")
+        collector = DecisionCollector("/project", file_reader=self._reader_for(recap))
         result = collector.collect_business_problem()
 
         assert result is not None
-        assert result.problem_statement == "Some problem."
-        assert result.identified_sources == []
-        assert result.success_criteria == []
+        assert result.problem_statement is None
+        assert result.identified_sources == ["CRM export", "Billing database dump"]
+        assert result.success_criteria == [
+            "Achieve >90% precision on known duplicates",
+        ]
 
     def test_uses_correct_file_path(self) -> None:
-        """collect_business_problem reads from docs/bootcamp_journal.md."""
+        """collect_business_problem reads from docs/bootcamp_recap.md."""
         requested_paths: list[str] = []
 
         def reader(path: str) -> str | None:
@@ -1521,53 +1541,377 @@ class TestCollectBusinessProblem:
         collector.collect_business_problem()
 
         assert len(requested_paths) == 1
-        assert requested_paths[0].endswith("docs/bootcamp_journal.md")
+        assert requested_paths[0].endswith("docs/bootcamp_recap.md")
         assert requested_paths[0].startswith("/my/project")
 
-    def test_module1_heading_case_insensitive(self) -> None:
-        """collect_business_problem matches Module 1 heading case-insensitively."""
-        journal = (
-            "## module 1: business problem\n\n"
-            "### Problem Statement\n\n"
-            "Case insensitive match.\n\n"
-            "## Module 2\n"
+
+# ---------------------------------------------------------------------------
+# Unit Tests: DecisionCollector.collect_performance_tuning
+# ---------------------------------------------------------------------------
+
+
+class TestCollectPerformanceTuning:
+    """Unit tests for DecisionCollector.collect_performance_tuning().
+
+    Module 8 performance evidence now lives in the Consolidated_Log
+    (docs/bootcamp_recap.md): the four ``### Journal`` narrative fields are
+    categorized into baseline metrics (mentioning ``baseline``/``metric``),
+    applied optimizations (mentioning ``optimiz``/``improv``), and tuning
+    decisions (everything else). ``N/A`` and empty fields contribute nothing.
+
+    **Validates: Requirements 7.2, 7.4, 7.5, 7.6**
+    """
+
+    @staticmethod
+    def _module8_recap(
+        *,
+        what_we_did: str = "Profiled the resolution pipeline.",
+        what_was_produced: str = "Recorded baseline metrics report.",
+        why_it_matters: str = "Applied indexing optimizations.",
+        bootcamper_takeaway: str = "N/A",
+        include_journal: bool = True,
+        include_module8: bool = True,
+    ) -> str:
+        """Build a Consolidated_Log fixture with a Module 1 and Module 8 section."""
+        recap = (
+            "# Senzing Bootcamp Recap\n\n"
+            "**Bootcamper:** Bootcamper\n"
+            "**Started:** 2026-05-14T10:30:00-05:00\n\n"
+            "---\n\n"
+            "## Module 1: Business Problem \u2014 2026-05-14T10:45:00-05:00\n\n"
+            "### Journal\n"
+            "**What we did:** Defined the entity resolution problem.\n"
+            "**What was produced:** docs/business_problem.md\n"
+            "**Why it matters:** Sets the goal.\n"
+            "**Bootcamper's takeaway:** N/A\n\n"
+            "---\n"
         )
+        if include_module8:
+            recap += (
+                "\n## Module 8: Performance Tuning \u2014 "
+                "2026-05-14T14:00:00-05:00\n\n"
+                "### Information Shared\n"
+                "- Reviewed throughput\n\n"
+                "### Actions Taken\n"
+                "- Tuned batch size\n\n"
+                "### Duration\n"
+                "30m\n\n"
+            )
+            if include_journal:
+                recap += (
+                    "### Journal\n"
+                    f"**What we did:** {what_we_did}\n"
+                    f"**What was produced:** {what_was_produced}\n"
+                    f"**Why it matters:** {why_it_matters}\n"
+                    f"**Bootcamper's takeaway:** {bootcamper_takeaway}\n\n"
+                )
+            recap += "---\n"
+        return recap
+
+    @staticmethod
+    def _reader_for(recap: str):
+        """Return a file_reader that serves recap only for the recap path."""
 
         def reader(path: str) -> str | None:
-            if "bootcamp_journal.md" in path:
-                return journal
+            if "bootcamp_recap.md" in path:
+                return recap
             return None
 
-        collector = DecisionCollector("/project", file_reader=reader)
-        result = collector.collect_business_problem()
+        return reader
 
-        assert result is not None
-        assert result.problem_statement == "Case insensitive match."
-
-    def test_multiline_problem_statement(self) -> None:
-        """collect_business_problem captures multi-line problem statement."""
-        journal = (
-            "## Module 1: Business Problem\n\n"
-            "### Problem Statement\n\n"
-            "Line one of the problem.\n"
-            "Line two of the problem.\n\n"
-            "### Data Sources\n\n"
-            "- Source 1\n\n"
-            "## Module 2\n"
+    @staticmethod
+    def _collector(recap: str) -> DecisionCollector:
+        """Build a collector reading recap with no performance test files."""
+        return DecisionCollector(
+            "/project",
+            file_reader=TestCollectPerformanceTuning._reader_for(recap),
+            dir_lister=lambda p: [],
         )
 
-        def reader(path: str) -> str | None:
-            if "bootcamp_journal.md" in path:
-                return journal
-            return None
+    def test_returns_none_when_recap_missing(self) -> None:
+        """Returns None when the Consolidated_Log does not exist."""
+        collector = DecisionCollector(
+            "/project", file_reader=lambda p: None, dir_lister=lambda p: []
+        )
+        assert collector.collect_performance_tuning() is None
 
-        collector = DecisionCollector("/project", file_reader=reader)
-        result = collector.collect_business_problem()
+    def test_returns_none_when_no_module8_section(self) -> None:
+        """Returns None when the recap has no Module 8 section."""
+        recap = self._module8_recap(include_module8=False)
+        assert self._collector(recap).collect_performance_tuning() is None
+
+    def test_returns_none_when_module8_has_no_journal(self) -> None:
+        """Returns None when Module 8 exists but has no ### Journal subsection."""
+        recap = self._module8_recap(include_journal=False)
+        assert self._collector(recap).collect_performance_tuning() is None
+
+    def test_returns_none_when_all_journal_fields_na(self) -> None:
+        """Returns None when every Module 8 Journal field is N/A (no evidence)."""
+        recap = self._module8_recap(
+            what_we_did="N/A",
+            what_was_produced="N/A",
+            why_it_matters="N/A",
+            bootcamper_takeaway="N/A",
+        )
+        assert self._collector(recap).collect_performance_tuning() is None
+
+    def test_categorizes_journal_fields_into_evidence(self) -> None:
+        """Extracts and categorizes the Module 8 Journal narrative fields."""
+        recap = self._module8_recap()
+        result = self._collector(recap).collect_performance_tuning()
 
         assert result is not None
-        assert "Line one" in result.problem_statement
-        assert "Line two" in result.problem_statement
-        assert result.identified_sources == ["Source 1"]
+        assert result.module == 8
+        # No baseline/metric/optimiz/improv keywords -> tuning decision.
+        assert result.tuning_decisions == ["Profiled the resolution pipeline."]
+        # Mentions baseline/metric -> baseline metric.
+        assert result.baseline_metrics == {
+            "metric_1": "Recorded baseline metrics report."
+        }
+        # Mentions optimiz -> applied optimization.
+        assert result.optimizations_applied == ["Applied indexing optimizations."]
+
+    def test_plain_fields_become_tuning_decisions(self) -> None:
+        """Fields without baseline/optimization keywords become tuning decisions."""
+        recap = self._module8_recap(
+            what_we_did="Reviewed the load configuration.",
+            what_was_produced="Documented the resolution settings.",
+            why_it_matters="Clarified the tradeoffs.",
+            bootcamper_takeaway="Understood the config knobs.",
+        )
+        result = self._collector(recap).collect_performance_tuning()
+
+        assert result is not None
+        assert result.baseline_metrics is None
+        assert result.optimizations_applied == []
+        assert result.tuning_decisions == [
+            "Reviewed the load configuration.",
+            "Documented the resolution settings.",
+            "Clarified the tradeoffs.",
+            "Understood the config knobs.",
+        ]
+
+    def test_uses_correct_file_path(self) -> None:
+        """collect_performance_tuning reads from docs/bootcamp_recap.md."""
+        requested_paths: list[str] = []
+
+        def reader(path: str) -> str | None:
+            requested_paths.append(path)
+            return None
+
+        collector = DecisionCollector(
+            "/my/project", file_reader=reader, dir_lister=lambda p: []
+        )
+        collector.collect_performance_tuning()
+
+        assert requested_paths, "expected the recap path to be read"
+        assert requested_paths[0].endswith("docs/bootcamp_recap.md")
+        assert requested_paths[0].startswith("/my/project")
+
+
+# ---------------------------------------------------------------------------
+# Property Tests: Record export extraction from the Consolidated_Log
+# ---------------------------------------------------------------------------
+
+from completion_artifacts import (  # noqa: E402  (scripts dir on sys.path above)
+    JournalFields,
+    ParsedRecapSection,
+    render_recap_section,
+)
+
+# A single clean line of narrative text: letter/number words joined by single
+# spaces. It carries no colon, dash, asterisk, hash, or newline, so it renders
+# to Markdown and re-parses unambiguously, never matches an Information-Shared
+# label prefix, and never equals "N/A".
+_CLEAN_WORD = st.text(
+    alphabet=st.characters(whitelist_categories=("L", "N")),
+    min_size=1,
+    max_size=8,
+)
+
+
+@st.composite
+def st_clean_line(draw) -> str:
+    """Generate a non-empty single-line string of letter/number words."""
+    words = draw(st.lists(_CLEAN_WORD, min_size=1, max_size=6))
+    return " ".join(words)
+
+
+@st.composite
+def st_journal_fields(draw) -> JournalFields:
+    """Generate a ### Journal subsection with four non-empty narrative fields."""
+    return JournalFields(
+        what_we_did=draw(st_clean_line()),
+        what_was_produced=draw(st_clean_line()),
+        why_it_matters=draw(st_clean_line()),
+        bootcamper_takeaway=draw(st_clean_line()),
+    )
+
+
+def _build_consolidated_log(sections: list[ParsedRecapSection]) -> str:
+    """Render a full Consolidated_Log with a header and the given sections."""
+    header = (
+        "# Senzing Bootcamp Recap\n\n"
+        "**Bootcamper:** Bootcamper\n"
+        "**Started:** 2026-05-14T10:30:00-05:00\n\n"
+        "---\n\n"
+    )
+    return header + "".join(render_recap_section(s) for s in sections)
+
+
+class TestRecordExportExtraction:
+    """Property-based tests for extraction from the Consolidated_Log.
+
+    Feature: journal-recap-consolidation, Property 7: Record export extracts
+    correct content from consolidated log.
+
+    **Validates: Requirements 7.1, 7.2, 7.3, 7.4, 11.3**
+    """
+
+    @staticmethod
+    def _collector(log: str) -> DecisionCollector:
+        """Build a collector serving log as the recap, with no listed dirs."""
+
+        def reader(path: str) -> str | None:
+            if "bootcamp_recap.md" in path:
+                return log
+            return None
+
+        return DecisionCollector(
+            "/project", file_reader=reader, dir_lister=lambda p: []
+        )
+
+    @given(
+        journal=st_journal_fields(),
+        sources=st.lists(st_clean_line(), max_size=4),
+        criteria=st.lists(st_clean_line(), max_size=4),
+    )
+    def test_module1_business_problem_extracted(
+        self, journal: JournalFields, sources: list[str], criteria: list[str]
+    ) -> None:
+        """Property 7 (Module 1): the business problem fields are extracted.
+
+        For any Consolidated_Log containing a Module 1 section with a
+        ``### Journal`` subsection, the Record_Exporter extracts the problem
+        statement from ``**What we did:**`` and routes ``### Information Shared``
+        items into identified sources (unlabeled) and success criteria
+        (success-criteria-labelled).
+
+        **Validates: Requirements 7.1**
+        """
+        information_shared = list(sources) + [
+            f"Success criteria: {c}" for c in criteria
+        ]
+        section = ParsedRecapSection(
+            module_number=1,
+            module_name="Business Problem",
+            timestamp="2026-05-14T10:45:00-05:00",
+            information_shared=information_shared,
+            questions_responses=[],
+            actions_taken=[],
+            duration=None,
+            journal=journal,
+        )
+        log = _build_consolidated_log([section])
+
+        result = self._collector(log).collect_business_problem()
+
+        assert result is not None
+        assert result.module == 1
+        assert result.problem_statement == journal.what_we_did
+        assert result.identified_sources == sources
+        assert result.success_criteria == criteria
+
+    @given(journal=st_journal_fields())
+    def test_module8_performance_tuning_extracted(
+        self, journal: JournalFields
+    ) -> None:
+        """Property 7 (Module 8): performance tuning evidence is extracted.
+
+        For any Consolidated_Log containing a Module 8 section with a
+        ``### Journal`` subsection whose fields all carry content, the
+        Record_Exporter extracts that evidence: every field value appears among
+        the collected tuning decisions, applied optimizations, or baseline
+        metrics.
+
+        **Validates: Requirements 7.2**
+        """
+        section = ParsedRecapSection(
+            module_number=8,
+            module_name="Performance Tuning",
+            timestamp="2026-05-14T14:00:00-05:00",
+            information_shared=[],
+            questions_responses=[],
+            actions_taken=[],
+            duration=None,
+            journal=journal,
+        )
+        log = _build_consolidated_log([section])
+
+        result = self._collector(log).collect_performance_tuning()
+
+        assert result is not None
+        assert result.module == 8
+        evidence = set(result.tuning_decisions) | set(result.optimizations_applied)
+        if result.baseline_metrics is not None:
+            evidence |= set(result.baseline_metrics.values())
+        for value in (
+            journal.what_we_did,
+            journal.what_was_produced,
+            journal.why_it_matters,
+            journal.bootcamper_takeaway,
+        ):
+            assert value in evidence
+
+    @given(journal=st_journal_fields())
+    def test_missing_module1_journal_falls_back_to_none(
+        self, journal: JournalFields
+    ) -> None:
+        """Property 7 fallback: no Module 1 Journal yields no business problem.
+
+        When the only section present is Module 8, ``collect_business_problem``
+        returns None (graceful fallback) rather than raising.
+
+        **Validates: Requirements 7.3**
+        """
+        section = ParsedRecapSection(
+            module_number=8,
+            module_name="Performance Tuning",
+            timestamp="2026-05-14T14:00:00-05:00",
+            information_shared=[],
+            questions_responses=[],
+            actions_taken=[],
+            duration=None,
+            journal=journal,
+        )
+        log = _build_consolidated_log([section])
+
+        assert self._collector(log).collect_business_problem() is None
+
+    @given(journal=st_journal_fields())
+    def test_missing_module8_falls_back_to_none(
+        self, journal: JournalFields
+    ) -> None:
+        """Property 7 fallback: no Module 8 section yields no performance tuning.
+
+        When the only section present is Module 1, ``collect_performance_tuning``
+        returns None (graceful fallback) rather than raising.
+
+        **Validates: Requirements 7.4**
+        """
+        section = ParsedRecapSection(
+            module_number=1,
+            module_name="Business Problem",
+            timestamp="2026-05-14T10:45:00-05:00",
+            information_shared=[],
+            questions_responses=[],
+            actions_taken=[],
+            duration=None,
+            journal=journal,
+        )
+        log = _build_consolidated_log([section])
+
+        assert self._collector(log).collect_performance_tuning() is None
 
 
 # ---------------------------------------------------------------------------
@@ -1576,8 +1920,10 @@ class TestCollectBusinessProblem:
 
 from record_export import CollectedDecisions
 
-# The required source files that collect_all() checks for
-_REQUIRED_FILES = ["preferences", "progress", "data_sources", "journal"]
+# The required source files that collect_all() checks for. The Module 1
+# business problem now comes from the Consolidated_Log (docs/bootcamp_recap.md),
+# so "recap" replaces the retired "journal" entry.
+_REQUIRED_FILES = ["preferences", "progress", "data_sources", "recap"]
 
 
 @st.composite
@@ -1594,6 +1940,24 @@ def st_missing_files_subset(draw) -> set[str]:
     return set(subset)
 
 
+_CONSOLIDATED_LOG_FIXTURE = (
+    "# Senzing Bootcamp Recap\n\n"
+    "**Bootcamper:** Bootcamper\n"
+    "**Started:** 2026-05-14T10:30:00-05:00\n\n"
+    "---\n\n"
+    "## Module 1: Business Problem \u2014 2026-05-14T10:45:00-05:00\n\n"
+    "### Information Shared\n"
+    "- Data source: CRM export\n"
+    "- Success criteria: Match known duplicates\n\n"
+    "### Journal\n"
+    "**What we did:** Deduplicate customer records.\n"
+    "**What was produced:** docs/business_problem.md\n"
+    "**Why it matters:** Establishes the entity resolution goal.\n"
+    "**Bootcamper's takeaway:** N/A\n\n"
+    "---\n"
+)
+
+
 class TestCollectAllMissingFiles:
     """Property-based tests for DecisionCollector.collect_all() with missing files.
 
@@ -1608,7 +1972,7 @@ class TestCollectAllMissingFiles:
         """Property 10: Missing source files produce warnings, not failures.
 
         For any subset of source files that are missing (preferences, progress,
-        data_sources, journal), `DecisionCollector.collect_all()` SHALL return a
+        data_sources, recap), `DecisionCollector.collect_all()` SHALL return a
         `CollectedDecisions` with the corresponding fields set to `None` or empty
         lists, and the `warnings` list SHALL contain one entry per missing file.
         The collector SHALL NOT raise an exception.
@@ -1641,17 +2005,8 @@ class TestCollectAllMissingFiles:
                 "  record_count: 100\n"
             )
 
-        if "journal" not in missing:
-            file_contents["bootcamp_journal.md"] = (
-                "## Module 1: Business Problem\n\n"
-                "### Problem Statement\n\n"
-                "Test problem statement.\n\n"
-                "### Data Sources\n\n"
-                "- Source A\n\n"
-                "### Success Criteria\n\n"
-                "- Criterion 1\n\n"
-                "## Module 2\n"
-            )
+        if "recap" not in missing:
+            file_contents["bootcamp_recap.md"] = _CONSOLIDATED_LOG_FIXTURE
 
         def mock_file_reader(path: str) -> str | None:
             """Return content for present files, None for missing ones."""
@@ -1682,7 +2037,7 @@ class TestCollectAllMissingFiles:
             assert result.progress is None
         if "data_sources" in missing:
             assert result.data_sources == []
-        if "journal" in missing:
+        if "recap" in missing:
             assert result.business_problem is None
 
         # The warnings list SHALL contain at least one entry per missing required file
@@ -2450,19 +2805,32 @@ class TestIntegration:
             "  file_format: jsonl\n"
             "  record_count: 8500\n"
         )
-        journal_md = (
-            "# Bootcamp Journal\n\n"
-            "## Module 1: Business Problem\n\n"
-            "### Problem Statement\n\n"
-            "Deduplicate customer records across CRM and billing systems.\n\n"
-            "### Data Sources\n\n"
-            "- CRM export\n"
-            "- Billing database dump\n\n"
-            "### Success Criteria\n\n"
-            "- Identify duplicate customers across systems\n"
-            "- Achieve >90% precision on known duplicates\n\n"
-            "## Module 2: SDK Setup\n\n"
-            "Set up Python SDK with SQLite.\n"
+        recap_md = (
+            "# Senzing Bootcamp Recap\n\n"
+            "**Bootcamper:** Bootcamper\n"
+            "**Started:** 2026-05-14T10:30:00-05:00\n\n"
+            "---\n\n"
+            "## Module 1: Business Problem \u2014 2026-05-14T10:45:00-05:00\n\n"
+            "### Information Shared\n"
+            "- Data source: CRM export\n"
+            "- Data source: Billing database dump\n"
+            "- Success criteria: Achieve >90% precision on known duplicates\n\n"
+            "### Actions Taken\n"
+            "- Created docs/business_problem.md\n\n"
+            "### Journal\n"
+            "**What we did:** Deduplicate customer records across CRM and "
+            "billing systems.\n"
+            "**What was produced:** docs/business_problem.md\n"
+            "**Why it matters:** Establishes the entity resolution goal.\n"
+            "**Bootcamper's takeaway:** N/A\n\n"
+            "---\n\n"
+            "## Module 2: SDK Setup \u2014 2026-05-14T11:00:00-05:00\n\n"
+            "### Journal\n"
+            "**What we did:** Set up Python SDK with SQLite.\n"
+            "**What was produced:** src/\n"
+            "**Why it matters:** Enables coding.\n"
+            "**Bootcamper's takeaway:** N/A\n\n"
+            "---\n"
         )
 
         # Injectable file_reader that provides fixture data
@@ -2473,8 +2841,8 @@ class TestIntegration:
                 return progress_json
             if "data_sources.yaml" in path:
                 return data_sources_yaml
-            if "bootcamp_journal.md" in path:
-                return journal_md
+            if "bootcamp_recap.md" in path:
+                return recap_md
             return None
 
         # Injectable dir_lister that returns empty lists (no scripts)

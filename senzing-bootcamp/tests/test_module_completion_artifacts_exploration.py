@@ -272,22 +272,23 @@ class TestFinalModuleRecapMissing:
 
 
 class TestJournalAndCertificateCoverage:
-    """Journal entries and certificates must exist for every completed module.
+    """Certificates must exist for every completed module; journal is consolidated.
 
-    Reported: journal has [3, 6, 7]; certificates [6, 7] — the journal_entry and
-    completion_certificate steps run only on an explicit workflow invocation, not
-    on the shared boundary-detection trigger.
+    Reported: certificates [6, 7] — the completion_certificate step ran only on an
+    explicit workflow invocation, not on the shared boundary-detection trigger.
+    Journal content is now folded into each recap section (the
+    journal-recap-consolidation feature), so it is no longer a separately tracked
+    or backfilled artifact.
 
     Validates: Requirements 2.4, 2.5, 2.6
     """
 
-    def test_all_modules_get_journal_entries_and_uniform_certificates(self) -> None:
-        """Entries + certificates expected for all 7 modules (fails on unfixed flow)."""
+    def test_journal_consolidated_and_certificates_backfill_uniformly(self) -> None:
+        """No separate journal gap; certificates backfill uniformly for all 7."""
         _require_planner(
-            "Journal entries present only for [3, 6, 7] and certificates only for "
-            "[6, 7] — missing journal entries for [1, 2, 4, 5] and certificates for "
-            "[1, 2, 3, 4, 5] (Cause 2: artifact steps not bound to the shared trigger; "
-            "non-uniform certificates)."
+            "Certificates present only for [6, 7] — missing certificates for "
+            "[1, 2, 3, 4, 5] (Cause 2: artifact steps not bound to the shared "
+            "trigger; non-uniform certificates)."
         )
         detect_artifact_gaps = _attr("detect_artifact_gaps")
         plan_backfill = _attr("plan_backfill")
@@ -302,8 +303,10 @@ class TestJournalAndCertificateCoverage:
         missing_cert = _report_modules(
             report, "missing_certificate", "missing_certificates", "missing_certs"
         )
-        assert {1, 2, 4, 5}.issubset(missing_journal), (
-            f"Journal gaps must include 1, 2, 4, 5. Reported missing={sorted(missing_journal)}"
+        # Journal content is consolidated into the recap; journal gaps are no
+        # longer detected even though the (ignored) inventory omits some modules.
+        assert missing_journal == set(), (
+            f"Journal gaps must no longer be reported. Got={sorted(missing_journal)}"
         )
         assert {1, 2, 3, 4, 5}.issubset(missing_cert), (
             "Certificate gaps must include 1-5 (uniform-certificate rule). "
@@ -317,11 +320,11 @@ class TestJournalAndCertificateCoverage:
         plan_cert = _plan_modules(
             plan, "certificate_modules", "certificates", "missing_certificate"
         )
-        journal_covered = REPORTED_JOURNAL_ENTRIES | plan_journal
-        cert_covered = REPORTED_CERTIFICATES | plan_cert
-        assert journal_covered.issuperset(set(REPORTED_MODULES_COMPLETED)), (
-            f"After backfill, all modules must have journal entries. Covered={sorted(journal_covered)}"  # noqa: E501
+        # Journal is never backfilled separately now.
+        assert plan_journal == set(), (
+            f"Journal must not be backfilled separately. Got={sorted(plan_journal)}"
         )
+        cert_covered = REPORTED_CERTIFICATES | plan_cert
         assert cert_covered == set(REPORTED_MODULES_COMPLETED), (
             "After backfill, certificates must be uniform: one per completed module "
             f"(or none). Covered={sorted(cert_covered)}"
@@ -446,8 +449,9 @@ class TestBackfillFillsTheGap:
         assert plan_recap == all_modules - REPORTED_RECAP_SECTIONS, (
             f"Recap backfill must be exactly the missing set. Got {sorted(plan_recap)}"
         )
-        assert plan_journal == all_modules - REPORTED_JOURNAL_ENTRIES, (
-            f"Journal backfill must be exactly the missing set. Got {sorted(plan_journal)}"
+        # Journal is consolidated into the recap; it is never backfilled separately.
+        assert plan_journal == set(), (
+            f"Journal must not be backfilled separately. Got {sorted(plan_journal)}"
         )
         assert plan_cert == all_modules - REPORTED_CERTIFICATES, (
             f"Certificate backfill must be exactly the missing set. Got {sorted(plan_cert)}"

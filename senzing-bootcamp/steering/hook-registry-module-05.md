@@ -11,7 +11,7 @@ For critical hooks (created during onboarding), see `hook-registry-critical.md`.
 
 ## Module 5 Hooks
 
-**analyze-after-mapping** (fileCreated → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
+**analyze-after-mapping** (PostFileCreate → agent, matcher: `^(?:data/transformed/[^/]*\.jsonl|data/transformed/[^/]*\.json)$`)
 
 Prompt:
 
@@ -23,9 +23,11 @@ ADDITIONALLY: Verify that docs/{source_name}_mapper.md exists (extract source na
 
 - id: `analyze-after-mapping`
 - name: `to analyze mapped data`
-- description: `After completing a mapping task, validates the transformation output using analyze_record for quality metrics and Senzing Generic Entity Specification conformance before proceeding to loading.`
+- trigger: `PostFileCreate`
+- matcher: `^(?:data/transformed/[^/]*\.jsonl|data/transformed/[^/]*\.json)$`
+- action: `agent`
 
-**data-quality-check** (fileEdited → askAgent, filePatterns: `src/transform/*.*`)
+**data-quality-check** (PostFileSave → agent, matcher: `^(?:src/transform/[^/]*\.[^/]*)$`)
 
 Prompt:
 
@@ -35,9 +37,11 @@ The transformation program was just updated. Please review the changes and sugge
 
 - id: `data-quality-check`
 - name: `to check data quality`
-- description: `Automatically check data quality when transformation programs are saved`
+- trigger: `PostFileSave`
+- matcher: `^(?:src/transform/[^/]*\.[^/]*)$`
+- action: `agent`
 
-**enforce-mapping-spec** (fileCreated → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
+**enforce-mapping-spec** (PostFileCreate → agent, matcher: `^(?:data/transformed/[^/]*\.jsonl|data/transformed/[^/]*\.json)$`)
 
 Prompt:
 
@@ -82,9 +86,11 @@ If docs/{source_name}_mapper.md DOES NOT EXIST:
 
 - id: `enforce-mapping-spec`
 - name: `to enforce the mapping specification`
-- description: `When transformed data is created, verifies that a per-source mapping specification markdown exists in docs/. Blocks progression until the mapping spec is created.`
+- trigger: `PostFileCreate`
+- matcher: `^(?:data/transformed/[^/]*\.jsonl|data/transformed/[^/]*\.json)$`
+- action: `agent`
 
-**enforce-visualization-offers** (agentStop → askAgent)
+**enforce-visualization-offers** (Stop → agent)
 
 Prompt:
 
@@ -112,4 +118,5 @@ Process missed checkpoints one at a time. Do not batch multiple offers into a si
 
 - id: `enforce-visualization-offers`
 - name: `to offer visualizations`
-- description: `When the agent stops during a visualization-capable module (3, 5, 7, 8), checks the visualization tracker to verify all required offers were made. Prompts for missed offers.`
+- trigger: `Stop`
+- action: `agent`

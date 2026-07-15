@@ -21,7 +21,7 @@ from hypothesis import strategies as st
 # Constants
 # ---------------------------------------------------------------------------
 
-HOOK_PATH = Path("senzing-bootcamp/hooks/write-policy-gate.kiro.hook")
+HOOK_PATH = Path("senzing-bootcamp/hooks/write-policy-gate.json")
 
 # Forbidden narration phrases that must appear in the FORBIDDEN list.
 FORBIDDEN_NARRATION_PHRASES = [
@@ -54,9 +54,9 @@ def load_hook_data() -> dict:
 
 
 def load_hook_prompt() -> str:
-    """Load and return the then.prompt field from the hook file."""
+    """Load and return the action.prompt field from the v1 hook entry."""
     data = load_hook_data()
-    return data["then"]["prompt"]
+    return data["hooks"][0]["action"]["prompt"]
 
 
 def extract_output_format_section(prompt: str) -> str:

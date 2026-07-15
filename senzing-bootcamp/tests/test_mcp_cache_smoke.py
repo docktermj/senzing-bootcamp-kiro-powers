@@ -56,14 +56,19 @@ class TestSteeringFileConfiguration:
             f"{STEERING_FILE.relative_to(REPO_ROOT)}; none found."
         )
 
-    def test_steering_file_inclusion_auto(self) -> None:
-        """The steering file SHALL have inclusion: auto in frontmatter (Req 1.2)."""
+    def test_steering_file_inclusion_manual(self) -> None:
+        """The steering file SHALL have inclusion: manual in frontmatter (Req 1.2).
+
+        mcp-response-caching.md was re-classified from the non-standard
+        ``auto`` value to the standard ``manual`` mode (Decision_Record:
+        on-explicit-ref presence; the file stays keyword-routed).
+        """
         content = STEERING_FILE.read_text(encoding="utf-8")
         frontmatter_match = re.match(r"^---\n(.*?)\n---", content, re.DOTALL)
         assert frontmatter_match is not None
         frontmatter = frontmatter_match.group(1)
-        assert re.search(r"^inclusion:\s*auto\s*$", frontmatter, re.MULTILINE), (
-            f"Expected 'inclusion: auto' in YAML frontmatter of "
+        assert re.search(r"^inclusion:\s*manual\s*$", frontmatter, re.MULTILINE), (
+            f"Expected 'inclusion: manual' in YAML frontmatter of "
             f"{STEERING_FILE.relative_to(REPO_ROOT)}; found frontmatter:\n"
             f"{frontmatter}"
         )

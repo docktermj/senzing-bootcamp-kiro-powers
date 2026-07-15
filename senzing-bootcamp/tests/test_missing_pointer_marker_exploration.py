@@ -25,12 +25,14 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-# After the onboarding split, the Comprehension Check moved out of
-# onboarding-flow.md (where it was "Step 4c") into
-# onboarding-phase1b-intro-language.md as "Step 5b" — its content (the
-# 👉 output-format directive, the in-template marker, and the paraphrase
-# constraint) moved unchanged. These tests therefore read the phase file.
-_ONBOARDING_FILE = _BOOTCAMP_DIR / "steering" / "onboarding-phase1b-intro-language.md"
+# The Comprehension Check moved out of onboarding-flow.md (where it was
+# "Step 4c") into the phase files as "Step 5b". After the preface reorder
+# (track before language), the comprehension check follows programming language
+# selection and now lives in onboarding-phase2-track-setup.md as Step 5b — its
+# content (the 👉 output-format directive, the in-template marker, and the
+# paraphrase constraint) moved unchanged. These tests therefore read the
+# phase 2 track-setup file.
+_ONBOARDING_FILE = _BOOTCAMP_DIR / "steering" / "onboarding-phase2-track-setup.md"
 
 # ---------------------------------------------------------------------------
 # Helpers

@@ -42,7 +42,7 @@ module-specific content described below, and save to the indicated output path.
 
 =============================================================================
 MODULE 1 — Business Problem Definition
-Output: docs/stakeholder_summary_module1.md
+Output: docs/stakeholder_summary.md
 =============================================================================
 
 [status]        → "Problem defined, ready for data collection"

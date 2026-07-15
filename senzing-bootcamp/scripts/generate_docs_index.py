@@ -63,11 +63,11 @@ PURPOSE_MAP: dict[str, str] = {
     "completion_summary.md": "Summary of completion status and key outcomes.",
     "business_problem.md": "Statement of the business problem being solved.",
     "data_source_evaluation.md": "Evaluation notes for candidate data sources.",
-    "stakeholder_summary_module1.md": "Stakeholder-facing summary from Module 1.",
+    "stakeholder_summary.md": "Stakeholder-facing summary from Module 1.",
+    "entity_graph.html": "Generated interactive entity-graph visualization.",
     # Subdirectories
     "mapping": "Data source mapping artifacts.",
     "progress": "Progress tracking and dashboards.",
-    "visualizations": "Generated charts and entity visualizations.",
     "reference": "Reference material and specifications.",
     "feedback": "Feedback templates and submissions.",
 }

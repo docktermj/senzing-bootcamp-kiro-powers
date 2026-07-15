@@ -4,31 +4,20 @@ inclusion: manual
 
 # Onboarding Flow
 
-Load when starting a fresh bootcamp. Sequence: directory creation → prerequisites → entity resolution → language selection → introduction → track selection.
+Load when starting a fresh bootcamp. Sequence: directory creation → prerequisites → entity resolution → introduction (welcome banner) → overview → detail level → track selection → language selection → any questions → (advanced knowledge check).
 
-**Note:** The `ask-bootcamper` hook fires on every `agentStop` and generates a contextual 👉 closing question. Do NOT include inline closing questions or WAIT instructions at the end of steps — present the information and stop. **Exception — Mandatory gates:** Steps marked with ⛔ are mandatory gates where the agent MUST stop and MUST NOT proceed without real user input. These are the only steps where an explicit stop instruction overrides the general rule.
+**Note:** The `ask-bootcamper` hook fires on every `Stop` trigger (the 1.0 agent-stop event) and generates a contextual 👉 closing question. Do NOT include inline closing questions or WAIT instructions at the end of steps — present the information and stop. **Exception — Mandatory gates:** Steps marked with ⛔ are mandatory gates where the agent MUST stop and MUST NOT proceed without real user input. These are the only steps where an explicit stop instruction overrides the general rule.
 
 ## Phase Sub-Files
 
-- **Phase 1b — Entity Resolution Intro & Language Selection** (steps 3–5b): `onboarding-phase1b-intro-language.md`
+- **Phase 1b — Entity Resolution Intro & Bootcamp Introduction** (steps 3–4a): `onboarding-phase1b-intro-language.md` — entity resolution intro (with the exploration gate), the welcome banner / bootcamp introduction and overview, and the detail-level (verbosity) step.
+- **Phase 2 — Track Setup & Language Selection** (steps 5–5c): `onboarding-phase2-track-setup.md` — track selection, programming language selection, the comprehension check (any questions), and the Advanced-track knowledge check.
 
 ## 0. Setup Preamble
 
 Before doing any setup work, tell the user:
 
 "I'm going to do some quick administrative setup — creating your project directory, installing hooks, and checking your environment. You'll see me working for a moment. When I'm done, you'll see a big **WELCOME TO THE SENZING BOOTCAMP** banner — that's when the bootcamp officially starts and I'll begin asking you questions."
-
-## 0a. Why You May See "Rejected"/"Accepted" Messages
-
-During setup and throughout the bootcamp, you may occasionally see a pair of messages like "Rejected creation of ..." followed immediately by "Accepted edits to ...". This is expected and harmless — nothing has gone wrong.
-
-Here is what is happening: the `write-policy-gate` safety check briefly holds each write for inspection before it is applied. While a write is held, the IDE surfaces it as "Rejected". The agent then immediately re-issues the identical write, which completes and surfaces as "Accepted edits".
-
-- Your writes **succeed on retry** — nothing fails.
-- **No data is lost** during the intercept-then-retry cycle.
-- The cycle is **expected and harmless**, so there is no need to act on these messages.
-
-Routine internal bookkeeping files (such as the progress and preference files the bootcamp manages for you) no longer trigger this message, so any remaining "Rejected" → "Accepted" pairs are rare and still harmless.
 
 ## 0b. MCP Health Check
 
@@ -97,7 +86,7 @@ Then continue with the onboarding sequence — do NOT block on version errors.
 Execute these setup actions in order. Do not narrate the details to the user.
 
 1. Check if `src/`, `data/`, `docs/` exist. If not, load `project-structure.md` and create.
-2. **Install Critical Hooks:** Load `hook-registry-critical.md` and create each Critical Hook using the `createHook` tool. For each hook entry, use EXACTLY the `id`, `name`, `description`, event type, file patterns, tool types, and prompt text specified in the registry. **CRITICAL: The `name` parameter passed to `createHook` MUST be the exact string from the `- name:` line in `hook-registry-critical.md` (e.g., `to wait for your answer`, NOT `Ask Bootcamper`).** The `name` field is user-facing — the Kiro UI renders it as "Ask Kiro Hook {name}", so it must follow the "to {verb phrase}" pattern. Create `.kiro/hooks/` directory first if needed. If a `createHook` call fails, log the failure and continue with the remaining hooks. After all attempts, report any failures to the bootcamper with the affected functionality using the impact messages below. If all Critical Hook creations fail, warn the bootcamper that hooks are unavailable and suggest restarting onboarding.
+2. **Install Critical Hooks:** Load `hook-registry-critical.md` and create each Critical Hook using the `createHook` capability. Each hook is a v1 definition — `createHook` writes a `<id>.json` file into `.kiro/hooks/`. For each hook entry, use EXACTLY the `id`, `name`, `trigger`, `matcher` (only for entries that specify one — unscoped triggers like `Stop` and `UserPromptSubmit` have no matcher), `action` type (`agent` or `command`), and prompt/command text specified in the registry. **CRITICAL: The `name` parameter passed to `createHook` MUST be the exact string from the `- name:` line in `hook-registry-critical.md` (e.g., `to wait for your answer`, NOT `Ask Bootcamper`).** The `name` field is user-facing — the Kiro UI renders it as "Ask Kiro Hook {name}", so it must follow the "to {verb phrase}" pattern. Create `.kiro/hooks/` directory first if needed. If a `createHook` call fails, log the failure and continue with the remaining hooks. After all attempts, report any failures to the bootcamper with the affected functionality using the impact messages below. If all Critical Hook creations fail, warn the bootcamper that hooks are unavailable and suggest restarting onboarding.
 
    **Failure impact messages** — when a critical hook fails, report the corresponding message:
 
@@ -105,13 +94,14 @@ Execute these setup actions in order. Do not narrate the details to the user.
    | ---- | -------------- |
    | ask-bootcamper | "Session summaries, closing questions, and post-completion feedback reminders will not be automatically generated when the agent stops." |
    | code-style-check | "Code style will not be automatically checked on save." |
-   | commonmark-validation | "Markdown files will not be checked for CommonMark compliance during the graduation normalization pass (or when the hook is run manually from the Agent Hooks panel)." |
    | review-bootcamper-input | "Feedback trigger phrases will not be automatically detected on message submission." |
    | write-policy-gate | "Write policy violations (direct SQL, compound questions, external paths) will not be automatically detected and blocked." |
 
-   **Verify hooks:** Check that each Critical Hook exists in `.kiro/hooks/`. If any are missing, retry creation once using `createHook`. Record the hook installation status (list of installed hook names and timestamp) in `config/bootcamp_preferences.yaml` under a `hooks_installed` key.
+   **Markdown validation is not a hook.** CommonMark validation is no longer created as an automatic hook. When the bootcamper wants to validate and fix Markdown style, point them to the `/commonmark-validation` slash command (`steering/slash-commonmark-validation.md`), which runs the same checks on demand.
 
-   **Capture-critical hooks:** In addition to the Critical Hooks above, also create `module-recap-append` and `session-log-events` from `hook-registry-module-any.md` using `createHook` during onboarding — do NOT defer these to module start. Together with `ask-bootcamper` (a Critical Hook), these three are the **capture-critical** hooks the completion summary and journey recap depend on. After installation, verify all three capture-critical hooks (`ask-bootcamper`, `module-recap-append`, `session-log-events`) exist in `.kiro/hooks/`; if any is missing, retry its creation once via `createHook`.
+   **Verify hooks:** Check that each Critical Hook's `<id>.json` file exists in `.kiro/hooks/`. If any are missing, retry creation once using `createHook`. Record the hook installation status (list of installed hook names and timestamp) in `config/bootcamp_preferences.yaml` under a `hooks_installed` key.
+
+   **Capture-critical hooks:** In addition to the Critical Hooks above, also create `session-log-events` as a v1 hook from `hook-registry-module-any.md` using `createHook` during onboarding — do NOT defer it to module start. Together with `ask-bootcamper` (a Critical Hook that now owns the module recap append in its Phase 0), these two are the **capture-critical** hooks the completion summary and journey recap depend on. After installation, verify both capture-critical hooks' `<id>.json` files (`ask-bootcamper.json`, `session-log-events.json`) exist in `.kiro/hooks/`; if either is missing, retry its creation once via `createHook`.
 
 3. Generate foundational steering files (`product.md`, `tech.md`, `structure.md`) at `.kiro/steering/`. Each MUST include `inclusion` and `description` in the YAML frontmatter. Use `auto` for `structure.md`, `always` for the others.
 
@@ -183,7 +173,7 @@ If this condition is met, present the following offer to the bootcamper:
 
 **Scoop is not installed.** Scoop is a command-line installer for Windows that the bootcamp uses to install prerequisites like Java, .NET SDK, Rust, Node.js, and the Senzing SDK. Without it, you'll need to install these tools manually later in Module 2.
 
-👉 Would you like to install Scoop now?
+👉 **Would you like to install Scoop now?**
 
 - **Install Scoop now** — I'll run the official installer and verify it works.
 - **Skip for later** — Module 2 will walk you through installation when needed.
@@ -210,7 +200,7 @@ If the condition is met, present the following offer to the bootcamper:
 
 **Your chosen runtime is not installed.** I can install it now using Scoop so your environment is ready before we begin.
 
-👉 Would you like to install the runtime now?
+👉 **Would you like to install the runtime now?**
 
 - **Install [runtime] now** — I'll run the Scoop installer and verify it works.
 - **Skip for later** — Module 2 will walk you through installation when needed.
@@ -272,4 +262,4 @@ prerequisite_installation_deferred: true
 
 ---
 
-After Step 2d, load `onboarding-phase1b-intro-language.md` to continue with the entity resolution introduction and programming language selection.
+After Step 2d, load `onboarding-phase1b-intro-language.md` to continue with the entity resolution introduction and the bootcamp introduction (welcome banner) / detail level. Programming language selection now happens later, in phase 2 (`onboarding-phase2-track-setup.md`), after track selection.

@@ -28,7 +28,7 @@ from hypothesis import strategies as st
 # Constants
 # ---------------------------------------------------------------------------
 
-HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.kiro.hook")
+HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.json")
 
 # Transition patterns from enforce-step-and-transition that were removed in the
 # agent-answer-processing-failures spec (Requirement 3.4). Phase 2B now uses
@@ -147,10 +147,10 @@ MCP_TOOL_NAMES: list[str] = [
 
 
 def load_hook_prompt() -> str:
-    """Load and return the then.prompt field from the consolidated hook file."""
+    """Load and return the action.prompt field from the consolidated v1 hook."""
     with open(HOOK_PATH, encoding="utf-8") as f:
         data = json.load(f)
-    return data["then"]["prompt"]
+    return data["hooks"][0]["action"]["prompt"]
 
 
 # ---------------------------------------------------------------------------

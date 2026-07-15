@@ -1,9 +1,33 @@
 ---
-inclusion: auto
+inclusion: always
 description: "Turn-taking, question handling, and module transition protocols for active bootcamp sessions"
 ---
 
 # Conversation Protocol
+
+## The Answer_Required_Rule
+
+**Every 👉 question requires a Real_Answer before the flow advances past it.** This is the single normative rule governing every Question in the bootcamp. A *Question* is a 👉-prefixed prompt directed at the bootcamper that yields the turn. A *Real_Answer* is a response the bootcamper actually gives — including an explicit decline or skip ("use the default", "skip this", "no preference"). An *Assumed_Answer* is any answer you supply on the bootcamper's behalf: a fabricated choice, a silent default, or proceeding as if a response was given when none was.
+
+- **Wait for a Real_Answer.** When you present a 👉 question, stop and wait. Do not proceed past it until the bootcamper supplies a Real_Answer. An explicit decline/skip IS a Real_Answer — record it and proceed accordingly.
+- **Never supply an Assumed_Answer.** You SHALL NOT fabricate a choice, apply a silent default, or proceed as if answered when the bootcamper said nothing — under **any** circumstance, including context-budget pressure, token limits, session resume, or perceived time savings. No agent-internal reasoning justifies answering a 👉 question for the bootcamper.
+- **Only two exits.** A 👉 question has exactly two exits: (1) a Real_Answer, or (2) the question stays outstanding. There is no third exit in which the agent supplies the answer. If you cannot obtain a Real_Answer (for example, the session ends), the Question SHALL remain outstanding via the `config/.question_pending` marker so a later turn re-presents it — it is never resolved by an Assumed_Answer.
+- **Applies everywhere.** This rule holds in all contexts — onboarding, module steps, module transitions, feedback, and session resume.
+- **Optionality is an Explicit_Default_Choice.** When a step is genuinely optional, express the optionality as an Explicit_Default_Choice the bootcamper actively selects (e.g., "standard *(recommended)*"), never as license to advance with no answer. Selecting the default is a Real_Answer; assuming it is an Assumed_Answer.
+
+This rule generalizes the existing no-self-answering stance (see the Self-Answering examples below and the `self-answering-prevention` rules): it forbids not only fabricated answers but also silent defaults. It is referenced from `agent-behavior-rules.md` and `agent-instructions.md`.
+
+## The Ask-Once Guarantee
+
+**Every 👉 question is asked at most once — never re-ask a question the bootcamper has already answered, unless they explicitly request a repeat.** This is the single normative rule governing question *repetition*. It complements the Answer_Required_Rule (which governs *whether* an answer is required) by governing *how many times* the same question may be asked.
+
+- **Every 👉 question has a stable Question_Key.** The Question_Key is derived from the owning step (e.g., `onboarding.language_selection`, `module.5.7a`, `global.hardware_target`), so the same logical question always maps to the same key.
+- **Consult the ledger before asking.** Before presenting a 👉 question, consult the Question_Ledger (`config/question_ledger.jsonl`, managed by `scripts/question_ledger.py`). Never re-ask a question whose Question_Key is already recorded as answered — reuse the stored answer and proceed. A key recorded as `asked` but not `answered` MAY be re-presented, because it was never answered.
+- **The ledger — not conversational memory — is authoritative.** The ledger is the source of truth for what has been asked and answered, so the guarantee holds across context compaction and session resume: a resumed or compacted session consults the ledger and skips already-answered questions.
+- **Re-present only on an explicit Repeat_Request.** Re-present a question only when the bootcamper explicitly asks to see it again (a Repeat_Request, e.g., "repeat that", "ask me again"). A Repeat_Request re-presents the current pending question verbatim, creates no new ledger entry, and does not change its answered status.
+- **Degrade safely — but never as license to re-ask.** If a Question_Ledger read or write fails, degrade safely: fall back to the existing checkpoint/preference state and never block the bootcamper. An unknown or unavailable ledger state is never license to re-ask a question whose answer is already present in `config/bootcamp_preferences.yaml` — the ledger is the primary mechanism, preferences are the safety net.
+
+This section is the single home of the ask-once guarantee: the narrow "do not re-ask" notes elsewhere (e.g., the Module 8 hardware question, session-resume preference fields) are specific instances of it. It is referenced from `agent-behavior-rules.md` and `agent-instructions.md`.
 
 ## Answer Processing Priority
 
@@ -80,9 +104,9 @@ If you acknowledge input, always append a next action in the same response.
 
 > Got it — you're looking for a clean master list. ✅ Checkpoint written.
 >
-> 👉 Will the entity resolution results need to interface with other
+> 👉 **Will the entity resolution results need to interface with other
 > software — for example, a CRM, search engine, data warehouse, or
-> downstream application?
+> downstream application?**
 
 ## Code Block Formatting
 
@@ -129,6 +153,20 @@ The phrase "But first" followed by a question is a violation — never redirect 
 - "Ready to continue? I can also show you..." → Ask only "Ready to continue?"
 - "Would you like to see examples, or should we skip ahead?" → Use a numbered choice list
 
+## Bold Question Text
+
+The question text of every 👉 leading question is wrapped in **bold** (CommonMark strong emphasis, `**...**`) so the actual interrogative is easy to spot inside a dense turn.
+
+- **Bold is additive, never a replacement for 👉.** The 👉 pointer stays at the start of the line, outside the bold span, separated from the question text by a single space. The bold span opens at the first character of the question text and closes at its last character, including the terminal question mark.
+- **Context stays plain.** Explanatory sentences that precede the question text are rendered in plain text — only the question text itself is bold.
+- **Choice questions: bold the lead only.** In a choice question, only the neutral lead question is wrapped in bold; the numbered option lines stay in plain text.
+- **Bold is presentational.** It does not alter the One Question Rule. The number of 👉 leading questions in a turn is counted solely from the 👉 occurrences and is unaffected by the presence or absence of bold markers.
+- **`🛑 STOP` and `⛔ MANDATORY GATE` are internal-only directives.** They govern end-of-turn and gate behavior but are NEVER rendered to the bootcamper. Do not emit a marker line beside or below a question — the rendered boundary is the single 👉 question as the final message, ended immediately after it.
+
+### Bold Question (CORRECT)
+
+> 👉 **What language would you like to use?**
+
 ## Choice Formatting
 
 When a 👉 question presents 2 or more distinct alternatives (options the bootcamper can choose between), format them as a numbered list:
@@ -139,7 +177,7 @@ When a 👉 question presents 2 or more distinct alternatives (options the bootc
 
 ### Compound Choice (CORRECT)
 
-> 👉 Which language would you like to use?
+> 👉 **Which language would you like to use?**
 >
 > 1. Python
 > 2. Java
@@ -149,7 +187,7 @@ Simple yes/no questions or questions with a single implied action remain as inli
 
 ### Simple Question (CORRECT — no list needed)
 
-> 👉 Ready to move on to Module 3?
+> 👉 **Ready to move on to Module 3?**
 
 ## Question Disambiguation
 
@@ -165,6 +203,10 @@ Every 👉 question must have exactly one unambiguous meaning for each possible 
 
 Never append "or should we adjust anything?" or "Anything I missed?" to a confirmation question. Never combine "Would you like X?" with "Or would you prefer Y?" in prose — use a numbered choice list instead.
 
+**Compose-clean-first.** Compose every 👉 question as a single, non-compound question on the FIRST attempt. Do not draft a compound "or" question and rely on a later rewrite to clean it up — for example, compose a comprehension check as `👉 **Does the overview make sense before we choose a track?**`, never as a prose "Does everything make sense so far, or is there anything you'd like me to clarify?" that then has to be regenerated. The compound-rewrite protocol (Rule 3 / the Rewrite Protocol below) remains in force only as the safety net for a genuine compound question.
+
+**No-duplicate re-display.** An internal correction or regeneration pass MUST NOT re-emit a 👉 question that was already shown to the bootcamper. The corrected question replaces the draft before it is shown, never in addition to it. Re-display a question only when the bootcamper explicitly asks to see it again (genuine corrective content that has not yet been surfaced still follows the existing hook-output rules).
+
 ## Violation Examples
 
 ### Multi-Question (WRONG)
@@ -173,10 +215,9 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 
 ### Multi-Question (CORRECT)
 
-> 👉 What language do you want?
-> 🛑 STOP
-> [wait for response, then in next turn:]
-> 👉 Which track interests you?
+> 👉 **What language do you want?**
+
+*Internal: end the turn on this question and wait. Ask "Which track interests you?" only in a separate later turn — never in this one. The stop-and-wait boundary is a directive to you, not shown to the bootcamper.*
 
 ### Not-Waiting (WRONG)
 
@@ -185,8 +226,9 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 
 ### Not-Waiting (CORRECT)
 
-> 👉 Are you ready to continue?
-> 🛑 STOP
+> 👉 **Are you ready to continue?**
+
+*Internal: end the turn on this question and wait for the bootcamper's reply before doing anything else. The boundary is a directive to you, not shown to the bootcamper.*
 
 ### Dead-End (WRONG)
 
@@ -202,7 +244,7 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 
 ### Missing-Prefix (CORRECT)
 
-> 👉 What language would you like to use?
+> 👉 **What language would you like to use?**
 
 ### Self-Answering (WRONG)
 
@@ -211,8 +253,9 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 
 ### Self-Answering (CORRECT)
 
-> 👉 Who will be working on this project?
-> 🛑 STOP
+> 👉 **Who will be working on this project?**
+
+*Internal: end the turn on this question and wait — never answer it yourself. The boundary is a directive to you, not shown to the bootcamper.*
 
 ### Compound Confirmation (WRONG)
 
@@ -220,7 +263,7 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 
 ### Compound Confirmation (CORRECT)
 
-> 👉 Does that summary capture your situation accurately?
+> 👉 **Does that summary capture your situation accurately?**
 
 ### Compound Either/Or (WRONG)
 
@@ -228,7 +271,7 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 
 ### Compound Either/Or (CORRECT)
 
-> 👉 What would you like to do next?
+> 👉 **What would you like to do next?**
 >
 > 1. Create a one-page executive summary
 > 2. Move on to Module 2
@@ -247,6 +290,9 @@ Execute this checklist **before every turn** that contains a pointing-hand quest
 4. Verify no content appears after the closing question. If content follows → move it before the question or remove it.
 5. Verify you are not answering your own question. If self-answering → delete the self-answer.
 6. Verify no closing question offers to skip or bypass an upcoming mandatory gate step. If it does → remove the skip option.
+7. **Bold-question check:** Verify the closing 👉 question's text is wrapped in bold (`**...**`) before output. If the question text is not bold → wrap it in bold, keeping 👉 outside the span (for a choice question, bold only the lead question line).
+8. **No-leaked-marker check:** Verify no `🛑 STOP` or `⛔ MANDATORY GATE` text appears in the rendered turn. If a marker is present → delete it and simply end the turn after the 👉 question (the boundary is internal, not rendered).
+9. **No-duplicate check:** Verify this 👉 question was not already shown to the bootcamper — in a prior turn or an earlier draft in this same turn. If it was already surfaced → do not re-emit it, unless the bootcamper explicitly asked to see it again.
 
 ### Rewrite Protocol
 
@@ -276,7 +322,7 @@ When the compound-question check (item 1) fails, rewrite the question using thes
 
 ##### CORRECT
 
-> 👉 What would you like to do next?
+> 👉 **What would you like to do next?**
 >
 > 1. Create a one-page executive summary to share with your team
 > 2. Skip ahead to Module 3
@@ -289,7 +335,7 @@ When the compound-question check (item 1) fails, rewrite the question using thes
 
 ##### CORRECT
 
-> 👉 Does that look right?
+> 👉 **Does that look right?**
 
 #### Sentence-starter "Or"
 
@@ -299,7 +345,7 @@ When the compound-question check (item 1) fails, rewrite the question using thes
 
 ##### CORRECT
 
-> 👉 What would you like to do next?
+> 👉 **What would you like to do next?**
 >
 > 1. Generate the loading program now
 > 2. Review the mapping first
@@ -312,7 +358,7 @@ When the compound-question check (item 1) fails, rewrite the question using thes
 
 ##### CORRECT
 
-> 👉 Which language would you like to use?
+> 👉 **Which language would you like to use?**
 >
 > 1. Python
 > 2. Java
@@ -326,8 +372,11 @@ Before ending any turn, verify:
 3. Is there content after a 👉 question?
 4. Am I answering my own question?
 5. Does any 👉 question offer to skip or bypass an upcoming ⛔ mandatory gate step?
+6. Does the closing 👉 question's text lack bold emphasis (`**...**`)?
+7. Does the turn render a `🛑 STOP` or `⛔ MANDATORY GATE` marker beside the question?
+8. Was this 👉 question already shown to the bootcamper (and not explicitly re-requested)?
 
-If any answer is yes (across all 5 checks), revise the turn before sending.
+If any answer is yes (across all 8 checks), revise the turn before sending.
 
 ## Mandatory question_pending
 

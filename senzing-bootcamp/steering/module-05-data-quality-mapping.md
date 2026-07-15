@@ -18,7 +18,7 @@ inclusion: manual
 
 **Prerequisites:** ✅ Module 4 complete (data sources collected, files in `data/raw/`)
 
-**Success indicator**: ✅ Each data source evaluated (sources evaluated, mapped) + transformation programs tested + output validated with quality >70%
+**Success indicator:** ✅ Each data source evaluated (sources evaluated, mapped) + transformation programs tested + output validated with quality >70%
 
 ---
 
@@ -36,5 +36,6 @@ When the bootcamper encounters an error during this module:
 ## Phase Sub-Files
 
 - **Phase 1 — Quality Assessment** (steps 1–7): `module-05-phase1-quality-assessment.md`
+  *(Includes a Senzing-readiness check and fast-path-to-loading offer for eligible sources)*
 - **Phase 2 — Data Mapping** (steps 8–20): `module-05-phase2-data-mapping.md`
 - **Phase 3 — Test Load and Validate (Optional)** (steps 21–26): `module-05-phase3-test-load.md`

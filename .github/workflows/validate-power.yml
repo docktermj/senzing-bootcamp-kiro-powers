@@ -47,6 +47,12 @@ jobs:
             echo "::error::Hook registry is out of sync. Run: python senzing-bootcamp/scripts/sync_hook_registry.py --write"
             exit 1
           }
+      - name: Validate no legacy hook references
+        run: |
+          python senzing-bootcamp/scripts/validate_no_legacy_hooks.py || {
+            echo "::error::Stale legacy hook-schema reference found. Remove residual *.kiro.hook / when-then / legacy trigger or action names identified above."
+            exit 1
+          }
       - name: Lint steering files
         run: python senzing-bootcamp/scripts/lint_steering.py
       - name: Validate module prerequisites
@@ -59,10 +65,18 @@ jobs:
         run: python senzing-bootcamp/scripts/validate_mandatory_gates.py
       - name: Validate governance rules
         run: python senzing-bootcamp/scripts/validate_governance_rules.py
+      - name: Validate write-gate preservation
+        run: |
+          python senzing-bootcamp/scripts/validate_governance_rules.py --check write-gates || {
+            echo "::error::A PreToolUse write gate (write-policy-gate, enforce-mandatory-gate, gate-module3-visualization) was removed or disabled without the sanctioned EXPECTED_WRITE_GATES update."
+            exit 1
+          }
       - name: Validate YAML schemas
         run: python senzing-bootcamp/scripts/validate_yaml_schemas.py
       - name: Validate external links
         run: python senzing-bootcamp/scripts/validate_links.py --timeout 10
+      - name: Validate power-owned doc references
+        run: python senzing-bootcamp/scripts/validate_doc_references.py
       - name: Lint Python (ruff)
         run: ruff check senzing-bootcamp/scripts/ senzing-bootcamp/tests/ tests/
       - name: Conversational eval harness

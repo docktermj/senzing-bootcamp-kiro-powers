@@ -1,0 +1,226 @@
+{
+  "pbtResults": {
+    "1. Write bug-condition exploration test for the marker leak (BEFORE any fix)": {
+      "status": "passed",
+      "failingExample": "Exploration test FAILED on the unfixed tree as expected — confirms Bug_Condition C1. Hypothesis falsifying example: case='language_selection'.\n\nHarness counterexamples (expectedBehavior violated):\n- absent_marker: prohibited marker '🛑' present in turn\n- absent_marker: prohibited marker '⛔' present in turn\n- ends_with_question_then_stop: substantive agent content follows the pointer question: \"⛔ **MANDATORY GATE** — Programming language selection requires the bootcamper's actual choice...\"\n- no_self_answer: agent appears to answer its own question: \"⛔ **MANDATORY GATE** — ...\"\n\nLeaked rendered marker lines beside the 👉 language-selection question (onboarding-phase1b-intro-language.md, Step 4):\n- \"🛑 STOP — Wait for the bootcamper's programming language choice before proceeding.\"\n- \"⛔ **MANDATORY GATE** — Programming language selection requires the bootcamper's actual choice. ...\"\n- \"**🛑 STOP — End your response here.** Do not answer this question. ...\"\n\nShipped fixtures whose recorded question turns leak the marker (absent_marker '🛑' fails):\n- single_question_stop.json\n- confirmation_question_disambiguation.json\n- module3_gate_not_bypassed.json",
+      "lastRunTimestamp": 1783972684474
+    },
+    "2. Write bug-condition exploration test for the duplicate question (BEFORE any fix)": {
+      "status": "passed",
+      "failingExample": "Falsifying example: test_rendered_question_turn_shown_exactly_once(lead_in='')\n\nHarness counterexamples on the UNFIXED tree (comprehension_check_duplicate.json agent turn):\n  - exactly_one_pointer: expected exactly one pointer, found 2\n  - no_compound_question: compound question detected (multiple question marks: found 2)\n\nRendered turn (the comprehension-check question shown twice):\n  Good — that covers the entity resolution overview before we pick a track.\n  👉 Does everything make sense so far, or is there anything you'd like me to clarify?\n  Let me ask that more cleanly as a single question.\n  👉 Does the overview make sense before we choose a track?\n\nThis confirms Bug_Condition C2: the prose \"or ... clarify?\" compound is composed first, the compound-question self-correction regenerates a clean single question, and both reach the bootcamper in one turn — so the question is displayed twice.",
+      "lastRunTimestamp": 1783973178325
+    },
+    "3. Write preservation property tests (BEFORE implementing the fix)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783973579781
+    },
+    "4.5 Verify the marker-leak exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1783979415564
+    },
+    "4.6 Verify the duplicate-question exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1783979558698
+    },
+    "4.7 Verify the preservation property tests still pass": {
+      "status": "passed",
+      "lastRunTimestamp": 1783979778434
+    }
+  },
+  "executionHistory": {
+    "1. Write bug-condition exploration test for the marker leak (BEFORE any fix)": [
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783972117185
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783972125963
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783972706992
+      }
+    ],
+    "2. Write bug-condition exploration test for the duplicate question (BEFORE any fix)": [
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783972117323
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783972710731
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783973215244
+      }
+    ],
+    "3. Write preservation property tests (BEFORE implementing the fix)": [
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783972117409
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783973219019
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783973605578
+      }
+    ],
+    "4.1 Establish the internal-only directive convention in the governing steering files": [
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783972117456
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783973611912
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783974003705
+      }
+    ],
+    "4.2 Rewrite emitted-content examples so CORRECT question turns end on the 👉 question": [
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783972117490
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783974007426
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783977264233
+      }
+    ],
+    "4.3 Reconcile the shipped eval fixtures (no change to `eval_conversations.py`)": [
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783972117526
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783977267687
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783977489961
+      }
+    ],
+    "4.4 Update the coupled content-assertion tests that encode the buggy expectation": [
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783972117566
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783977493780
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783979370633
+      }
+    ],
+    "4.5 Verify the marker-leak exploration test now passes": [
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783972117595
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783979374986
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783979428764
+      }
+    ],
+    "4.6 Verify the duplicate-question exploration test now passes": [
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783972117628
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783979447445
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783979576155
+      }
+    ],
+    "4.7 Verify the preservation property tests still pass": [
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783972117660
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783979580475
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783979811208
+      }
+    ],
+    "5. Checkpoint - Ensure all tests and CI gates pass": [
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783972117690
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783979816089
+      },
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783989400616
+      }
+    ],
+    "4. Fix: make stop/gate markers internal-only and compose one clean question": [
+      {
+        "executionId": "82f195b4-09b0-4fdf-acff-c72c608355e4",
+        "chatSessionId": "sess_92c81d7f-d6f8-47aa-b28d-7c4faec8cdff",
+        "timestamp": 1783979811271
+      }
+    ]
+  }
+}

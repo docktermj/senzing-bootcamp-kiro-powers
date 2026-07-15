@@ -8,10 +8,10 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 259
-- superseded: 2
+- implemented: 288
+- superseded: 1
 - abandoned: 0
-- unknown: 1
+- unknown: 0
 
 ## Specs
 
@@ -108,10 +108,11 @@
 
 ### bootcamp-qa-transcript
 
-- Status: implemented
+- Status: superseded
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/bootcamp-qa-transcript/](.kiro/specs/bootcamp-qa-transcript/)
+- Superseded by: guaranteed-qa-capture
 
 ### bootcamp-record-export
 
@@ -162,6 +163,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/capture-hook-completion-safeguard/](.kiro/specs/capture-hook-completion-safeguard/)
 
+### capture-hook-safeguard-stale-check
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/capture-hook-safeguard-stale-check/](.kiro/specs/capture-hook-safeguard-stale-check/)
+
 ### ci-python-linting
 
 - Status: implemented
@@ -175,6 +183,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/ci-workflow-restructure/](.kiro/specs/ci-workflow-restructure/)
+
+### clean-question-presentation
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/clean-question-presentation/](.kiro/specs/clean-question-presentation/)
 
 ### completion-summary
 
@@ -253,6 +268,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/conversational-hook-names/](.kiro/specs/conversational-hook-names/)
 
+### conversational-self-audit-hook
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/conversational-self-audit-hook/](.kiro/specs/conversational-self-audit-hook/)
+
 ### cord-data-freshness
 
 - Status: implemented
@@ -266,6 +288,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/cord-data-priority/](.kiro/specs/cord-data-priority/)
+
+### cord-mapping-fast-path
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/cord-mapping-fast-path/](.kiro/specs/cord-mapping-fast-path/)
 
 ### data-collection-template
 
@@ -372,6 +401,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/documentation-guides/](.kiro/specs/documentation-guides/)
 
+### early-fpdf2-hint
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/early-fpdf2-hint/](.kiro/specs/early-fpdf2-hint/)
+
 ### end-to-end-bootcamp-flow-test
 
 - Status: implemented
@@ -449,6 +485,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/er-baseline-status-summary/](.kiro/specs/er-baseline-status-summary/)
 
+### er-intro-interactive-illustration
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/er-intro-interactive-illustration/](.kiro/specs/er-intro-interactive-illustration/)
+
 ### er-quality-evaluation-loop
 
 - Status: implemented
@@ -469,6 +512,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/expand-language-steering/](.kiro/specs/expand-language-steering/)
+
+### experience-audit-remediation
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/experience-audit-remediation/](.kiro/specs/experience-audit-remediation/)
 
 ### export-results
 
@@ -497,6 +547,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/feedback-workflow/](.kiro/specs/feedback-workflow/)
+
+### file-placement-conventions
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/file-placement-conventions/](.kiro/specs/file-placement-conventions/)
 
 ### fix-file-path-hook-stall
 
@@ -575,6 +632,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/graduation-docs-index/](.kiro/specs/graduation-docs-index/)
 
+### graduation-enrichment
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/graduation-enrichment/](.kiro/specs/graduation-enrichment/)
+
 ### graduation-markdown-normalization
 
 - Status: implemented
@@ -602,6 +666,21 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/guaranteed-graduation-artifacts/](.kiro/specs/guaranteed-graduation-artifacts/)
+
+### guaranteed-qa-capture
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/guaranteed-qa-capture/](.kiro/specs/guaranteed-qa-capture/)
+- Supersedes: bootcamp-qa-transcript
+
+### guaranteed-recap-pdf
+
+- Status: implemented
+- Type: unknown
+- Workflow: unknown
+- Directory: [.kiro/specs/guaranteed-recap-pdf/](.kiro/specs/guaranteed-recap-pdf/)
 
 ### guided-rollback-preview
 
@@ -701,12 +780,26 @@
 - Workflow: fast-task
 - Directory: [.kiro/specs/individual-progress-dashboard/](.kiro/specs/individual-progress-dashboard/)
 
+### journal-recap-consolidation
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/journal-recap-consolidation/](.kiro/specs/journal-recap-consolidation/)
+
 ### json-syntax-highlighting
 
 - Status: implemented
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/json-syntax-highlighting/](.kiro/specs/json-syntax-highlighting/)
+
+### kiro-1-0-migration
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/kiro-1-0-migration/](.kiro/specs/kiro-1-0-migration/)
 
 ### language-example-coverage
 
@@ -736,6 +829,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/leading-question-enforcement/](.kiro/specs/leading-question-enforcement/)
 
+### license-aware-sampling
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/license-aware-sampling/](.kiro/specs/license-aware-sampling/)
+
 ### license-capacity-framing
 
 - Status: implemented
@@ -763,6 +863,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/mandatory-gate-enforcement/](.kiro/specs/mandatory-gate-enforcement/)
+
+### mandatory-question-answers
+
+- Status: implemented
+- Type: unknown
+- Workflow: unknown
+- Directory: [.kiro/specs/mandatory-question-answers/](.kiro/specs/mandatory-question-answers/)
 
 ### mandatory-visualization-gate
 
@@ -1081,6 +1188,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/module4-record-count-license-backfill/](.kiro/specs/module4-record-count-license-backfill/)
 
+### module4-sqlite-load-time-warning
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/module4-sqlite-load-time-warning/](.kiro/specs/module4-sqlite-load-time-warning/)
+
 ### module5-mapping-workflow-guidance
 
 - Status: implemented
@@ -1158,12 +1272,26 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/onboarding-flow-restructuring/](.kiro/specs/onboarding-flow-restructuring/)
 
+### onboarding-gate-language-handoff
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/onboarding-gate-language-handoff/](.kiro/specs/onboarding-gate-language-handoff/)
+
 ### onboarding-license-request-option
 
 - Status: implemented
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/onboarding-license-request-option/](.kiro/specs/onboarding-license-request-option/)
+
+### onboarding-session-ux
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/onboarding-session-ux/](.kiro/specs/onboarding-session-ux/)
 
 ### onboarding-ux-improvements
 
@@ -1214,6 +1342,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/power-version-display/](.kiro/specs/power-version-display/)
 
+### preface-flow-and-banners
+
+- Status: implemented
+- Type: unknown
+- Workflow: unknown
+- Directory: [.kiro/specs/preface-flow-and-banners/](.kiro/specs/preface-flow-and-banners/)
+
 ### preferences-schema-validation
 
 - Status: implemented
@@ -1234,6 +1369,13 @@
 - Type: feature
 - Workflow: fast-task
 - Directory: [.kiro/specs/proceed-on-confirmation/](.kiro/specs/proceed-on-confirmation/)
+
+### professional-recap-pdf
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/professional-recap-pdf/](.kiro/specs/professional-recap-pdf/)
 
 ### progress-file-schema-validation
 
@@ -1263,6 +1405,20 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/query-requirements-context/](.kiro/specs/query-requirements-context/)
 
+### question-format-consistency
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/question-format-consistency/](.kiro/specs/question-format-consistency/)
+
+### question-visibility
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/question-visibility/](.kiro/specs/question-visibility/)
+
 ### recap-completeness-and-pdf
 
 - Status: implemented
@@ -1276,6 +1432,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/recap-pdf-content-loss-fix/](.kiro/specs/recap-pdf-content-loss-fix/)
+
+### recap-pdf-professional-design
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/recap-pdf-professional-design/](.kiro/specs/recap-pdf-professional-design/)
 
 ### recap-qa-pair-merge
 
@@ -1318,13 +1481,6 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/remove-verification-track/](.kiro/specs/remove-verification-track/)
-
-### rename-module-6
-
-- Status: unknown
-- Type: unknown
-- Workflow: unknown
-- Directory: [.kiro/specs/rename-module-6/](.kiro/specs/rename-module-6/)
 
 ### rename-module-6-data-processing
 
@@ -1403,30 +1559,12 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/sdk-verify-hook-dead-end-path/](.kiro/specs/sdk-verify-hook-dead-end-path/)
 
-### self-answering-prevention-v2
-
-- Status: superseded
-- Type: bugfix
-- Workflow: requirements-first
-- Directory: [.kiro/specs/self-answering-prevention-v2/](.kiro/specs/self-answering-prevention-v2/)
-- Supersedes: self-answering-questions-fix
-- Superseded by: self-answering-reinforcement
-
-### self-answering-questions-fix
-
-- Status: superseded
-- Type: bugfix
-- Workflow: requirements-first
-- Directory: [.kiro/specs/self-answering-questions-fix/](.kiro/specs/self-answering-questions-fix/)
-- Superseded by: self-answering-prevention-v2
-
 ### self-answering-reinforcement
 
 - Status: implemented
 - Type: unknown
 - Workflow: unknown
 - Directory: [.kiro/specs/self-answering-reinforcement/](.kiro/specs/self-answering-reinforcement/)
-- Supersedes: self-answering-prevention-v2
 
 ### senzing-bootcamp-power
 
@@ -1434,6 +1572,13 @@
 - Type: unknown
 - Workflow: unknown
 - Directory: [.kiro/specs/senzing-bootcamp-power/](.kiro/specs/senzing-bootcamp-power/)
+
+### session-handoff
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/session-handoff/](.kiro/specs/session-handoff/)
 
 ### session-log-hook-performance
 
@@ -1463,6 +1608,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/session-resume-behavioral-rules/](.kiro/specs/session-resume-behavioral-rules/)
 
+### setup-summary-persistence
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/setup-summary-persistence/](.kiro/specs/setup-summary-persistence/)
+
 ### shared-markdown-renderer-refactor
 
 - Status: implemented
@@ -1483,6 +1635,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/silent-hook-processing/](.kiro/specs/silent-hook-processing/)
+
+### single-ask-question-guarantee
+
+- Status: implemented
+- Type: unknown
+- Workflow: unknown
+- Directory: [.kiro/specs/single-ask-question-guarantee/](.kiro/specs/single-ask-question-guarantee/)
 
 ### single-question-format
 
@@ -1596,6 +1755,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/steering-file-template/](.kiro/specs/steering-file-template/)
 
+### steering-inclusion-auto-audit
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/steering-inclusion-auto-audit/](.kiro/specs/steering-inclusion-auto-audit/)
+
 ### steering-index-token-count-sync
 
 - Status: implemented
@@ -1637,6 +1803,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/step-level-status-command/](.kiro/specs/step-level-status-command/)
+
+### stop-hook-ux
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/stop-hook-ux/](.kiro/specs/stop-hook-ux/)
 
 ### streaming-integration-guide
 
@@ -1728,6 +1901,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/transformation-lineage/](.kiro/specs/transformation-lineage/)
+
+### truthset-fallback-source
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/truthset-fallback-source/](.kiro/specs/truthset-fallback-source/)
 
 ### turn-answer-handling
 
@@ -1840,6 +2020,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/write-gate-momentum-preservation/](.kiro/specs/write-gate-momentum-preservation/)
+
+### write-gate-noise-cleanup
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/write-gate-noise-cleanup/](.kiro/specs/write-gate-noise-cleanup/)
 
 ### write-policy-gate-ux
 

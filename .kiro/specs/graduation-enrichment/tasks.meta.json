@@ -1,0 +1,653 @@
+{
+  "pbtResults": {
+    "5.3 Write property test: enumeration matches eligible top-level entries": {
+      "status": "passed",
+      "lastRunTimestamp": 1783608003745
+    },
+    "5.4 Write property test: index file and dot-prefixed entries always excluded": {
+      "status": "passed",
+      "lastRunTimestamp": 1783608161943
+    },
+    "5.5 Write property test: order is deterministic and case-insensitive": {
+      "status": "passed",
+      "lastRunTimestamp": 1783608340860
+    },
+    "7.7 Write property test: managed section lists exactly existing per-directory indexes": {
+      "status": "passed",
+      "lastRunTimestamp": 1783608578197
+    },
+    "7.3 Write property test: regeneration fully replaces prior content and is idempotent": {
+      "status": "passed",
+      "lastRunTimestamp": 1783608587490
+    },
+    "7.4 Write property test: rendered index round-trips as a valid Markdown TOC": {
+      "status": "passed",
+      "lastRunTimestamp": 1783608884603
+    },
+    "7.8 Write property test: content outside markers is preserved (scoped-write)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783609041885
+    },
+    "7.5 Write property test: every entry has exactly one well-formed description": {
+      "status": "passed",
+      "lastRunTimestamp": 1783609194561
+    },
+    "7.9 Write property test: README update is idempotent": {
+      "status": "passed",
+      "lastRunTimestamp": 1783609221100
+    },
+    "7.6 Write property test: subdirectories carry a visual indicator files never carry": {
+      "status": "passed",
+      "lastRunTimestamp": 1783609372490
+    }
+  },
+  "executionHistory": {
+    "1.1 Create `senzing-bootcamp/scripts/generate_directory_index.py` with skeleton and data model": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605229686
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605243783
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605805278
+      }
+    ],
+    "1.2 Create `senzing-bootcamp/scripts/update_readme_index.py` with skeleton and data model": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605229867
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605244032
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605805791
+      }
+    ],
+    "2.1 Implement `scan_entries(target_root)` depth-1 enumeration with exclusions and ordering": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605229935
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605851074
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783606057056
+      }
+    ],
+    "2.2 Implement `describe_entry(name, is_dir, purpose_map)` with purpose map and generic fallback": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605229983
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783606061276
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783606342869
+      }
+    ],
+    "2.3 Implement `render_markdown(entries)` deterministic table of contents": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230030
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783606345026
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783606988546
+      }
+    ],
+    "2.4 Implement `select_purpose_map(target_root)` for `--target-root` dispatch": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230066
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783606990362
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783607102214
+      }
+    ],
+    "3.1 Implement `probe_indexes(project_root)` to detect existing per-directory indexes": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230112
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605854962
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783606058247
+      }
+    ],
+    "3.2 Implement `render_managed_section(refs)` to produce the managed-section Markdown": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230150
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783606061729
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783606344043
+      }
+    ],
+    "3.3 Implement `update_readme(readme_path, managed_section)` scoped-write logic": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230189
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783606345668
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783606987007
+      }
+    ],
+    "4.1 Implement `generate_index(target_root, purpose_map)` pipeline": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230250
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783607109099
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783607453826
+      }
+    ],
+    "4.2 Implement `validate_toc(markdown, entries)` for directory index validation": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230294
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783607455447
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783607750069
+      }
+    ],
+    "5.1 Implement `write_index_atomically(target_root, markdown, purpose_map)` in `generate_directory_index.py`": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230330
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783607759205
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608041517
+      }
+    ],
+    "5.2 Implement `write_readme_atomically(readme_path, content)` in `update_readme_index.py`": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230372
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783607111861
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783607452280
+      }
+    ],
+    "5.3 Write property test: enumeration matches eligible top-level entries": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230414
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783607761105
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608042561
+      }
+    ],
+    "5.4 Write property test: index file and dot-prefixed entries always excluded": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230451
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608045679
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608197939
+      }
+    ],
+    "5.5 Write property test: order is deterministic and case-insensitive": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230501
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608198428
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608362676
+      }
+    ],
+    "6. Checkpoint - Ensure core logic tests pass": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230538
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608400840
+      }
+    ],
+    "7.1 Implement `main(argv=None)` in `generate_directory_index.py`": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230580
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608422850
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608778743
+      }
+    ],
+    "7.2 Implement `main(argv=None)` in `update_readme_index.py`": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230643
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608424236
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608779839
+      }
+    ],
+    "7.3 Write property test: regeneration fully replaces prior content and is idempotent": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230673
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608428990
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608781770
+      }
+    ],
+    "7.4 Write property test: rendered index round-trips as a valid Markdown TOC": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230715
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608785107
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609069071
+      }
+    ],
+    "7.5 Write property test: every entry has exactly one well-formed description": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230755
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609071699
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609251254
+      }
+    ],
+    "7.6 Write property test: subdirectories carry a visual indicator files never carry": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230797
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609253135
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609400518
+      }
+    ],
+    "7.7 Write property test: managed section lists exactly existing per-directory indexes": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230839
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608430391
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608783009
+      }
+    ],
+    "7.8 Write property test: content outside markers is preserved (scoped-write)": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230879
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608785604
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609070654
+      }
+    ],
+    "7.9 Write property test: README update is idempotent": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230918
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609072708
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609249712
+      }
+    ],
+    "8.1 Write unit tests for `generate_directory_index.py` CLI output contract": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605230965
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609415290
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609684695
+      }
+    ],
+    "8.2 Write unit tests for `update_readme_index.py` CLI output contract": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605231006
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609416243
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609685283
+      }
+    ],
+    "9. Checkpoint - Ensure all script tests pass": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605231049
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609690798
+      }
+    ],
+    "10.1 Add Steps 0b.6, 0b.7, 0b.8 to `senzing-bootcamp/steering/graduation.md`": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605231095
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609699471
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783610084199
+      }
+    ],
+    "10.2 Extend the Mandatory Closing Step with Artifact_Announcement": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605231131
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783610085281
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783610214905
+      }
+    ],
+    "10.3 Update `senzing-bootcamp/steering/steering-index.yaml` token count for `graduation.md`": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605231168
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783610215539
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783610408291
+      }
+    ],
+    "11. Final checkpoint - Ensure all tests and CI gates pass": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605231213
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783610416327
+      },
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783611931137
+      }
+    ],
+    "1. Establish the directory index generator skeleton and data model": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783605805828
+      }
+    ],
+    "3. Implement core pure functions for the README updater": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783606987069
+      }
+    ],
+    "2. Implement core pure functions for the directory index generator": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783607102262
+      }
+    ],
+    "4. Implement pipeline composition and validation for directory index": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783607750117
+      }
+    ],
+    "5. Implement atomic writes for both scripts": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783608362722
+      }
+    ],
+    "7. Implement CLI entry points and remaining property tests": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609400584
+      }
+    ],
+    "8. Write CLI unit tests for both scripts": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783609685332
+      }
+    ],
+    "10. Integrate graduation steps and artifact announcement into steering": [
+      {
+        "executionId": "95b1b728-40d8-46c0-82d4-0a401610585d",
+        "chatSessionId": "sess_84266a1c-5cbb-4149-bf2f-ca981e5f8eea",
+        "timestamp": 1783610408356
+      }
+    ]
+  }
+}

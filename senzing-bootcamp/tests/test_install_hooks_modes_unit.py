@@ -1,23 +1,23 @@
-"""Mode / metadata unit tests for the install_hooks.py installer.
+"""Mode / metadata unit tests for the install_hooks.py installer (v1 model).
 
 Feature: hook-architecture-improvements (Theme C — capture-hook install
-reliability).
+reliability), aligned to the Kiro 1.0 ``v1`` ``.json`` hook model.
 
 These are *script-behavior* example/unit tests exercised over temporary hook
 directories (never the real ``.kiro/hooks``), so per ``structure.md`` they live
 in ``senzing-bootcamp/tests/`` rather than the repo-root ``tests/``.
 
 Property-based coverage of the installer logic lives in
-``test_install_hooks_properties.py`` (task 5.4); this file covers the
-non-interactive mode contract, interactive-retention, the metadata overlay, and
-the discovery-driven set, as example/unit tests (Hypothesis not required):
+``test_install_hooks_properties.py``; this file covers the non-interactive mode
+contract, interactive-retention, the metadata overlay, and the discovery-driven
+set, as example/unit tests (Hypothesis not required):
 
 - ``--all`` installs every discovered hook and exits 0 (Req 11.1).
 - ``--essential`` installs only the essential set and exits 0 (Req 11.2).
 - Interactive mode is retained when no flag is supplied (Req 11.6).
 - The five current hooks are present in ``HOOK_METADATA`` with accurate names
-  read from each hook file's ``name`` field (Req 9.2).
-- ``discover_hooks`` derives the set from the ``*.kiro.hook`` glob rather than
+  read from each hook file's ``hooks[0].name`` field (Req 9.2).
+- ``discover_hooks`` derives the set from the ``*.json`` glob rather than
   from ``HOOK_METADATA`` (Req 9.5).
 """
 
@@ -45,30 +45,40 @@ import install_hooks  # noqa: E402
 
 
 def _write_hook(power_dir: Path, hook_id: str, name: str | None = None) -> None:
-    """Write a minimal, schema-valid ``<hook_id>.kiro.hook`` JSON fixture.
+    """Write a minimal, schema-valid ``<hook_id>.json`` v1 hook fixture.
 
     Args:
         power_dir: Directory to write the hook file into.
-        hook_id: Hook id (no ``.kiro.hook`` suffix).
+        hook_id: Hook id (no ``.json`` suffix).
         name: Optional ``name`` field; defaults to a "to {verb phrase}" string.
     """
     verb_phrase = hook_id.replace("-", " ")
     data = {
-        "name": name if name is not None else f"to {verb_phrase}",
-        "version": "1.0.0",
-        "when": {"type": "agentStop"},
-        "then": {"type": "askAgent", "prompt": f"Do the {verb_phrase} thing."},
+        "version": "v1",
+        "hooks": [
+            {
+                "name": name if name is not None else f"to {verb_phrase}",
+                "trigger": "Stop",
+                "action": {
+                    "type": "agent",
+                    "prompt": f"Do the {verb_phrase} thing.",
+                },
+            }
+        ],
     }
-    (power_dir / f"{hook_id}.kiro.hook").write_text(
+    (power_dir / f"{hook_id}.json").write_text(
         json.dumps(data, indent=2), encoding="utf-8"
     )
 
 
 # The five current hooks Requirement 9.2 mandates in the metadata overlay.
+# ``ask-bootcamper`` is the recap-owning capture-critical hook (its Phase 0
+# absorbed the former ``module-recap-append`` recap hook, which the stop-hook-ux
+# bugfix deleted), so it stands in for the retired recap hook here.
 FIVE_CURRENT_HOOK_IDS = (
     "write-policy-gate",
     "session-log-events",
-    "module-recap-append",
+    "ask-bootcamper",
     "enforce-mandatory-gate",
     "enforce-gate-on-stop",
 )
@@ -102,9 +112,9 @@ class TestAllMode:
         assert code == 0
         # Every discovered hook is copied into the temp user dir.
         for hook_id in hook_ids:
-            assert (user_dir / f"{hook_id}.kiro.hook").is_file()
-        installed = {p.name for p in user_dir.glob("*.kiro.hook")}
-        assert installed == {f"{hook_id}.kiro.hook" for hook_id in hook_ids}
+            assert (user_dir / f"{hook_id}.json").is_file()
+        installed = {p.name for p in user_dir.glob("*.json")}
+        assert installed == {f"{hook_id}.json" for hook_id in hook_ids}
 
     def test_all_does_not_call_input(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -160,8 +170,8 @@ class TestEssentialMode:
         assert code == 0
         # Only the essential hooks are installed; the non-essential one is not.
         for hook_id in essential_ids:
-            assert (user_dir / f"{hook_id}.kiro.hook").is_file()
-        assert not (user_dir / f"{non_essential_id}.kiro.hook").exists()
+            assert (user_dir / f"{hook_id}.json").is_file()
+        assert not (user_dir / f"{non_essential_id}.json").exists()
 
     def test_essential_does_not_call_input(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -248,7 +258,7 @@ class TestMetadata:
     """
 
     def test_five_current_hooks_present_in_metadata(self) -> None:
-        expected_keys = {f"{hook_id}.kiro.hook" for hook_id in FIVE_CURRENT_HOOK_IDS}
+        expected_keys = {f"{hook_id}.json" for hook_id in FIVE_CURRENT_HOOK_IDS}
         assert expected_keys <= set(install_hooks.HOOK_METADATA)
         # Each metadata entry carries a non-empty description string.
         for key in expected_keys:
@@ -261,19 +271,20 @@ class TestMetadata:
             "enforce-single-question",
             "block-direct-sql",
         ):
+            assert f"{consolidated}.json" not in install_hooks.HOOK_METADATA
             assert f"{consolidated}.kiro.hook" not in install_hooks.HOOK_METADATA
 
     def test_discover_reads_name_field_for_current_hooks(
         self, tmp_path: Path
     ) -> None:
-        # Display names must come from each hook file's `name` field (the
-        # "to {verb phrase}" pattern), not from the metadata overlay.
+        # Display names must come from each hook file's ``hooks[0].name`` field
+        # (the "to {verb phrase}" pattern), not from the metadata overlay.
         power_dir = tmp_path / "hooks"
         power_dir.mkdir()
         names = {
             "write-policy-gate": "to process your response",
             "session-log-events": "to log session events after write operations",
-            "module-recap-append": "to append module recap on completion",
+            "ask-bootcamper": "to wait for your answer",
             "enforce-mandatory-gate": (
                 "to enforce mandatory gate step execution before advancement"
             ),
@@ -287,7 +298,7 @@ class TestMetadata:
         }
 
         for hook_id, name in names.items():
-            filename = f"{hook_id}.kiro.hook"
+            filename = f"{hook_id}.json"
             assert filename in discovered
             assert discovered[filename][1] == name
 
@@ -298,7 +309,7 @@ class TestMetadata:
 
 
 class TestDiscoveryDriven:
-    """discover_hooks derives the set from the glob, not from HOOK_METADATA.
+    """discover_hooks derives the set from the ``*.json`` glob, not HOOK_METADATA.
 
     **Validates: Requirements 9.5**
     """
@@ -309,7 +320,7 @@ class TestDiscoveryDriven:
         power_dir = tmp_path / "hooks"
         power_dir.mkdir()
         novel_id = "brand-new-undocumented-hook"
-        assert f"{novel_id}.kiro.hook" not in install_hooks.HOOK_METADATA
+        assert f"{novel_id}.json" not in install_hooks.HOOK_METADATA
         _write_hook(power_dir, novel_id)
 
         discovered = install_hooks.discover_hooks(power_dir)
@@ -317,15 +328,15 @@ class TestDiscoveryDriven:
         # The single real file is discovered even though it has no metadata.
         assert len(discovered) == 1
         filename, name, desc = discovered[0]
-        assert filename == f"{novel_id}.kiro.hook"
-        # Name is read from the file's `name` field.
+        assert filename == f"{novel_id}.json"
+        # Name is read from the file's ``hooks[0].name`` field.
         assert name == "to brand new undocumented hook"
         # A fallback description is supplied for unknown hooks.
         assert "no description" in desc.lower() or "HOOK_METADATA" in desc
 
     def test_discovered_set_is_only_glob_not_metadata(self, tmp_path: Path) -> None:
         # A metadata-listed id absent from disk must NOT appear; only on-disk
-        # *.kiro.hook files drive the discovered set.
+        # ``*.json`` files drive the discovered set.
         power_dir = tmp_path / "hooks"
         power_dir.mkdir()
         on_disk_ids = ["ask-bootcamper", "brand-new-undocumented-hook"]
@@ -337,7 +348,7 @@ class TestDiscoveryDriven:
         }
 
         assert discovered_filenames == {
-            f"{hook_id}.kiro.hook" for hook_id in on_disk_ids
+            f"{hook_id}.json" for hook_id in on_disk_ids
         }
         # The metadata table is larger than the on-disk set, proving the set is
         # glob-driven rather than metadata-driven.

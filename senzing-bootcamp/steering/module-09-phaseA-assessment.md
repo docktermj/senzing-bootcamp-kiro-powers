@@ -17,7 +17,7 @@ If the condition is true, read `hardware_target` from `config/bootcamp_preferenc
 - **If `hardware_target` is "different_server":** Use `production_specs` from `config/bootcamp_preferences.yaml` for all hardware-dependent security recommendations (encryption performance, network configuration, resource allocation). Note: "Benchmarks were run on your dev machine; recommendations target your production hardware."
 - **If `hardware_target` is "current_machine":** Use the current machine's specs for security recommendations.
 
-Do NOT re-ask the hardware question — it was already answered in Module 8.
+Do NOT re-ask the hardware question — it was already answered in Module 8. This is a specific instance of the **Ask-Once Guarantee** (see `conversation-protocol.md` → The Ask-Once Guarantee): the hardware question's Question_Key is `global.hardware_target`; when it is already recorded as answered, reuse the stored answer and proceed rather than re-asking.
 
 If `deployment_target` is NOT "on_premises", skip this section entirely.
 
@@ -31,7 +31,7 @@ Categorize the bootcamper's compliance level based on their answers:
 
 ### Step 1a: Compliance Requirements
 
-👉 "Do you have any compliance requirements? (e.g., SOC 2, GDPR, CCPA, HIPAA, PCI-DSS, or none)"
+👉 **"Do you have any compliance requirements? (e.g., SOC 2, GDPR, CCPA, HIPAA, PCI-DSS, or none)"**
 
 > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next sub-step. Wait for the bootcamper's real input.
 
@@ -39,7 +39,7 @@ Categorize the bootcamper's compliance level based on their answers:
 
 ### Step 1b: Security Stakeholders
 
-👉 "Who are the security stakeholders for this project? (e.g., security team, compliance officer, or just you)"
+👉 **"Who are the security stakeholders for this project? (e.g., security team, compliance officer, or just you)"**
 
 > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next sub-step. Wait for the bootcamper's real input.
 

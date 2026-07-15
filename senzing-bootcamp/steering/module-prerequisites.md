@@ -1,5 +1,5 @@
 ---
-inclusion: auto
+inclusion: manual
 description: "Module prerequisites and dependencies — load when checking readiness for a module"
 ---
 

@@ -41,6 +41,32 @@ RE_CHECKPOINT = re.compile(r"\*\*Checkpoint:\*\*", re.IGNORECASE)
 # Pointing question: line containing 👉 followed by quoted text
 RE_POINTING_QUESTION = re.compile(r"👉")
 
+# Leading line markers stripped before deciding whether 👉 *leads* a line:
+# optional indentation, any number of blockquote markers (``>``), and a single
+# list bullet (``-``/``*``/``+``). A 👉 that leads the remaining content is an
+# actual pointing question; a 👉 that appears mid-sentence is a prose reference
+# to the *concept* of a pointing question (e.g. "this 👉 question is governed by
+# the Answer_Required_Rule") and is not a question directed at the bootcamper.
+_RE_LINE_LEADING_MARKERS = re.compile(r"^\s*(?:>\s*)*(?:[-*+]\s+)?\s*")
+
+
+def _line_starts_pointing_question(line: str) -> bool:
+    """Return True when a line's content begins with the 👉 pointer.
+
+    Leading indentation, blockquote markers (``>``), and a single list bullet
+    are stripped first, so questions nested inside blockquotes or list items
+    are still recognised. A 👉 that appears later in the line — a prose
+    reference to a pointing question rather than an actual question — is not
+    treated as one.
+
+    Args:
+        line: A single line of Markdown content.
+
+    Returns:
+        True if the line is an actual pointing question, else False.
+    """
+    return _RE_LINE_LEADING_MARKERS.sub("", line).startswith("👉")
+
 # Stop/Wait instruction: line containing STOP or WAIT as a directive
 RE_STOP_INSTRUCTION = re.compile(r"\b(STOP|WAIT)\b")
 
@@ -337,9 +363,10 @@ def check_pointing_question_stop(
 ) -> list[str]:
     """Check that every pointing question is followed by a STOP/WAIT.
 
-    For each line containing 👉, searches subsequent non-blank lines
-    (up to 5 lines or the next numbered step, whichever comes first)
-    for a STOP or WAIT instruction.
+    For each line that *begins* with 👉 (an actual pointing question, as
+    opposed to a mid-sentence prose reference to one), searches subsequent
+    non-blank lines (up to 5 lines or the next numbered step, whichever
+    comes first) for a STOP or WAIT instruction.
 
     Args:
         content: The full text content of a steering file.
@@ -353,7 +380,10 @@ def check_pointing_question_stop(
     violations: list[str] = []
 
     for idx, line in enumerate(lines):
-        if not RE_POINTING_QUESTION.search(line):
+        # Only an actual pointing question (👉 leads the line's content) needs a
+        # following STOP/WAIT. Skip mid-sentence prose references to the concept
+        # of a pointing question.
+        if not _line_starts_pointing_question(line):
             continue
 
         # Scan up to 5 non-blank lines after the 👉 line

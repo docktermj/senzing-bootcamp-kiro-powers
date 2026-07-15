@@ -1,10 +1,18 @@
 """Integration tests for module completion process.
 
-End-to-end scenarios validating journal and recap creation, sequential
-module completions, graduation recap recovery, and CLI validation.
+End-to-end scenarios validating recap creation, sequential module completions,
+graduation recap recovery, CLI validation, and the consolidated module-completion
+step ordering.
+
+After the journal-recap consolidation the completion workflow runs five fixed
+steps (``progress_update`` -> ``consolidated_append`` -> ``completion_certificate``
+-> ``capture_hook_safeguard`` -> ``next_step_options``); the former separate
+``recap_append`` and ``journal_entry`` steps are folded into a single
+``consolidated_append`` that writes the structured recap subsections plus the
+``### Journal`` narrative subsection in one pass.
 
 Feature: module-completion-process
-Requirements: 1.1, 1.2, 3.1, 3.3, 5.1, 5.2
+Requirements: 1.1, 1.2, 3.1, 3.3, 5.1, 5.2, 11.2
 """
 
 from __future__ import annotations
@@ -16,6 +24,9 @@ from pathlib import Path
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
+
+_STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
+_MODULE_COMPLETION_FILE = _STEERING_DIR / "module-completion.md"
 
 import pytest  # noqa: E402
 
@@ -443,3 +454,69 @@ class TestValidationScriptCLI:
                 "--recap", str(recap_path),
             ])
         assert exc_info.value.code == 1
+
+
+# ---------------------------------------------------------------------------
+# Tests: Consolidated Module-Completion Step Ordering (Requirement 11.2)
+# ---------------------------------------------------------------------------
+
+
+class TestConsolidatedStepOrdering:
+    """The module-completion workflow documents the consolidated six-step order.
+
+    After the journal-recap consolidation the former separate ``recap_append``
+    and ``journal_entry`` steps are replaced by a single ``consolidated_append``
+    step (structured recap subsections plus the ``### Journal`` narrative
+    subsection in one write). The transcript-reconciliation spec then inserted a
+    ``transcript_reconciliation`` step right after ``consolidated_append`` (it
+    self-heals the Q&A transcript from the recap section just appended), and
+    ``capture_hook_safeguard`` runs between the completion certificate and
+    next-step options.
+
+    Requirements: 3.1, 3.2, 11.2
+    """
+
+    STEP_ORDER: list[str] = [
+        "progress_update",
+        "consolidated_append",
+        "transcript_reconciliation",
+        "completion_certificate",
+        "capture_hook_safeguard",
+        "next_step_options",
+    ]
+
+    def test_steps_present_in_fixed_order(self) -> None:
+        """All consolidated steps appear in module-completion.md, in order.
+
+        The step labels are matched as the bold headings (``**step**``) so a
+        step's name appearing in another step's prose (e.g.
+        ``transcript_reconciliation`` referencing ``capture_hook_safeguard``)
+        cannot perturb the first-occurrence ordering.
+        """
+        content = _MODULE_COMPLETION_FILE.read_text(encoding="utf-8")
+        positions = [content.find(f"**{step}**") for step in self.STEP_ORDER]
+        for step, pos in zip(self.STEP_ORDER, positions):
+            assert pos != -1, f"Completion step {step!r} missing from module-completion.md."
+        assert positions == sorted(positions), (
+            "Completion steps are no longer in the fixed consolidated order "
+            f"{self.STEP_ORDER!r} (found positions {positions!r})."
+        )
+
+    def test_retired_steps_absent(self) -> None:
+        """The retired separate recap_append / journal_entry steps are gone."""
+        content = _MODULE_COMPLETION_FILE.read_text(encoding="utf-8")
+        assert "journal_entry" not in content, (
+            "journal_entry step must be removed after journal-recap consolidation."
+        )
+        assert "recap_append" not in content, (
+            "recap_append step must be replaced by consolidated_append."
+        )
+
+    def test_consolidated_step_writes_journal_subsection(self) -> None:
+        """The consolidated_append step documents the ### Journal narrative subsection."""
+        content = _MODULE_COMPLETION_FILE.read_text(encoding="utf-8")
+        assert "consolidated_append" in content
+        assert "### Journal" in content, (
+            "The consolidated append must document the ### Journal narrative subsection "
+            "folded into each recap section."
+        )

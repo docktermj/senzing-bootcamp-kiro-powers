@@ -36,10 +36,10 @@ from test_enforce_file_placement import (
 # Load hook prompt and steering files once (module-level)
 # ---------------------------------------------------------------------------
 
-_HOOK_PATH = REPO_ROOT / "senzing-bootcamp" / "hooks" / "write-policy-gate.kiro.hook"
+_HOOK_PATH = REPO_ROOT / "senzing-bootcamp" / "hooks" / "write-policy-gate.json"
 with open(_HOOK_PATH, encoding="utf-8") as _f:
     _HOOK_DATA = json.load(_f)
-HOOK_PROMPT: str = _HOOK_DATA["then"]["prompt"]
+HOOK_PROMPT: str = _HOOK_DATA["hooks"][0]["action"]["prompt"]
 
 _AGENT_INSTRUCTIONS_PATH = REPO_ROOT / "senzing-bootcamp" / "steering" / "agent-instructions.md"
 AGENT_INSTRUCTIONS: str = _AGENT_INSTRUCTIONS_PATH.read_text(encoding="utf-8")

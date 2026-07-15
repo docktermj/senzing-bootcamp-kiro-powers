@@ -1,12 +1,19 @@
-"""Structural validation tests for all hooks.
+"""Structural validation tests for all shipped Kiro 1.0 hooks.
 
-Verifies JSON structure, required fields, event types, conditional fields,
-prompt length, version format, and hook file count.
+Verifies JSON structure, required v1 fields, 1.0 trigger names, matcher scoping
+(and regex compilability), prompt/command presence, the ``v1`` wrapper version,
+and hook file count.
+
+Each shipped hook is a ``{"version": "v1", "hooks": [entry]}`` wrapper; the
+entry carries ``name``, ``trigger``, an optional ``matcher`` (single regex), and
+an ``action`` (``{"type": "agent", "prompt": ...}`` or
+``{"type": "command", "command": ...}``). ``load_all_hooks`` returns the entries.
 """
 
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -17,14 +24,40 @@ if _TESTS_DIR not in sys.path:
     sys.path.insert(0, _TESTS_DIR)
 
 from hook_test_helpers import (
-    FILE_EVENT_TYPES,
-    SEMVER_PATTERN,
-    TOOL_EVENT_TYPES,
-    VALID_EVENT_TYPES,
     get_hook_files,
     load_all_hooks,
-    required_fields_for_action,
+    load_hook_wrapper,
+    parse_categories_yaml,
 )
+
+# ---------------------------------------------------------------------------
+# Kiro 1.0 trigger taxonomy
+# ---------------------------------------------------------------------------
+
+# All valid 1.0 triggers.
+V1_TRIGGERS: set[str] = {
+    "PostFileSave",
+    "PostFileCreate",
+    "PostFileDelete",
+    "Stop",
+    "UserPromptSubmit",
+    "PostTaskExec",
+    "PreToolUse",
+    "PostToolUse",
+}
+
+# Triggers that scope to a subject (file path or tool name) and therefore
+# require a ``matcher`` regex on the shipped hooks.
+V1_SCOPED_TRIGGERS: set[str] = {
+    "PostFileSave",
+    "PostFileCreate",
+    "PostFileDelete",
+    "PreToolUse",
+    "PostToolUse",
+}
+
+# Unscoped triggers omit the matcher.
+V1_UNSCOPED_TRIGGERS: set[str] = {"Stop", "UserPromptSubmit", "PostTaskExec"}
 
 # ---------------------------------------------------------------------------
 # Module-level data for parametrization
@@ -40,126 +73,148 @@ _hook_ids = [hook_id for hook_id, _ in _hook_data]
 # ===========================================================================
 
 class TestHookJsonStructure:
-    """Verify all hooks parse as valid JSON and contain required fields."""
+    """Verify all hooks parse as valid JSON and contain required v1 fields."""
 
     @pytest.mark.parametrize("hook_path", _hook_files, ids=[p.name for p in _hook_files])
     def test_parses_as_valid_json(self, hook_path: Path):
-        """Each hook file parses as valid JSON (Req 2.1)."""
+        """Each hook file parses as a valid v1 wrapper object (Req 2.1)."""
         try:
             with open(hook_path, encoding="utf-8") as f:
                 data = json.load(f)
-            assert isinstance(data, dict), f"{hook_path.name} did not parse as a JSON object"
         except json.JSONDecodeError as exc:
             pytest.fail(f'"{hook_path.name}" is not valid JSON: {exc}')
+        assert isinstance(data, dict), f"{hook_path.name} did not parse as a JSON object"
+        assert data.get("version") == "v1", (
+            f'{hook_path.name} must have top-level version "v1"'
+        )
+        assert isinstance(data.get("hooks"), list) and data["hooks"], (
+            f"{hook_path.name} must contain a non-empty 'hooks' array"
+        )
 
     @pytest.mark.parametrize("hook_id,data", _hook_data, ids=_hook_ids)
     def test_contains_all_required_fields(self, hook_id: str, data: dict):
-        """Each hook contains all required fields for its action type (Req 2.2).
+        """Each v1 entry contains name, trigger, and a valid action (Req 2.2).
 
-        askAgent hooks require then.prompt; runCommand hooks require then.command.
+        agent actions require ``action.prompt``; command actions require
+        ``action.command``.
         """
-        missing = required_fields_for_action(data)
+        missing: list[str] = []
+        if not data.get("name"):
+            missing.append("name")
+        if not data.get("trigger"):
+            missing.append("trigger")
+        action = data.get("action")
+        if not isinstance(action, dict):
+            missing.append("action")
+        else:
+            action_type = action.get("type")
+            if action_type == "agent" and not action.get("prompt"):
+                missing.append("action.prompt")
+            elif action_type == "command" and not action.get("command"):
+                missing.append("action.command")
+            elif action_type not in ("agent", "command"):
+                missing.append("action.type")
         assert not missing, (
             f'"{hook_id}" missing required field(s): {", ".join(missing)}'
         )
 
 
 # ===========================================================================
-# TestHookEventTypes — Req 2.3
+# TestHookTriggers — Req 2.3
 # ===========================================================================
 
-class TestHookEventTypes:
-    """Verify every hook's when.type is a valid Event_Type."""
+class TestHookTriggers:
+    """Verify every hook's trigger is a valid 1.0 trigger and action type is 1.0."""
 
     @pytest.mark.parametrize("hook_id,data", _hook_data, ids=_hook_ids)
-    def test_event_type_is_valid(self, hook_id: str, data: dict):
-        """Each hook's when.type is in VALID_EVENT_TYPES (Req 2.3)."""
-        event_type = data.get("when", {}).get("type", "")
-        assert event_type in VALID_EVENT_TYPES, (
-            f'"{hook_id}" has invalid event type: "{event_type}"'
+    def test_trigger_is_valid(self, hook_id: str, data: dict):
+        """Each hook's trigger is in the 1.0 trigger set (Req 2.3)."""
+        trigger = data.get("trigger", "")
+        assert trigger in V1_TRIGGERS, (
+            f'"{hook_id}" has invalid trigger: "{trigger}"'
+        )
+
+    @pytest.mark.parametrize("hook_id,data", _hook_data, ids=_hook_ids)
+    def test_action_type_is_valid(self, hook_id: str, data: dict):
+        """Each hook's action type is one of the 1.0 types agent/command."""
+        action_type = data.get("action", {}).get("type", "")
+        assert action_type in ("agent", "command"), (
+            f'"{hook_id}" has invalid action type: "{action_type}"'
         )
 
 
 # ===========================================================================
-# TestHookPromptLength — Req 2.4
+# TestHookActionContent — Req 2.4
 # ===========================================================================
 
-class TestHookPromptLength:
-    """Verify askAgent hooks have a >= 20 char prompt; runCommand hooks have a command."""
+class TestHookActionContent:
+    """Verify agent hooks have a >= 20 char prompt; command hooks have a command."""
 
     @pytest.mark.parametrize("hook_id,data", _hook_data, ids=_hook_ids)
     def test_prompt_at_least_20_chars(self, hook_id: str, data: dict):
-        """askAgent prompts are >= 20 chars; runCommand hooks carry a command instead (Req 2.4)."""
-        then = data.get("then", {})
-        if then.get("type") == "runCommand":
-            command = then.get("command", "")
+        """agent prompts are >= 20 chars; command hooks carry a command instead (Req 2.4)."""
+        action = data.get("action", {})
+        if action.get("type") == "command":
+            command = action.get("command", "")
             assert isinstance(command, str) and command.strip(), (
-                f'"{hook_id}" is a runCommand hook but has no then.command'
+                f'"{hook_id}" is a command hook but has no action.command'
             )
             return
-        prompt = then.get("prompt", "")
+        prompt = action.get("prompt", "")
         assert isinstance(prompt, str) and len(prompt) >= 20, (
             f'"{hook_id}" prompt is {len(prompt)} chars, minimum is 20'
         )
 
 
 # ===========================================================================
-# TestHookConditionalFields — Req 2.5, 2.6
+# TestHookMatcherScoping — Req 2.5, 2.6
 # ===========================================================================
 
-class TestHookConditionalFields:
-    """Verify file-event hooks have when.patterns and tool-event hooks have when.toolTypes."""
+class TestHookMatcherScoping:
+    """Verify scoped triggers carry a compilable matcher and unscoped ones omit it."""
 
     @pytest.mark.parametrize("hook_id,data", _hook_data, ids=_hook_ids)
-    def test_file_event_hooks_have_patterns(self, hook_id: str, data: dict):
-        """File-event hooks have non-empty when.patterns (Req 2.5)."""
-        event_type = data.get("when", {}).get("type", "")
-        if event_type not in FILE_EVENT_TYPES:
-            pytest.skip("Not a file event hook")
-        patterns = data.get("when", {}).get("patterns")
-        assert patterns and isinstance(patterns, list) and len(patterns) > 0, (
-            f'"{hook_id}" with event type "{event_type}" missing when.patterns'
+    def test_scoped_triggers_have_compilable_matcher(self, hook_id: str, data: dict):
+        """File/tool triggers carry a single matcher regex that compiles (Req 2.5, 2.6)."""
+        trigger = data.get("trigger", "")
+        if trigger not in V1_SCOPED_TRIGGERS:
+            pytest.skip("Not a scoped (file/tool) trigger")
+        matcher = data.get("matcher")
+        assert isinstance(matcher, str) and matcher, (
+            f'"{hook_id}" with scoped trigger "{trigger}" is missing a matcher'
         )
+        try:
+            re.compile(matcher)
+        except re.error as exc:
+            pytest.fail(f'"{hook_id}" matcher is not a valid regex: {exc}')
 
     @pytest.mark.parametrize("hook_id,data", _hook_data, ids=_hook_ids)
-    def test_tool_event_hooks_have_tool_types(self, hook_id: str, data: dict):
-        """Tool-event hooks have non-empty when.toolTypes (Req 2.6)."""
-        event_type = data.get("when", {}).get("type", "")
-        if event_type not in TOOL_EVENT_TYPES:
-            pytest.skip("Not a tool event hook")
-        tool_types = data.get("when", {}).get("toolTypes")
-        assert tool_types and isinstance(tool_types, list) and len(tool_types) > 0, (
-            f'"{hook_id}" with event type "{event_type}" missing when.toolTypes'
+    def test_unscoped_triggers_omit_matcher(self, hook_id: str, data: dict):
+        """Unscoped triggers (Stop/UserPromptSubmit/PostTaskExec) omit the matcher."""
+        trigger = data.get("trigger", "")
+        if trigger not in V1_UNSCOPED_TRIGGERS:
+            pytest.skip("Not an unscoped trigger")
+        assert not data.get("matcher"), (
+            f'"{hook_id}" with unscoped trigger "{trigger}" should omit the matcher, '
+            f'got {data.get("matcher")!r}'
         )
 
 
 # ===========================================================================
-# TestHookVersionFormat — Req 2.7, 7.1, 7.3
+# TestHookWrapperVersion — Req 2.7, 7.1, 7.3
 # ===========================================================================
 
-class TestHookVersionFormat:
-    """Verify version matches semver format with no leading zeros."""
+class TestHookWrapperVersion:
+    """Verify each hook file's wrapper declares the v1 schema version."""
 
-    @pytest.mark.parametrize("hook_id,data", _hook_data, ids=_hook_ids)
-    def test_version_is_valid_semver(self, hook_id: str, data: dict):
-        """Each hook's version matches X.Y.Z semver format (Req 2.7, 7.1)."""
-        version = data.get("version", "")
-        assert SEMVER_PATTERN.match(version), (
-            f'"{hook_id}" has invalid version: "{version}" '
-            f"(expected format: major.minor.patch with no leading zeros)"
+    @pytest.mark.parametrize("hook_path", _hook_files, ids=[p.name for p in _hook_files])
+    def test_wrapper_version_is_v1(self, hook_path: Path):
+        """Each hook file's top-level version equals "v1" (Req 2.7, 7.1)."""
+        wrapper = load_hook_wrapper(hook_path)
+        assert wrapper.get("version") == "v1", (
+            f'"{hook_path.name}" has invalid wrapper version: '
+            f'"{wrapper.get("version")}" (expected "v1")'
         )
-
-    @pytest.mark.parametrize("hook_id,data", _hook_data, ids=_hook_ids)
-    def test_version_no_leading_zeros(self, hook_id: str, data: dict):
-        """No version component has leading zeros (Req 7.3)."""
-        version = data.get("version", "")
-        parts = version.split(".")
-        if len(parts) == 3:
-            for part in parts:
-                if len(part) > 1 and part.startswith("0"):
-                    pytest.fail(
-                        f'"{hook_id}" version "{version}" has leading zero in component "{part}"'
-                    )
 
 
 # ===========================================================================
@@ -167,11 +222,10 @@ class TestHookVersionFormat:
 # ===========================================================================
 
 class TestHookCount:
-    """Verify the expected number of .kiro.hook files exist."""
+    """Verify the expected number of .json hook files exist."""
 
     def test_hook_file_count_matches_categories(self):
         """Hook file count matches unique hook IDs in hook-categories.yaml (Req 2.8)."""
-        from hook_test_helpers import parse_categories_yaml
         categories = parse_categories_yaml()
         unique_hook_ids: set[str] = set()
         for ids in categories.values():

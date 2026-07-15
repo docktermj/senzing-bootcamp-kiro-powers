@@ -1,0 +1,145 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Falsifying example: test_gate_active_requires_awareness_and_transition(\n    ctx={'trigger': 'Stop',\n         'assistantMessage': \"Here's the entity resolution introduction.\\n\\n> ⛔ **MANDATORY GATE** — Entity Resolution Exploration\\n>\\n> 🛑 **STOP — End your response here.** Wait for the bootcamper's real input.\",\n         'userMessage': 'ready',\n         'currentStepHasMandatoryGate': True,\n         'mandatoryGateNotCleared': True},\n)\nAssertionError: Bug condition holds but handoff safeguards are missing:\n  Phase 1 gate-awareness constraint present=False\n  steering Step 3 -> Step 4 transition directive present=False\n\nScenario 1 (ask-bootcamper.json Phase 1): No gate-awareness constraint — Phase 1's \"SECOND — Recap and closing question\" block contains no ⛔/mandatory-gate detection and no generic-forward-language rule, so the closing question can preview gate-locked Step 4 content.\n\nScenario 2 (onboarding-phase1b-intro-language.md): The region between \"## 3. Entity Resolution Introduction\" and \"## 4. Programming Language Selection\" holds only a #[[file:]] reference plus a comment saying the agent MUST NOT proceed past the step — no directive routes readiness signals (\"ready\", \"let's go\", \"continue\", \"next\", \"move on\") to Step 4.\n\nResult: 3 failed, 2 passed (the 2 passing tests are the baseline section/region-exists sanity checks).",
+      "lastRunTimestamp": 1783962751828
+    },
+    "3.3 Verify bug condition exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1783963480186
+    },
+    "3.4 Verify preservation tests still pass": {
+      "status": "passed",
+      "lastRunTimestamp": 1783963532104
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783962488215
+      },
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783962495565
+      },
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783962769710
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783962488358
+      },
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783962776416
+      },
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783963163227
+      }
+    ],
+    "3.1 Add gate-awareness constraint to Phase 1 in `ask-bootcamper.json`": [
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783962488389
+      },
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783963171901
+      },
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783963329634
+      }
+    ],
+    "3.2 Add explicit transition directive in `onboarding-phase1b-intro-language.md`": [
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783962488456
+      },
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783963332634
+      },
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783963446077
+      }
+    ],
+    "3.3 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783962488490
+      },
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783963449029
+      },
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783963491414
+      }
+    ],
+    "3.4 Verify preservation tests still pass": [
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783962488522
+      },
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783963494445
+      },
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783963545148
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783962488556
+      },
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783963548926
+      },
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783963599223
+      }
+    ],
+    "3. Fix for gate-active closing question preview and missing transition directive": [
+      {
+        "executionId": "16c43990-1853-47ce-8081-c070d0324d47",
+        "chatSessionId": "sess_1315eb7d-95ba-4f72-99dc-5c733cbe95c1",
+        "timestamp": 1783963545202
+      }
+    ]
+  }
+}

@@ -171,6 +171,29 @@ def read_requirements_dev() -> list[str]:
     return _REQUIREMENTS_DEV_PATH.read_text(encoding="utf-8").splitlines()
 
 
+def run_invokes_gate(run: str, command: str) -> bool:
+    """Return True if *run* invokes *command* as a standalone gate.
+
+    Uses substring matching but rejects occurrences where the command is a
+    strict prefix of a longer invocation of the *same* script — i.e. the
+    command is immediately followed (ignoring spaces/tabs) by an additional
+    ``-``/``--`` flag. This keeps a distinct flagged invocation such as
+    ``validate_governance_rules.py --check write-gates`` (the Kiro 1.0
+    write-gate preservation guard) from being miscounted as the bare
+    ``validate_governance_rules.py`` gate, so each canonical gate still counts
+    exactly once.
+    """
+    start = 0
+    while True:
+        idx = run.find(command, start)
+        if idx == -1:
+            return False
+        rest = run[idx + len(command):].lstrip(" \t")
+        if not rest.startswith("-"):
+            return True
+        start = idx + len(command)
+
+
 # ---------------------------------------------------------------------------
 # Property tests: gate-set preservation and placement (Properties 1-4)
 # ---------------------------------------------------------------------------
@@ -238,7 +261,7 @@ class TestGatePreservation:
         gates_runs = collect_run_strings_by_job(workflow).get("gates", [])
 
         for command in CANONICAL_GATE_COMMANDS:
-            count = sum(1 for run in gates_runs if command in run)
+            count = sum(1 for run in gates_runs if run_invokes_gate(run, command))
             assert count == 1, (
                 f"Gate command must run exactly once in gates job, found "
                 f"{count}: {command!r}"

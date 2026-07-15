@@ -1553,9 +1553,9 @@ class TestShippedFixturesPassProperty:
     """
 
     def test_starter_set_is_present(self) -> None:
-        """The shipped set is non-empty (4 starter + 4 coverage fixtures)."""
+        """The shipped set is non-empty (4 starter + 4 coverage + 1 regression fixture)."""
         assert _SHIPPED_FIXTURES, f"no shipped fixtures found under {_EVAL_DIR}"
-        assert len(_SHIPPED_FIXTURES) == 8  # 4 starter + 4 coverage fixtures
+        assert len(_SHIPPED_FIXTURES) == 9  # 4 starter + 4 coverage + 1 regression fixture
 
     @given(st.sampled_from(_SHIPPED_FIXTURES))
     @settings(max_examples=20)

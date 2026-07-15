@@ -232,10 +232,10 @@ class TestPreservationVersionFileRead:
     """
 
     def test_read_version_returns_current_version(self) -> None:
-        """read_version() reads from VERSION file and returns '0.1.3'."""
+        """read_version() reads from VERSION file and returns '0.2.0'."""
         result = read_version()
-        assert result == "0.1.3", (
-            f"Expected '0.1.3' from VERSION file, got {result!r}"
+        assert result == "0.2.0", (
+            f"Expected '0.2.0' from VERSION file, got {result!r}"
         )
 
     @given(components=st_semver_components())

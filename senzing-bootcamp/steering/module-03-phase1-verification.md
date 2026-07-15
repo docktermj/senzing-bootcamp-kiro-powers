@@ -111,28 +111,42 @@ Verify MCP server connectivity before proceeding with code generation operations
 
 ### Step 2: TruthSet Acquisition
 
-Retrieve the Senzing TruthSet data for deterministic verification.
+**The primary MCP path takes precedence** — the sanctioned fallback source is used ONLY when the MCP server exposes no usable TruthSet.
 
-1. Call `get_sample_data` to retrieve the TruthSet. Do NOT offer the bootcamper a choice of datasets — TruthSet is always used.
-2. Save the TruthSet data to `src/system_verification/truthset_data.jsonl`, overwriting any previously existing file.
-3. **Validate the saved file:**
-   - Confirm the file contains one valid JSON object per line
-   - Confirm the total line count matches the record count reported by the MCP server response
-4. **If retrieval fails** (network error, timeout exceeding 30 seconds, or MCP server error): Display an error message identifying the failure reason and suggest troubleshooting steps (check MCP connectivity, verify MCP server is reachable at `mcp.senzing.com`, retry).
-5. **If validation fails** (line count mismatch or invalid JSON on any line): Display an error message identifying which validation failed. Do NOT proceed to data loading.
+1. Call `get_sample_data`; inspect the response for a named TruthSet reference (Req 1.1). **Classify and record BEFORE picking a path** (Req 1.2–1.4): `available` = a named TruthSet reference (name matches "TruthSet", or `type: truthset`) with retrievable records; `unavailable` = the response does not include a named TruthSet, holding only the CORD collections (Las Vegas, London, Moscow). Write `primary_available` and `classification_reason` (`truthset_found`/`cord_only`) to `config/bootcamp_progress.json`.
+2. **Primary path — `available` (precedence, unchanged; Req 2.1–2.3):** save the MCP records to `src/system_verification/truthset_data.jsonl` (overwrite existing, one JSON object per line), set `source_provenance` to `mcp_primary`, and pass the MCP Expected_Results to Step 7 unchanged (30-second timeout).
+3. **Fallback path — `unavailable` (Req 3.1–3.3, 5.3, 9.3):** fetch the demo TruthSet **DATA only** from the Sanctioned_Fallback_Source (all Senzing SDK facts still come from the MCP server). Copy `scripts/fetch_fallback_truthset.py` into `src/system_verification/` (Agent Rule 5) and run it against `config/fallback_sources.yaml` for source id `senzing_truthset_demo` — never a raw URL. It fetches over HTTPS within the registry timeout, writes `truthset_data.jsonl` (overwriting existing), and derives Fallback_Expected_Results. On `success`, set `source_provenance` to `github_fallback`, record `records_written`, and pass its `expected_results` to Step 7 in place of the MCP results; otherwise record the `error` in `fallback_error` and do NOT proceed.
 
-Store the expected record count from the MCP response — it will be used in later validation steps.
+If both the MCP TruthSet and the fallback fail, run Step 2a; do NOT improvise a CORD substitute. Store the expected record count (MCP response, or `records_written`) for later validation.
 
-**Checkpoint:** Write to `config/bootcamp_progress.json`:
+**Checkpoint:** Write to `config/bootcamp_progress.json` (on fallback success set `source_provenance: github_fallback`, `primary_available: false`, `classification_reason: cord_only`):
 
 ```json
-{
-  "module_3_verification": {
-    "checks": {
-      "truthset_acquisition": {"status": "passed", "records": <line_count>}
-    }
-  }
-}
+{"module_3_verification": {"checks": {"truthset_acquisition": {
+  "status": "passed", "records": <record_count>, "source_provenance": "mcp_primary",
+  "primary_available": true, "classification_reason": "truthset_found",
+  "fallback_attempted": false, "fallback_error": null}}}}
+```
+
+### Step 2a: Graceful Degradation — both TruthSet sources unavailable
+
+Run ONLY when Step 2 classified the Primary_TruthSet `unavailable` AND the fallback did NOT return `success`. Otherwise skip to Step 3.
+
+1. **Report both failures with remediation (Req 7.1):** name the MCP TruthSet failure AND the sanctioned fallback failure (reference the fallback by registry id `senzing_truthset_demo` in `config/fallback_sources.yaml`, never a raw URL), then remediation — verify MCP connectivity, verify the fallback source is reachable, and say "retry" to re-run Step 2.
+2. **Offer a clearly labeled NON-DETERMINISTIC substitute, then WAIT (Req 7.2):** offer a CORD_Collection (Las Vegas, London, or Moscow) that exercises the pipeline but has no known-good expected results — a non-deterministic substitute, so Step 7 is recorded `non_deterministic` (never `passed`) and Module 3 is `incomplete`. Do NOT decide for the bootcamper.
+
+   > 🛑 STOP — End your response here. Wait for the bootcamper's input.
+
+3. **If ACCEPTED (Req 7.3):** proceed with the chosen CORD_Collection, set `source_provenance` to `cord_substitute`, mark the Deterministic_Verification check `non_deterministic` (never `passed`).
+4. **If DECLINED (Req 7.4):** mark the check `blocked` and record the remediation.
+5. **Either way (Req 7.5):** a `non_deterministic` or `blocked` check sets overall Module 3 status to `incomplete`.
+
+**Checkpoint:** Write to `config/bootcamp_progress.json` (accepted → below; declined → `deterministic_verification: "blocked"`, `status: "blocked"`, `source_provenance: null`):
+
+```json
+{"module_3_verification": {"checks": {"truthset_acquisition": {
+  "status": "non_deterministic", "source_provenance": "cord_substitute",
+  "deterministic_verification": "non_deterministic"}}, "status": "incomplete"}}
 ```
 
 ### Step 3: SDK Initialization

@@ -31,7 +31,7 @@ STEERING_DIR = Path("senzing-bootcamp/steering")
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
 INDEX_PATH = Path("senzing-bootcamp/steering/steering-index.yaml")
 
-VALID_INCLUSIONS = {"always", "auto", "fileMatch", "manual"}
+VALID_INCLUSIONS = {"always", "fileMatch", "manual"}
 VALID_SIZE_CATEGORIES = {"small", "medium", "large"}
 
 # Split_Check fallback (Requirements 1.3, 1.4, 1.5, 1.7): the Default_Threshold
@@ -1472,11 +1472,11 @@ def check_hook_consistency(steering_dir: Path, hooks_dir: Path) -> list:
     # Path used in registry-side violation messages (the canonical registry).
     registry_path = existing_paths[0]
 
-    # Find all .kiro.hook files on disk
+    # Find all Kiro 1.0 v1 ``<id>.json`` hook files on disk
     hook_files_on_disk = {}
     if hooks_path.exists():
-        for hf in sorted(hooks_path.glob("*.kiro.hook")):
-            hook_id = hf.name.replace(".kiro.hook", "")
+        for hf in sorted(hooks_path.glob("*.json")):
+            hook_id = hf.name[: -len(".json")]
             hook_files_on_disk[hook_id] = hf
 
     # (b) Registry IDs without corresponding hook files
@@ -1485,7 +1485,7 @@ def check_hook_consistency(steering_dir: Path, hooks_dir: Path) -> list:
             violations.append(LintViolation(
                 "ERROR", str(registry_path), 0,
                 f"Hook '{hook_id}' is in the registry but has no "
-                f"corresponding .kiro.hook file in {hooks_dir}"
+                f"corresponding .json hook file in {hooks_dir}"
             ))
 
     # (c) Hook files not in registry
@@ -1497,7 +1497,7 @@ def check_hook_consistency(steering_dir: Path, hooks_dir: Path) -> list:
                 f"in the hook registry"
             ))
 
-    # (d) Event type mismatches
+    # (d) Event type (trigger) mismatches
     for hook_id in registry_ids & set(hook_files_on_disk.keys()):
         hf = hook_files_on_disk[hook_id]
         try:
@@ -1508,7 +1508,10 @@ def check_hook_consistency(steering_dir: Path, hooks_dir: Path) -> list:
             ))
             continue
 
-        file_event_type = hook_data.get("when", {}).get("type", "")
+        # Kiro 1.0 v1 wrapper: the trigger lives at hooks[0].trigger.
+        entries = hook_data.get("hooks") if isinstance(hook_data, dict) else None
+        first_entry = entries[0] if isinstance(entries, list) and entries else {}
+        file_event_type = first_entry.get("trigger", "") if isinstance(first_entry, dict) else ""
         registry_event = registry_event_types.get(hook_id, "")
 
         if registry_event and file_event_type and registry_event != file_event_type:

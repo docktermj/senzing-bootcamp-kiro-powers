@@ -57,9 +57,9 @@ _ALL_AFFECTED_FILES: list[tuple[Path, str]] = [
     (_DEPLOY_K8S, "deployment-kubernetes.md"),
 ]
 
-# All hook JSON files that must remain byte-identical
+# All v1 hook JSON files that must remain byte-identical
 _HOOK_FILES: list[tuple[Path, str]] = [
-    (p, p.name) for p in sorted(_HOOKS_DIR.glob("*.kiro.hook"))
+    (p, p.name) for p in sorted(_HOOKS_DIR.glob("*.json"))
 ]
 
 
@@ -212,14 +212,15 @@ _UNFIXED_PHASE2_STEPS: dict[int, str] = {
     for n in _PHASE2_NON_QUESTION_STEPS
 }
 
-# Onboarding non-question steps: 0, 1, 1b, 2, 5
-# (post-restructuring numbering: prerequisite check is now Step 2 in
-# onboarding-flow.md, and bootcamp introduction is now Step 5 in
-# onboarding-phase1b-intro-language.md)
+# Onboarding non-question steps: 0, 1, 1b, 2, 4
+# (post-reorder numbering: prerequisite check is Step 2 in onboarding-flow.md,
+# and the bootcamp introduction is Step 4 in onboarding-phase1b-intro-language.md.
+# Step 5 is now Track Selection — a mandatory gate with a 🛑 STOP — so it is NOT
+# a non-question step and must not be used here.)
 _UNFIXED_ONBOARDING = _read_file(_ONBOARDING)
 _UNFIXED_ONBOARDING_PHASE1B = _read_file(_ONBOARDING_PHASE1B)
 _UNFIXED_ONBOARDING_PHASE2 = _read_file(_ONBOARDING_PHASE2)
-_ONBOARDING_NON_QUESTION_STEP_IDS = ["0", "1", "1b", "2", "5"]
+_ONBOARDING_NON_QUESTION_STEP_IDS = ["0", "1", "1b", "2", "4"]
 _UNFIXED_ONBOARDING_STEPS: dict[str, str] = {
     sid: _extract_onboarding_step_both_files(sid)
     for sid in _ONBOARDING_NON_QUESTION_STEP_IDS
@@ -267,12 +268,12 @@ def _extract_ask_bootcamper_second_branch(content: str) -> str:
     second_match = re.search(r"SECOND\s*—", content)
     if not second_match:
         # Try reading from the hook file
-        hook_file = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+        hook_file = _HOOKS_DIR / "ask-bootcamper.json"
         if hook_file.exists():
             import json
             try:
                 hook_data = json.loads(hook_file.read_text(encoding="utf-8"))
-                prompt = hook_data.get("then", {}).get("prompt", "")
+                prompt = hook_data["hooks"][0].get("action", {}).get("prompt", "")
                 second_match = re.search(r"SECOND\s*—", prompt)
                 if second_match:
                     return prompt[second_match.start():]
@@ -448,16 +449,17 @@ class TestPhase2NonQuestionStepsPreserved:
 
 
 class TestOnboardingNonQuestionStepsPreserved:
-    """Onboarding non-question steps (0, 1, 1b, 2, 5) unchanged.
+    """Onboarding non-question steps (0, 1, 1b, 2, 4) unchanged.
 
     **Validates: Requirements 3.1, 3.2, 3.4**
 
     These steps contain setup, prerequisite, and informational
     content that must not gain stop-and-wait directives.
 
-    Note: after the onboarding restructuring, the prerequisite check
-    is Step 2 (onboarding-flow.md) and the bootcamp introduction is
-    Step 5 (onboarding-phase1b-intro-language.md).
+    Note: after the preface reorder, the prerequisite check is Step 2
+    (onboarding-flow.md) and the bootcamp introduction is Step 4
+    (onboarding-phase1b-intro-language.md). Step 5 is now Track Selection,
+    a mandatory gate, so it is excluded from the non-question steps.
     """
 
     def test_step0_content_unchanged(self) -> None:
@@ -504,18 +506,19 @@ class TestOnboardingNonQuestionStepsPreserved:
             f"Got: {current[:300]}"
         )
 
-    def test_step5_content_unchanged(self) -> None:
-        """Step 5 (bootcamp introduction) is unchanged."""
-        current = _extract_onboarding_step_both_files("5")
-        baseline = _UNFIXED_ONBOARDING_STEPS["5"]
-        assert baseline, "Baseline for Step 5 is empty"
+    def test_step4_content_unchanged(self) -> None:
+        """Step 4 (bootcamp introduction) is unchanged."""
+        current = _extract_onboarding_step_both_files("4")
+        baseline = _UNFIXED_ONBOARDING_STEPS["4"]
+        assert baseline, "Baseline for Step 4 is empty"
         assert current == baseline, (
-            f"Step 5 content changed.\n"
+            f"Step 4 content changed.\n"
             f"Expected: {baseline[:300]}\n"
             f"Got: {current[:300]}"
         )
 
-    # Step 4c removed from non-question steps — it now has a 👉 question with 🛑 STOP
+    # Track Selection (Step 5) and the comprehension check (Step 5b) are gates
+    # with 👉 questions and 🛑 STOP directives, so they are excluded here.
 
 
 # ---------------------------------------------------------------------------
@@ -709,12 +712,12 @@ class TestHookFilesUnchanged:
             )
 
     def test_ask_bootcamper_hook_unchanged(self) -> None:
-        """ask-bootcamper.kiro.hook specifically is unchanged."""
-        hook_path = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+        """ask-bootcamper.json specifically is unchanged."""
+        hook_path = _HOOKS_DIR / "ask-bootcamper.json"
         current = hook_path.read_bytes()
-        baseline = _UNFIXED_HOOK_BYTES["ask-bootcamper.kiro.hook"]
+        baseline = _UNFIXED_HOOK_BYTES["ask-bootcamper.json"]
         assert current == baseline, (
-            "ask-bootcamper.kiro.hook has been modified."
+            "ask-bootcamper.json has been modified."
         )
 
 

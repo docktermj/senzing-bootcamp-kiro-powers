@@ -32,40 +32,54 @@ _PROJECT_STRUCTURE = _BOOTCAMP_DIR / "steering" / "project-structure.md"
 # Observation: The Linux/macOS mkdir -p brace-expansion command text.
 # Re-baselined by the docs-file-placement bugfix (Change 4): the project-structure
 # convention dropped the top-level ``scripts`` directory in favor of ``src/scripts``
-# and added the ``docs/{mapping,reference,progress}`` subdirectories. The command
-# STRUCTURE (brace expansion, single invocation) is preserved; only the directory
-# list content tracks the approved convention change.
+# and added the ``docs/{mapping,reference,progress}`` subdirectories. Re-baselined
+# again by the file-placement-conventions bugfix (Task 6.1): ``mapping`` was added
+# to the ``data/{...}`` brace expansion and ``resources`` to the ``src/{...}`` brace
+# expansion so downloaded resource scripts and mapping working-data have durable
+# homes. The command STRUCTURE (brace expansion, single invocation) is preserved;
+# only the directory list content tracks the approved convention change.
 OBSERVED_MKDIR_COMMAND = (
-    "mkdir -p data/{raw,transformed,samples,backups,temp} database licenses "
-    "src/{transform,load,query,utils,scripts} tests backups "
+    "mkdir -p data/{raw,transformed,samples,backups,temp,mapping} database licenses "
+    "src/{transform,load,query,utils,scripts,resources} tests backups "
     "docs/{feedback,mapping,reference,progress} config logs monitoring"
 )
 
 # Observation: The Python os.makedirs loop content (verbatim). Re-baselined by the
-# docs-file-placement bugfix (Change 4) — see the note on OBSERVED_MKDIR_COMMAND.
+# docs-file-placement bugfix (Change 4) and again by the file-placement-conventions
+# bugfix (Task 6.1, which added ``data/mapping`` and ``src/resources``) — see the
+# note on OBSERVED_MKDIR_COMMAND.
 OBSERVED_PYTHON_LOOP = '''```python
 import os
 for d in [
     "data/raw", "data/transformed", "data/samples", "data/backups", "data/temp",
-    "database", "licenses", "src/transform", "src/load", "src/query", "src/utils",
-    "src/scripts", "tests", "backups", "docs/feedback", "docs/mapping",
-    "docs/reference", "docs/progress", "config", "logs", "monitoring",
+    "data/mapping", "database", "licenses", "src/transform", "src/load", "src/query",
+    "src/utils", "src/scripts", "src/resources", "tests", "backups", "docs/feedback",
+    "docs/mapping", "docs/reference", "docs/progress", "config", "logs", "monitoring",
 ]:
     os.makedirs(d, exist_ok=True)
 ```'''
 
-# Observation: YAML frontmatter inclusion setting
-OBSERVED_FRONTMATTER_INCLUSION = "inclusion: auto"
+# Observation: YAML frontmatter inclusion setting. Re-baselined by the
+# steering-inclusion-auto-audit spec: project-structure.md was re-classified
+# from the non-standard ``inclusion: auto`` to the standard ``inclusion:
+# manual`` mode (Decision_Record: keyword-routed via ``project-structure``;
+# loaded on explicit reference). The frontmatter STRUCTURE is preserved; only
+# the inclusion value tracks the approved re-classification.
+OBSERVED_FRONTMATTER_INCLUSION = "inclusion: manual"
 
 # Observation: All required directory paths present in the file. Re-baselined by the
 # docs-file-placement bugfix (Change 4): ``scripts`` -> ``src/scripts`` and the
-# ``docs/{mapping,reference,progress}`` subdirectories were added.
+# ``docs/{mapping,reference,progress}`` subdirectories were added. Re-baselined again
+# by the file-placement-conventions bugfix (Task 6.1): ``data/mapping`` and
+# ``src/resources`` were added as durable homes for mapping working-data and
+# downloaded resource scripts.
 ALL_REQUIRED_DIRS: list[str] = [
     "data/raw",
     "data/transformed",
     "data/samples",
     "data/backups",
     "data/temp",
+    "data/mapping",
     "database",
     "licenses",
     "src/transform",
@@ -73,6 +87,7 @@ ALL_REQUIRED_DIRS: list[str] = [
     "src/query",
     "src/utils",
     "src/scripts",
+    "src/resources",
     "tests",
     "backups",
     "docs/feedback",
@@ -334,12 +349,14 @@ class TestFrontmatterPreservation:
 
     **Validates: Requirements 3.4**
 
-    Assert YAML frontmatter 'inclusion: auto' is preserved.
-    On unfixed code this PASSES — confirming the baseline.
+    Assert the YAML frontmatter inclusion mode (now the standard
+    ``inclusion: manual``, re-classified from the non-standard ``auto`` by the
+    steering-inclusion-auto-audit spec) is preserved across platforms. The
+    platform-specific directory-creation fix must not touch the frontmatter.
     """
 
-    def test_frontmatter_contains_inclusion_auto(self) -> None:
-        """The YAML frontmatter must contain 'inclusion: auto'."""
+    def test_frontmatter_contains_inclusion_manual(self) -> None:
+        """The YAML frontmatter must contain 'inclusion: manual'."""
         content = _read_steering_file()
         frontmatter = _extract_frontmatter(content)
         assert OBSERVED_FRONTMATTER_INCLUSION in frontmatter, (
@@ -354,7 +371,7 @@ class TestFrontmatterPreservation:
 
         **Validates: Requirements 3.4**
 
-        The frontmatter controls auto-inclusion behavior and must not
+        The frontmatter controls the file's inclusion behavior and must not
         change as part of any platform-specific fix.
         """
         content = _read_steering_file()

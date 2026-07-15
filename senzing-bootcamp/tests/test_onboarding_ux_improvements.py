@@ -52,37 +52,38 @@ def _read_onboarding_flow() -> str:
 
 
 def _extract_between_unfamiliar_and_4a(text: str) -> str:
-    """Extract text between the 'unfamiliar terms' bullet and '### 5a' heading.
+    """Extract text between the 'unfamiliar terms' bullet and '### 4a' heading.
 
     Returns the content strictly after the unfamiliar terms bullet line
-    and before the ### 5a heading line. After the onboarding split, the
-    Verbosity Preference sub-step is Step 5a (it was 4a/4b pre-split), so
-    the hook files note sits between the unfamiliar-terms bullet and the
-    '### 5a' heading within the Bootcamp Introduction (Step 5).
+    and before the ### 4a heading line. After the preface reorder (track
+    before language), the Verbosity Preference sub-step is Step 4a (programming
+    language selection moved to phase 2), so the hook files note sits between
+    the unfamiliar-terms bullet and the '### 4a' heading within the Bootcamp
+    Introduction (Step 4).
     """
     lines = text.splitlines(keepends=True)
     unfamiliar_idx: int | None = None
-    heading_5a_idx: int | None = None
+    heading_4a_idx: int | None = None
 
     for i, line in enumerate(lines):
         if "unfamiliar terms" in line.lower():
             unfamiliar_idx = i
-        if re.match(r"^###\s+5a\b", line):
-            heading_5a_idx = i
+        if re.match(r"^###\s+4a\b", line):
+            heading_4a_idx = i
             break
 
     assert unfamiliar_idx is not None, (
         "Could not find 'unfamiliar terms' bullet in "
         "onboarding-phase1b-intro-language.md"
     )
-    assert heading_5a_idx is not None, (
-        "Could not find '### 5a' heading in onboarding-phase1b-intro-language.md"
+    assert heading_4a_idx is not None, (
+        "Could not find '### 4a' heading in onboarding-phase1b-intro-language.md"
     )
-    assert unfamiliar_idx < heading_5a_idx, (
-        "'unfamiliar terms' bullet must appear before '### 5a' heading"
+    assert unfamiliar_idx < heading_4a_idx, (
+        "'unfamiliar terms' bullet must appear before '### 4a' heading"
     )
 
-    return "".join(lines[unfamiliar_idx + 1 : heading_5a_idx])
+    return "".join(lines[unfamiliar_idx + 1 : heading_4a_idx])
 
 
 # ---------------------------------------------------------------------------
@@ -104,10 +105,10 @@ class TestHookFilesNotePlacement:
         text = _read_onboarding_flow()
         between = _extract_between_unfamiliar_and_4a(text)
 
-        assert ".kiro.hook" in between, (
-            "Expected hook files note (mentioning '.kiro.hook') to appear "
-            "between the 'unfamiliar terms' bullet and '### 4a' heading in "
-            f"{ONBOARDING_FLOW.relative_to(REPO_ROOT)}"
+        assert ".json" in between, (
+            "Expected hook files note (mentioning '.json' hook files) to appear "
+            "between the 'unfamiliar terms' bullet and '### 5a' heading in "
+            f"{ONBOARDING_PHASE1B.relative_to(REPO_ROOT)}"
         )
 
     def test_hook_files_note_mentions_automated_quality_checks(self) -> None:

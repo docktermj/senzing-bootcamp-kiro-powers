@@ -20,13 +20,17 @@ from hypothesis import strategies as st
 # -------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-# After the onboarding split, the Comprehension Check (and its neighbouring
-# verbosity / language-selection / bootcamp-introduction steps) moved out of
-# onboarding-flow.md into onboarding-phase1b-intro-language.md. The content
-# moved unchanged; only the step numbers were rebased to the phase-file
-# sequence (language selection = Step 4, verbosity = Step 5a, comprehension
-# check = Step 5b). These preservation tests therefore read the phase file.
-_ONBOARDING_FILE = _BOOTCAMP_DIR / "steering" / "onboarding-phase1b-intro-language.md"
+# The Comprehension Check moved out of onboarding-flow.md into the phase files.
+# After the preface reorder (track before language), it follows programming
+# language selection and now lives in onboarding-phase2-track-setup.md as
+# Step 5b, alongside Track Selection (Step 5), Programming Language Selection
+# (Step 5a), and the Advanced Track Knowledge Check (Step 5c). The
+# missing-pointer-marker fix touches only the comprehension check, so these
+# preservation tests read the phase 2 track-setup file (the comprehension
+# check's new home). The Bootcamp Introduction informational content stayed in
+# phase 1b (Step 4); the one test that checks it reads that file explicitly.
+_ONBOARDING_FILE = _BOOTCAMP_DIR / "steering" / "onboarding-phase2-track-setup.md"
+_ONBOARDING_PHASE1B = _BOOTCAMP_DIR / "steering" / "onboarding-phase1b-intro-language.md"
 
 # -------------------------------------------------------------------
 # Helpers
@@ -117,14 +121,15 @@ def _identify_step_for_line(markdown: str, target_line: int) -> str | None:
 
 _UNFIXED_CONTENT = _read_onboarding()
 
-# Steps in the phase file that contain 👉 markers outside the Comprehension
-# Check (Step 5b). After the onboarding split, the phase file owns Steps 3–5b;
-# the 👉-bearing steps other than the comprehension check are the Programming
-# Language Selection (Step 4) and the Verbosity Preference (Step 5a).
-_STEPS_WITH_POINTER_OUTSIDE_4C = ["4", "5a"]
+# Steps in the phase 2 file that contain 👉 markers outside the Comprehension
+# Check (Step 5b). After the preface reorder, the track-setup file owns Steps
+# 5–5c; the 👉-bearing steps other than the comprehension check are Track
+# Selection (Step 5), Programming Language Selection (Step 5a), and the Advanced
+# Track Knowledge Check (Step 5c).
+_STEPS_WITH_POINTER_OUTSIDE_4C = ["5", "5a", "5c"]
 
-# All step IDs present in onboarding-phase1b-intro-language.md.
-_ALL_STEP_IDS = ["3", "4", "5", "5a", "5b"]
+# All step IDs present in onboarding-phase2-track-setup.md.
+_ALL_STEP_IDS = ["5", "5a", "5b", "5c"]
 
 # Steps that are NOT the Comprehension Check (Step 5b) — for content preservation.
 _NON_4C_STEP_IDS = [s for s in _ALL_STEP_IDS if s != "5b"]
@@ -203,22 +208,23 @@ class TestNonStep4cContentPreservation:
             )
 
     def test_step_4_informational_content_no_pointer(self) -> None:
-        """Step 4 informational content (overview, module table) has no 👉 prefix.
+        """Bootcamp Introduction (phase1b Step 4) informational content has no 👉 prefix.
 
-        The Step 4 section itself (excluding sub-steps 4a, 4b, 4c) contains
-        informational content that should NOT have a 👉 prefix.
+        The Bootcamp Introduction stayed in phase 1b (Step 4) after the preface
+        reorder. Its own content (excluding sub-step 4a Verbosity) is
+        informational (overview, module table) and should NOT have a 👉 prefix.
         """
-        content = _read_onboarding()
-        step_4 = _extract_section_by_step_id(content, "5")
-        assert step_4 is not None, "Step 4 not found"
+        content = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
+        step_4 = _extract_section_by_step_id(content, "4")
+        assert step_4 is not None, "Step 4 (Bootcamp Introduction) not found"
 
-        # Extract only the Step 4 own content (before first sub-step heading)
-        sub_step_start = re.search(r"^###\s+5[a-z]\.", step_4, re.MULTILINE)
+        # Extract only the Step 4 own content (before first sub-step heading, 4a)
+        sub_step_start = re.search(r"^###\s+4[a-z]\.", step_4, re.MULTILINE)
         step_4_own = step_4[:sub_step_start.start()] if sub_step_start else step_4
 
         assert "👉" not in step_4_own, (
-            "Step 4 informational content (overview, module table) "
-            "should not contain 👉 prefix"
+            "Step 4 (Bootcamp Introduction) informational content (overview, "
+            "module table) should not contain 👉 prefix"
         )
 
 
@@ -330,27 +336,25 @@ class TestStep4cResponseHandlingPreservation:
             f"Got:\n{current_clar[:500]}"
         )
 
-    def test_acknowledgment_proceeds_to_track_selection(self) -> None:
-        """Acknowledgment handling mentions proceeding to track selection.
+    def test_acknowledgment_proceeds_to_module1(self) -> None:
+        """Acknowledgment handling proceeds to Module 1 (or the Advanced check).
 
-        In the post-split phase file the Comprehension Check (Step 5b) is the
-        final step, so an acknowledgment proceeds directly to track selection
-        (loading ``onboarding-phase2-track-setup.md``) rather than to a
-        numbered "Step 5" within the same file. The shipped wording —
-        "proceed directly to track selection (load
-        ``onboarding-phase2-track-setup.md``)" — moved unchanged from the
-        pre-split onboarding-flow.md.
+        After the preface reorder, track selection PRECEDES the comprehension
+        check (Step 5b), which is the last preface step before Module 1. So an
+        acknowledgment now proceeds directly to Module 1 (or, on the Advanced
+        track, to the Advanced Track Knowledge Check) rather than to track
+        selection.
         """
         content = _read_onboarding()
-        step_4c = _extract_section_by_step_id(content, "5b")
-        assert step_4c is not None, "Step 5b not found"
-        assert "proceed directly to track selection" in step_4c, (
+        step_5b = _extract_section_by_step_id(content, "5b")
+        assert step_5b is not None, "Step 5b not found"
+        assert "proceed directly to Module 1" in step_5b, (
             "Step 5b acknowledgment handling missing 'proceed directly to "
-            "track selection'"
+            "Module 1'"
         )
-        assert "onboarding-phase2-track-setup.md" in step_4c, (
-            "Step 5b acknowledgment handling missing the track-setup load "
-            "reference 'onboarding-phase2-track-setup.md'"
+        assert "Advanced Track Knowledge Check" in step_5b, (
+            "Step 5b acknowledgment handling missing the Advanced-track branch "
+            "('Advanced Track Knowledge Check')"
         )
 
     def test_clarification_uses_verbosity_settings(self) -> None:

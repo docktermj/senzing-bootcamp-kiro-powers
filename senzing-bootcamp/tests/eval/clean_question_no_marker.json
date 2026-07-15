@@ -1,0 +1,23 @@
+{
+  "scenario": "clean_question_no_marker",
+  "description": "A question turn ends on a single, clean, non-compound 👉 question with NO rendered 🛑 STOP or ⛔ MANDATORY GATE line. The stop/gate semantics remain internal-only directives; the rendered turn boundary is recognizable from the trailing 👉 question alone. Pins the reconciliation that a bounded question turn needs no rendered marker (Bug 1 / C1 fix).",
+  "rule_ref": "agent-behavior-rules.md#rule-4; conversation-protocol.md#internal-only-directive",
+  "turns": [
+    {
+      "role": "bootcamper",
+      "content": "Give me a quick overview before we pick a track."
+    },
+    {
+      "role": "agent",
+      "content": "Here's the quick overview of how entity resolution fits your two customer systems: we map each source, load the records, and let Senzing resolve the duplicates into one clean master list.\n\n👉 **Does the overview make sense before we choose a track?**",
+      "assertions": [
+        {"type": "exactly_one_pointer"},
+        {"type": "ends_with_question_then_stop"},
+        {"type": "no_compound_question"},
+        {"type": "no_self_answer"},
+        {"type": "absent_marker", "marker": "🛑"},
+        {"type": "absent_marker", "marker": "⛔"}
+      ]
+    }
+  ]
+}

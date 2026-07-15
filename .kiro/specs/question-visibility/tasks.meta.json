@@ -1,0 +1,443 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Add the bold clause to `agent-behavior-rules.md` Rule 4": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473341607
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473369931
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473863603
+      }
+    ],
+    "1.2 Add the bold clause to `agent-instructions.md` Communication section": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473341774
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473376594
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473863636
+      }
+    ],
+    "1.3 Add the bold rule, checklist item, and self-check item to `conversation-protocol.md`": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473341836
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473378075
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473867158
+      }
+    ],
+    "1.4 Update `conversation-examples.md` canonical examples": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473341873
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473379149
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473867836
+      }
+    ],
+    "1.5 Write deterministic content-assertion tests for the four authoritative files": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473341908
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476132420
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476460668
+      }
+    ],
+    "2.1 Convert module 01–03 steering files": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473341947
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473379117
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473868109
+      }
+    ],
+    "2.2 Convert module 04–06 steering files": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473341990
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473904407
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783474902418
+      }
+    ],
+    "2.3 Convert module 07–08 steering files": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342023
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473909657
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783474904211
+      }
+    ],
+    "2.4 Convert module 09–11 steering files": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342088
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473911259
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783474905210
+      }
+    ],
+    "2.5 Convert onboarding steering files": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342125
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473912591
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783474906325
+      }
+    ],
+    "2.6 Convert session-resume steering files": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342162
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473914160
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783474906356
+      }
+    ],
+    "2.7 Convert feedback, visualization, and deployment steering files": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342207
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783474910497
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476095687
+      }
+    ],
+    "2.8 Sweep and convert any remaining question-bearing steering files": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342246
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783474914319
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476097663
+      }
+    ],
+    "3. Checkpoint - all question-bearing content converted before enforcement is activated": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342277
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476124678
+      }
+    ],
+    "4.1 Update `write-policy-gate.json` CHECK 2 to strip bold markers before counting": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342313
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783474914795
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476097834
+      }
+    ],
+    "4.2 Re-sync the hook registry after the prompt edit": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342346
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476133156
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476461755
+      }
+    ],
+    "4.3 Write deterministic hook-content tests for the gate": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342385
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476136194
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476462691
+      }
+    ],
+    "5.1 Add bold-detection helper functions to `validate_behavior_rules.py`": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342423
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476137670
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476463742
+      }
+    ],
+    "5.2 Extend `validate_steering_file` to flag 👉 questions lacking bold": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342479
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476469143
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783477313134
+      }
+    ],
+    "5.3 Write deterministic unit tests for the bold detector": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342512
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783477319104
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783477544184
+      }
+    ],
+    "5.4 Write a deterministic integration test over the real steering directory": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342555
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783477319751
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783477544345
+      }
+    ],
+    "6.1 Regenerate `steering-index.yaml` with `measure_steering.py`": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342592
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476138532
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476464801
+      }
+    ],
+    "6.2 Assert the budget check passes on the synced index": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342629
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476469695
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783477313666
+      }
+    ],
+    "7. Final checkpoint - run the full CI pipeline green": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783473342671
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783477548449
+      },
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783479883986
+      }
+    ],
+    "2. Convert every question-bearing steering file so no 👉 question is left un-bolded": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476097710
+      }
+    ],
+    "1. Document the bold-question rule in the four authoritative steering files": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476460734
+      }
+    ],
+    "4. Make the write-policy-gate compatible with bold markers": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783476462733
+      }
+    ],
+    "6. Re-sync token counts and validate the budget": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783477313705
+      }
+    ],
+    "5. Extend the behavior-rules validator to enforce the bold-question rule": [
+      {
+        "executionId": "16f7f51c-0015-4cc3-8cd8-9169b4402dce",
+        "chatSessionId": "sess_f2a160f6-1334-410d-95c9-7fdfa3459ca1",
+        "timestamp": 1783477544382
+      }
+    ]
+  }
+}

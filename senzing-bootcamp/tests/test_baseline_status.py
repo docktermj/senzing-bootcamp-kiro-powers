@@ -1001,24 +1001,21 @@ _STEERING_FILES = (
 
 
 def _hook_is_write_tool_trigger(hook: dict) -> bool:
-    """Return True iff a parsed hook fires on a write-tool interception.
+    """Return True iff a v1 hook definition fires on a write-tool interception.
 
-    A write-tool hook is a ``preToolUse``/``postToolUse`` hook whose ``toolTypes``
-    list includes ``"write"`` — the interception shape the design deliberately
-    avoids for this read-only feature.
+    A write-tool hook is a ``PreToolUse``/``PostToolUse`` hook — the 1.0 tool
+    triggers that intercept tool calls (the legacy ``preToolUse``/``postToolUse``
+    ``when.type`` maps to the ``trigger`` field of a v1 hook definition). This is
+    the interception shape the design deliberately avoids for this read-only
+    feature.
 
     Args:
-        hook: The parsed ``.kiro.hook`` JSON object.
+        hook: A single parsed v1 hook definition (``data["hooks"][i]``).
 
     Returns:
-        True when the hook's ``when`` block is a pre/post tool-use trigger whose
-        ``toolTypes`` contains ``"write"``.
+        True when the hook's ``trigger`` is ``"PreToolUse"`` or ``"PostToolUse"``.
     """
-    when = hook.get("when", {})
-    if when.get("type") not in {"preToolUse", "postToolUse"}:
-        return False
-    tool_types = when.get("toolTypes") or []
-    return "write" in tool_types
+    return hook.get("trigger") in {"PreToolUse", "PostToolUse"}
 
 
 def _top_level_imported_modules(source: str) -> set[str]:
@@ -1056,7 +1053,7 @@ class TestBaselineStatusArchitecture:
     These pin the design's structural claims so they cannot silently regress:
 
     - Requirement 2.3: the feature is surfaced by prose only — it adds no
-      ``postToolUse`` write-tool hook, and no hook references ``baseline_status``.
+      ``PostToolUse`` write-tool hook, and no hook references ``baseline_status``.
     - Requirement 3.3: the script is stdlib-only — every top-level import is a
       standard-library module or one of the two allowed sibling scripts
       (``compare_results`` / ``data_sources``); no third-party package.
@@ -1065,14 +1062,14 @@ class TestBaselineStatusArchitecture:
     def test_no_write_tool_hook_references_baseline_status(self) -> None:
         """The feature adds no write-tool hook that surfaces the summary.
 
-        Confirms the design's prose-only claim: no ``.kiro.hook`` file references
+        Confirms the design's prose-only claim: no hook file references
         ``baseline_status`` at all, and in particular none does so from a
-        ``postToolUse``/``preToolUse`` write-tool trigger.
+        ``PreToolUse``/``PostToolUse`` write-tool trigger.
 
         Validates: Requirements 2.3.
         """
-        hook_files = sorted(_HOOKS_DIR.glob("*.kiro.hook"))
-        assert hook_files, "expected at least one .kiro.hook file to inspect"
+        hook_files = sorted(_HOOKS_DIR.glob("*.json"))
+        assert hook_files, "expected at least one hook file to inspect"
 
         referencing_hooks: list[str] = []
         write_tool_hooks_referencing: list[str] = []
@@ -1080,7 +1077,8 @@ class TestBaselineStatusArchitecture:
             raw = hook_file.read_text(encoding="utf-8")
             if "baseline_status" in raw:
                 referencing_hooks.append(hook_file.name)
-                hook = json.loads(raw)
+                # v1 wrapper: the hook definition lives under data["hooks"][0].
+                hook = json.loads(raw)["hooks"][0]
                 if _hook_is_write_tool_trigger(hook):
                     write_tool_hooks_referencing.append(hook_file.name)
 
@@ -1131,8 +1129,8 @@ class TestBaselineStatusArchitecture:
 
         Asserts both steering files exist, surface the summary via an advisory
         shell-command reference to ``baseline_status.py``, and that this feature's
-        additions are prose only — no hook JSON (``"when"``/``"then"``/
-        ``"toolTypes"``/``pre``/``postToolUse``) is attached to the
+        additions are prose only — no hook JSON (``"trigger"``/``"action"``/
+        ``"matcher"``/``Pre``/``PostToolUse``) is attached to the
         ``baseline_status`` reference. (An unrelated pre-existing mention of the
         generic hook-install workflow elsewhere in a file is not this feature's
         surfacing and is deliberately not matched.)
@@ -1141,12 +1139,12 @@ class TestBaselineStatusArchitecture:
         """
         # Markers that would indicate an executable hook config rather than prose.
         hook_config_markers = (
-            '"when"',
-            '"then"',
-            '"toolTypes"',
-            "postToolUse",
-            "preToolUse",
-            ".kiro.hook",
+            '"trigger"',
+            '"action"',
+            '"matcher"',
+            "PostToolUse",
+            "PreToolUse",
+            ".json",
         )
 
         for steering_file in _STEERING_FILES:
@@ -1179,7 +1177,7 @@ class TestBaselineStatusArchitecture:
         # with the write-tool guardrail above): no hook filename mentions it.
         baseline_hook_files = [
             path.name
-            for path in _HOOKS_DIR.glob("*.kiro.hook")
+            for path in _HOOKS_DIR.glob("*.json")
             if "baseline_status" in path.name or "baseline-status" in path.name
         ]
         assert baseline_hook_files == [], (

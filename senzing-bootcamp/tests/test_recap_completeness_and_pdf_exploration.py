@@ -502,21 +502,25 @@ class TestPathBFullWidthRendering:
 
 @_NEEDS_FPDF
 class TestPathBLoudFailure:
-    """Path B — a rendering exception must not be silently swallowed (Req 2.6).
+    """Path B — a rich-render exception falls through to the guaranteed stdlib tier.
 
-    ``generate_recap_pdf.main`` wraps ``render_pdf`` in a broad
-    ``except (OSError, Exception)`` that absorbs a genuine rendering
-    ``FPDFException`` and returns a generic failure, conflating it with an
-    ordinary write error. The fixed generator must fail loudly: the rendering
-    exception is surfaced rather than swallowed by the catch-all.
+    Under the guaranteed-recap-pdf tiered strategy, a rich-renderer failure is
+    intentionally non-blocking (Req 5.2): ``pdf_render_strategy._try_rich``
+    catches the exception and the stdlib-only writer (Tier 3) still produces a
+    valid PDF, so graduation is never crashed. This supersedes the earlier
+    recap-completeness-and-pdf "fail loudly" contract: injecting an
+    ``FPDFException`` into the Tier 1 renderer now yields a guaranteed PDF via
+    the fallback rather than a propagated exception.
 
-    Validates: Requirements 1.6 (expected behavior: 2.6)
+    Validates: guaranteed-recap-pdf Requirement 5.2 (non-blocking tiered render)
     """
 
-    def test_rendering_fpdf_exception_is_not_swallowed(
+    def test_rendering_fpdf_exception_falls_through_to_stdlib(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        """A render-time FPDFException must propagate, not be caught generically."""
+        """A Tier 1 FPDFException is handled: the stdlib tier still writes a PDF."""
+        import pdf_render_strategy
+
         paths = _build_project(
             tmp_path,
             modules_completed=[1],
@@ -529,13 +533,24 @@ class TestPathBLoudFailure:
                 "Not enough horizontal space to render a single character"
             )
 
-        monkeypatch.setattr(grp, "render_pdf", _raise_render)
+        # Inject the fault on the strategy's Tier 1 renderer. fpdf2 is present
+        # (class is @_NEEDS_FPDF), so Tier 1 is selected; _try_rich catches the
+        # FPDFException and the strategy falls through to the stdlib writer.
+        monkeypatch.setattr(pdf_render_strategy, "render_pdf", _raise_render)
 
-        with pytest.raises(FPDFException):
-            grp.main(["--input", str(paths["recap"]), "--output", str(output)])
-        # On unfixed code main catches the FPDFException via its broad
-        # `except (OSError, Exception)` handler and returns 1, so the
-        # pytest.raises block above fails — the documented counterexample.
+        exit_code = grp.main(
+            ["--input", str(paths["recap"]), "--output", str(output)]
+        )
+
+        # Non-blocking guarantee: the run succeeds via the stdlib fallback and a
+        # valid PDF is produced rather than an exception propagating out of main.
+        assert exit_code == 0, (
+            "a Tier 1 render failure must fall through to the guaranteed stdlib "
+            f"writer (exit 0), got {exit_code}"
+        )
+        assert output.exists() and output.read_bytes().startswith(b"%PDF"), (
+            "the guaranteed stdlib PDF must be produced despite the Tier 1 failure"
+        )
 
 
 @_NEEDS_FPDF

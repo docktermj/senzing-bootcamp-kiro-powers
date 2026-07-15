@@ -1,5 +1,5 @@
 ---
-inclusion: auto
+inclusion: manual
 description: "Entity resolution design pattern gallery — load during Module 1 or when discussing patterns"
 ---
 

@@ -1,6 +1,6 @@
 """Prompt logic verification for enforce-gate-on-stop hook.
 
-Verifies that the agentStop hook prompt contains the required logic checks:
+Verifies that the Stop hook prompt contains the required logic checks:
 1. Checks current_module equal to 3
 2. Checks current_step greater than or equal to 9
 3. Checks CONDITION A (web_service + web_page passed) — the ONLY way to satisfy
@@ -24,15 +24,15 @@ if _TESTS_DIR not in sys.path:
 
 from hook_test_helpers import HOOKS_DIR, load_hook
 
-HOOK_FILE = HOOKS_DIR / "enforce-gate-on-stop.kiro.hook"
+HOOK_FILE = HOOKS_DIR / "enforce-gate-on-stop.json"
 
 
 @pytest.fixture
 def prompt() -> str:
-    """Load the prompt text from the enforce-gate-on-stop hook."""
+    """Load the action.prompt text from the enforce-gate-on-stop v1 hook."""
     assert HOOK_FILE.exists(), f"Hook file not found: {HOOK_FILE}"
     data = load_hook(HOOK_FILE)
-    return data["then"]["prompt"]
+    return data["action"]["prompt"]
 
 
 class TestEnforceGateOnStopPromptLogic:

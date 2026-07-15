@@ -11,7 +11,7 @@ For critical hooks (created during onboarding), see `hook-registry-critical.md`.
 
 ## Module 9 Hooks
 
-**security-scan-on-save** (fileEdited → askAgent, filePatterns: `src/security/*.*, config/*credentials*, config/*secret*, .env*`)
+**security-scan-on-save** (PostFileSave → agent, matcher: `^(?:src/security/[^/]*\.[^/]*|config/[^/]*credentials[^/]*|config/[^/]*secret[^/]*|\.env[^/]*)$`)
 
 Prompt:
 
@@ -21,4 +21,6 @@ A security-related file was just modified. If the bootcamper is in Module 9 (Sec
 
 - id: `security-scan-on-save`
 - name: `to run a security scan`
-- description: `When security-related files are modified during Module 9, reminds the agent to re-run vulnerability scanning to catch regressions.`
+- trigger: `PostFileSave`
+- matcher: `^(?:src/security/[^/]*\.[^/]*|config/[^/]*credentials[^/]*|config/[^/]*secret[^/]*|\.env[^/]*)$`
+- action: `agent`

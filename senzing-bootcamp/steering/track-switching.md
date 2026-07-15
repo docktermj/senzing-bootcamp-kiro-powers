@@ -38,9 +38,9 @@ Present the before/after comparison to the bootcamper:
 
 Then ask:
 
-👉 "This will switch you from `<current_track>` to `<target_track>`. You have X modules remaining. Shall I apply the switch?"
+👉 **"This will switch you from `<current_track>` to `<target_track>`. You have X modules remaining. Shall I apply the switch?"**
 
-> **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
+> _(Internal directive — not shown to the bootcamper: end your turn on the question above and wait for the bootcamper's real input. Do not answer it yourself or proceed.)_
 
 ## Script Invocation
 
@@ -66,9 +66,9 @@ After applying the switch, display:
 
 Then offer:
 
-👉 "Would you like to begin Module X: <name> now?"
+👉 **"Would you like to begin Module X: <name> now?"**
 
-> **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
+> _(Internal directive — not shown to the bootcamper: end your turn on the question above and wait for the bootcamper's real input. Do not answer it yourself or proceed.)_
 
 ## Completion Case
 
@@ -77,9 +77,9 @@ When the switch results in zero remaining modules (all target track modules alre
 - Congratulate the bootcamper: "You've already completed all modules in `<target_track>`!"
 - Offer to load `lessons-learned.md` for a retrospective
 
-👉 "You've finished the entire track. Would you like to do a lessons-learned retrospective?"
+👉 **"You've finished the entire track. Would you like to do a lessons-learned retrospective?"**
 
-> **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
+> _(Internal directive — not shown to the bootcamper: end your turn on the question above and wait for the bootcamper's real input. Do not answer it yourself or proceed.)_
 
 ## Cancellation Case
 

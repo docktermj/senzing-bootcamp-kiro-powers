@@ -17,11 +17,13 @@ from hypothesis import strategies as st
 
 _STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
 _ONBOARDING_FLOW = _STEERING_DIR / "onboarding-flow.md"
-# After the onboarding split, the Entity Resolution Introduction (Step 3),
-# Programming Language Selection (Step 4), Bootcamp Introduction (Step 5),
-# Verbosity Preference (Step 5a), and Comprehension Check (Step 5b) live in
-# this phase file. onboarding-flow.md keeps Steps 0–2d.
+# After the preface reorder (track before language), phase 1b owns the Entity
+# Resolution Introduction (Step 3), Bootcamp Introduction (Step 4), and
+# Verbosity Preference (Step 4a). Programming Language Selection (Step 5a) and
+# the Comprehension Check (Step 5b) moved to the phase 2 track-setup file, after
+# Track Selection (Step 5). onboarding-flow.md keeps Steps 0–2d.
 _ONBOARDING_PHASE1B = _STEERING_DIR / "onboarding-phase1b-intro-language.md"
+_ONBOARDING_PHASE2 = _STEERING_DIR / "onboarding-phase2-track-setup.md"
 _ER_INTRO = _STEERING_DIR / "entity-resolution-intro.md"
 _MODULE_01 = _STEERING_DIR / "module-01-phase1-discovery.md"
 
@@ -132,15 +134,17 @@ class TestProperty1ERIntroBeforeLanguageSelection:
     def test_er_intro_precedes_language_selection(self, noise: str) -> None:
         """ER intro step number < language selection step number, both > prerequisite check.
 
-        After the onboarding split, the Entity Resolution Introduction
-        (Step 3) and Programming Language Selection (Step 4) live in
-        onboarding-phase1b-intro-language.md, while the Prerequisite Check
-        (Step 2) stays in onboarding-flow.md. The documented step numbering
-        is continuous across the two files, so the ordering invariant is
-        asserted across both.
+        After the preface reorder, the Entity Resolution Introduction
+        (Step 3) lives in onboarding-phase1b-intro-language.md and Programming
+        Language Selection (Step 5a) moved to onboarding-phase2-track-setup.md,
+        while the Prerequisite Check (Step 2) stays in onboarding-flow.md. The
+        documented step numbering is continuous across the files, so the
+        ordering invariant (prerequisite < ER intro < language selection) is
+        asserted across all three.
         """
         flow_content = _read_file(_ONBOARDING_FLOW)
         phase1b_content = _read_file(_ONBOARDING_PHASE1B)
+        phase2_content = _read_file(_ONBOARDING_PHASE2)
 
         # Find step containing the ER intro file directive (phase1b)
         er_intro_step = _find_step_number_for_content(
@@ -152,13 +156,13 @@ class TestProperty1ERIntroBeforeLanguageSelection:
             "in onboarding-phase1b-intro-language.md"
         )
 
-        # Find step containing Programming Language Selection mandatory gate (phase1b)
+        # Find step containing Programming Language Selection mandatory gate (phase2)
         lang_selection_step = _find_step_number_for_content(
-            phase1b_content, "Programming Language Selection"
+            phase2_content, "Programming Language Selection"
         )
         assert lang_selection_step is not None, (
             "Could not find Programming Language Selection step in "
-            "onboarding-phase1b-intro-language.md"
+            "onboarding-phase2-track-setup.md"
         )
 
         # Find Prerequisite Check step (onboarding-flow.md)
@@ -207,10 +211,15 @@ class TestProperty2ContiguousStepNumbers:
 
 
 class TestProperty3VerbosityAndComprehensionPlacement:
-    """Property 3: Verbosity Preference and Comprehension Check are sub-steps of \
-Bootcamp Introduction.
+    """Property 3: Verbosity Preference is a sub-step of Bootcamp Introduction;
+    the Comprehension Check follows Language Selection in phase 2.
 
     Feature: onboarding-flow-restructuring, Property 3
+
+    After the preface reorder (track before language), the Verbosity Preference
+    (Step 4a) remains a sub-step of Bootcamp Introduction in phase 1b, while the
+    Comprehension Check moved to phase 2 (Step 5b), after Programming Language
+    Selection (Step 5a).
 
     Validates: Requirements 1.5
     """
@@ -218,46 +227,45 @@ Bootcamp Introduction.
     @given(noise=st_noise_content())
     @settings(max_examples=20)
     def test_substeps_under_bootcamp_introduction(self, noise: str) -> None:
-        """Verbosity Preference and Comprehension Check are ### headings under \
-Bootcamp Introduction.
-
-        After the onboarding split, the Bootcamp Introduction (Step 5) and
-        its sub-steps Verbosity Preference (5a) and Comprehension Check (5b)
-        live in onboarding-phase1b-intro-language.md.
+        """Verbosity Preference is a ### sub-step under Bootcamp Introduction
+        (phase 1b); the Comprehension Check is now a ### sub-step in phase 2.
         """
         content = _read_file(_ONBOARDING_PHASE1B)
 
-        # Find the Bootcamp Introduction section
+        # Find the Bootcamp Introduction section (phase 1b)
         bootcamp_intro_section = _extract_section(content, r"\d+\. Bootcamp Introduction")
         assert bootcamp_intro_section, "Bootcamp Introduction section not found"
 
-        # Verify sub-steps are present as ### headings
+        # Verbosity Preference remains a ### sub-step of Bootcamp Introduction.
         assert re.search(r"^### .+Verbosity Preference", bootcamp_intro_section, re.MULTILINE), (
             "Verbosity Preference not found as ### sub-step under Bootcamp Introduction"
         )
-        assert re.search(r"^### .+Comprehension Check", bootcamp_intro_section, re.MULTILINE), (
-            "Comprehension Check not found as ### sub-step under Bootcamp Introduction"
+        # The Comprehension Check moved out of phase 1b to phase 2.
+        assert "Comprehension Check" not in content, (
+            "Comprehension Check should have moved out of "
+            "onboarding-phase1b-intro-language.md into phase 2 after the reorder"
         )
 
-        # Verify they are NOT under Entity Resolution Introduction
+        # Verify Verbosity is NOT under Entity Resolution Introduction
         er_section = _extract_section(content, r"\d+\. Entity Resolution Introduction")
         if er_section:
             assert "Verbosity Preference" not in er_section, (
                 "Verbosity Preference should not be under Entity Resolution Introduction"
             )
-            assert "Comprehension Check" not in er_section, (
-                "Comprehension Check should not be under Entity Resolution Introduction"
-            )
 
-        # Verify they are NOT under Programming Language Selection
-        lang_section = _extract_section(content, r"\d+\. Programming Language Selection")
-        if lang_section:
-            assert "Verbosity Preference" not in lang_section, (
-                "Verbosity Preference should not be under Programming Language Selection"
-            )
-            assert "Comprehension Check" not in lang_section, (
-                "Comprehension Check should not be under Programming Language Selection"
-            )
+        # In phase 2, the Comprehension Check (### 5b) is present and follows
+        # Programming Language Selection (## 5a).
+        phase2_content = _read_file(_ONBOARDING_PHASE2)
+        assert re.search(r"^### .+Comprehension Check", phase2_content, re.MULTILINE), (
+            "Comprehension Check not found as ### sub-step in "
+            "onboarding-phase2-track-setup.md"
+        )
+        lang_pos = phase2_content.find("## 5a. Programming Language Selection")
+        comp_pos = phase2_content.find("### 5b. Comprehension Check")
+        assert lang_pos != -1 and comp_pos != -1 and lang_pos < comp_pos, (
+            "Comprehension Check (5b) must follow Programming Language "
+            "Selection (5a) in phase 2"
+        )
 
 
 class TestProperty4ProductionReuseHintPlacement:
@@ -279,10 +287,10 @@ class TestProperty4ProductionReuseHintPlacement:
     def test_hint_after_language_list_before_gate(self, noise: str) -> None:
         """Production Reuse Hint appears after language list instruction and before \
 mandatory gate."""
-        content = _read_file(_ONBOARDING_PHASE1B)
+        content = _read_file(_ONBOARDING_PHASE2)
 
-        # Extract Programming Language Selection section
-        lang_section = _extract_section(content, r"\d+\. Programming Language Selection")
+        # Extract Programming Language Selection section (now phase 2, Step 5a)
+        lang_section = _extract_section(content, r"\d+[a-z]?\. Programming Language Selection")
         assert lang_section, "Programming Language Selection section not found"
 
         # Find the hint text
@@ -441,9 +449,9 @@ class TestProductionReuseHintBehavior:
 
     def test_no_stop_instruction_between_hint_and_gate(self) -> None:
         """No STOP instruction appears between the hint and the mandatory gate."""
-        content = _read_file(_ONBOARDING_PHASE1B)
+        content = _read_file(_ONBOARDING_PHASE2)
 
-        lang_section = _extract_section(content, r"\d+\. Programming Language Selection")
+        lang_section = _extract_section(content, r"\d+[a-z]?\. Programming Language Selection")
         assert lang_section, "Programming Language Selection section not found"
 
         hint_pos = lang_section.find(self._HINT_TEXT)
@@ -460,9 +468,9 @@ class TestProductionReuseHintBehavior:
 
     def test_hint_is_unconditional(self) -> None:
         """The hint is not wrapped in IF/condition."""
-        content = _read_file(_ONBOARDING_PHASE1B)
+        content = _read_file(_ONBOARDING_PHASE2)
 
-        lang_section = _extract_section(content, r"\d+\. Programming Language Selection")
+        lang_section = _extract_section(content, r"\d+[a-z]?\. Programming Language Selection")
         assert lang_section, "Programming Language Selection section not found"
 
         hint_pos = lang_section.find(self._HINT_TEXT)

@@ -40,7 +40,7 @@ _STEERING_DIR = _BOOTCAMP_DIR / "steering"
 # Key files for preservation checking
 _SKIP_PROTOCOL = _STEERING_DIR / "skip-step-protocol.md"
 _MODULE3_STEERING = _STEERING_DIR / "module-03-system-verification.md"
-_GATE_HOOK = _HOOKS_DIR / "gate-module3-visualization.kiro.hook"
+_GATE_HOOK = _HOOKS_DIR / "gate-module3-visualization.json"
 
 # ---------------------------------------------------------------------------
 # Baselines — snapshot UNFIXED file content
@@ -49,7 +49,10 @@ _GATE_HOOK = _HOOKS_DIR / "gate-module3-visualization.kiro.hook"
 _UNFIXED_SKIP_PROTOCOL = _SKIP_PROTOCOL.read_text(encoding="utf-8")
 _UNFIXED_MODULE3 = _MODULE3_STEERING.read_text(encoding="utf-8")
 _UNFIXED_GATE_HOOK = _GATE_HOOK.read_text(encoding="utf-8")
+# Kiro 1.0 v1 wrapper: ``{"version": "v1", "hooks": [entry]}``. Preserve access
+# to the single entry (its ``action.prompt`` carries the gate policy text).
 _UNFIXED_GATE_HOOK_JSON = json.loads(_UNFIXED_GATE_HOOK)
+_UNFIXED_GATE_ENTRY = _UNFIXED_GATE_HOOK_JSON["hooks"][0]
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -261,7 +264,7 @@ class TestNoEnforcementOnNonMandatoryAdvancement:
     """For all steps where current_step advances past a non-⛔ step, no
     enforcement fires.
 
-    The existing gate-module3-visualization.kiro.hook only fires on Module 3
+    The existing gate-module3-visualization.json hook only fires on Module 3
     COMPLETION writes (adding 3 to modules_completed), not on step advancement.
     Non-mandatory step advancement must remain unblocked.
 
@@ -282,7 +285,7 @@ class TestNoEnforcementOnNonMandatoryAdvancement:
         # The existing gate hook's prompt only checks for Module 3 COMPLETION
         # writes (adding 3 to modules_completed or setting status to 'passed').
         # It does NOT check individual step advancement.
-        hook_prompt = _UNFIXED_GATE_HOOK_JSON["then"]["prompt"]
+        hook_prompt = _UNFIXED_GATE_ENTRY["action"]["prompt"]
 
         # Verify the hook only cares about module completion, not step advancement
         assert (
@@ -307,15 +310,15 @@ class TestNoEnforcementOnNonMandatoryAdvancement:
         explicitly states to produce no output — meaning non-mandatory step
         advancement remains completely unblocked.
         """
-        enforce_hook = _HOOKS_DIR / "enforce-mandatory-gate.kiro.hook"
+        enforce_hook = _HOOKS_DIR / "enforce-mandatory-gate.json"
         # After the fix, this hook EXISTS
         assert enforce_hook.exists(), (
-            "enforce-mandatory-gate.kiro.hook must exist after the fix is applied."
+            "enforce-mandatory-gate.json must exist after the fix is applied."
         )
 
-        # Read and parse the hook
-        hook_data = json.loads(enforce_hook.read_text(encoding="utf-8"))
-        hook_prompt = hook_data["then"]["prompt"]
+        # Read and parse the v1 hook entry
+        hook_data = json.loads(enforce_hook.read_text(encoding="utf-8"))["hooks"][0]
+        hook_prompt = hook_data["action"]["prompt"]
 
         # The hook only checks for advancement past Step 9 specifically
         # For non-Step-9 advancement, it produces no output (no interference)
@@ -385,7 +388,9 @@ class TestBootcamperSkipsLegitimate:
         no longer satisfy the Module 3 Step 9 visualization gate. The gate is
         unconditional and only CONDITION A (checkpoints) satisfies it.
         """
-        hook_prompt = json.loads(_GATE_HOOK.read_text(encoding="utf-8"))["then"]["prompt"]
+        hook_prompt = json.loads(_GATE_HOOK.read_text(encoding="utf-8"))["hooks"][0][
+            "action"
+        ]["prompt"]
 
         # The hook must NOT define a CONDITION B skip-satisfaction branch
         assert "CONDITION B" not in hook_prompt, (
@@ -465,7 +470,7 @@ class TestValidationPassesWithCheckpoints:
         )
 
         # The hook prompt defines CONDITION A — both checkpoints with 'passed'
-        hook_prompt = _UNFIXED_GATE_HOOK_JSON["then"]["prompt"]
+        hook_prompt = _UNFIXED_GATE_ENTRY["action"]["prompt"]
         assert "web_service" in hook_prompt, (
             "Hook must check web_service checkpoint"
         )
@@ -481,7 +486,7 @@ class TestValidationPassesWithCheckpoints:
 
         This verifies the exact structure that the fix must preserve.
         """
-        hook_prompt = _UNFIXED_GATE_HOOK_JSON["then"]["prompt"]
+        hook_prompt = _UNFIXED_GATE_ENTRY["action"]["prompt"]
 
         # Must check web_service.status equals "passed"
         assert re.search(r"web_service.*passed", hook_prompt, re.DOTALL), (
@@ -540,7 +545,7 @@ class TestContextBudgetIndependence:
         The hook only checks for checkpoints and skipped_steps entries —
         it does not consider context budget state.
         """
-        hook_prompt = _UNFIXED_GATE_HOOK_JSON["then"]["prompt"]
+        hook_prompt = _UNFIXED_GATE_ENTRY["action"]["prompt"]
 
         assert (
             "context" not in hook_prompt.lower()
@@ -646,7 +651,7 @@ class TestSkipProtocolStructurePreserved:
 
 
 class TestExistingGateHookPreserved:
-    """The gate-module3-visualization.kiro.hook structure is preserved.
+    """The gate-module3-visualization.json hook structure is preserved.
 
     This hook provides the existing (reactive) enforcement that blocks Module 3
     completion when Step 9 checkpoints are missing. It must continue to work
@@ -656,22 +661,25 @@ class TestExistingGateHookPreserved:
     """
 
     def test_gate_hook_is_pretooluse_write(self) -> None:
-        """Gate hook fires on preToolUse write operations."""
-        hook_data = json.loads(_GATE_HOOK.read_text(encoding="utf-8"))
-        assert hook_data["when"]["type"] == "preToolUse", (
-            "Gate hook must be preToolUse type"
+        """Gate hook fires on the 1.0 PreToolUse write matcher."""
+        entry = json.loads(_GATE_HOOK.read_text(encoding="utf-8"))["hooks"][0]
+        assert entry["trigger"] == "PreToolUse", (
+            "Gate hook must use the 1.0 PreToolUse trigger"
         )
-        assert "write" in hook_data["when"].get("toolTypes", []), (
-            "Gate hook must fire on write tool types"
+        # The legacy write toolTypes collapse to the single 1.0 tool-name matcher.
+        assert entry.get("matcher") == "fs_write|str_replace|fs_append", (
+            "Gate hook must scope to the write-tool matcher "
+            "fs_write|str_replace|fs_append"
         )
 
     def test_gate_hook_has_required_fields(self) -> None:
-        """Gate hook has all required JSON fields per security rules."""
-        hook_data = json.loads(_GATE_HOOK.read_text(encoding="utf-8"))
-        assert "name" in hook_data, "Hook must have 'name' field"
-        assert "version" in hook_data, "Hook must have 'version' field"
-        assert "when" in hook_data, "Hook must have 'when' field"
-        assert "then" in hook_data, "Hook must have 'then' field"
+        """Gate hook has all required v1 fields per security rules."""
+        wrapper = json.loads(_GATE_HOOK.read_text(encoding="utf-8"))
+        assert wrapper.get("version") == "v1", "Wrapper must declare version v1"
+        entry = wrapper["hooks"][0]
+        assert "name" in entry, "Hook entry must have 'name' field"
+        assert "trigger" in entry, "Hook entry must have 'trigger' field"
+        assert "action" in entry, "Hook entry must have 'action' field"
 
     def test_gate_hook_has_no_condition_b(self) -> None:
         """Gate hook defines CONDITION A (checkpoints) but NOT CONDITION B (skip).
@@ -681,8 +689,9 @@ class TestExistingGateHookPreserved:
         `skipped_steps["3.9"]` entry satisfying the gate) has been removed. Only
         CONDITION A — both Step 9 checkpoints `"passed"` — can satisfy the gate.
         """
-        hook_data = json.loads(_GATE_HOOK.read_text(encoding="utf-8"))
-        prompt = hook_data["then"]["prompt"]
+        prompt = json.loads(_GATE_HOOK.read_text(encoding="utf-8"))["hooks"][0][
+            "action"
+        ]["prompt"]
 
         # CONDITION A (the checkpoints requirement) must still be present
         assert "CONDITION A" in prompt, "Hook must still define CONDITION A"

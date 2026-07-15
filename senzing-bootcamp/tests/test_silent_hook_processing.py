@@ -37,11 +37,11 @@ _HOOKS_DIR = Path(__file__).resolve().parent.parent / "hooks"
 _STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
 
 _AFFECTED_HOOK_FILES: dict[str, Path] = {
-    "ask-bootcamper": _HOOKS_DIR / "ask-bootcamper.kiro.hook",
-    "review-bootcamper-input": _HOOKS_DIR / "review-bootcamper-input.kiro.hook",
+    "ask-bootcamper": _HOOKS_DIR / "ask-bootcamper.json",
+    "review-bootcamper-input": _HOOKS_DIR / "review-bootcamper-input.json",
 }
 
-_ASK_BOOTCAMPER_HOOK_FILE = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+_ASK_BOOTCAMPER_HOOK_FILE = _HOOKS_DIR / "ask-bootcamper.json"
 
 # preToolUse hooks that need STOP instructions
 _PRE_TOOL_USE_HOOKS: dict[str, Path] = {
@@ -75,10 +75,10 @@ _ASK_BOOTCAMPER_PROHIBITIONS = [
 
 
 def _read_hook_prompt(path: Path) -> str:
-    """Parse a .kiro.hook JSON file and return the then.prompt value."""
+    """Parse a .json v1 hook file and return the action.prompt value."""
     content = path.read_text(encoding="utf-8")
     data = json.loads(content)
-    return data["then"]["prompt"]
+    return data["hooks"][0]["action"]["prompt"]
 
 
 def _extract_registry_prompt(registry_text: str, hook_id: str) -> str:
@@ -97,13 +97,13 @@ def _extract_registry_prompt(registry_text: str, hook_id: str) -> str:
     match2 = re.search(pattern2, registry_text, re.DOTALL)
     if match2:
         return match2.group(1)
-    # Fall back to reading from the hook file
-    hook_file = _HOOKS_DIR / f"{hook_id}.kiro.hook"
+    # Fall back to reading from the v1 hook file
+    hook_file = _HOOKS_DIR / f"{hook_id}.json"
     if hook_file.exists():
         try:
             data = json.loads(hook_file.read_text(encoding="utf-8"))
-            return data.get("then", {}).get("prompt", "")
-        except (json.JSONDecodeError, OSError):
+            return data["hooks"][0].get("action", {}).get("prompt", "")
+        except (json.JSONDecodeError, OSError, KeyError, IndexError):
             pass
     return ""
 
@@ -644,10 +644,13 @@ _ACTION_REQUIRED_KEYWORDS: dict[str, list[str]] = {
     "review-bootcamper-input": _REVIEW_BOOTCAMPER_INPUT_ACTION_KEYWORDS,
 }
 
-# Non-affected hook ids in hook-registry.md (all hooks except the affected ones)
+# Non-affected hook ids in the hook registry (all hooks except the affected
+# ones). The three former manual hooks (commonmark-validation,
+# backup-project-on-request, git-commit-reminder) are no longer shipped hooks
+# under Kiro 1.0 — they became slash-command steering files — so they are not
+# in the registry and are excluded here.
 _NON_AFFECTED_HOOK_IDS: list[str] = [
     "code-style-check",
-    "commonmark-validation",
     "data-quality-check",
     "analyze-after-mapping",
     "backup-before-load",
@@ -656,11 +659,9 @@ _NON_AFFECTED_HOOK_IDS: list[str] = [
     "verify-generated-code",
     "enforce-visualization-offers",
     "deployment-phase-gate",
-    "backup-project-on-request",
-    "git-commit-reminder",
 ]
 
-_ASK_BOOTCAMPER_HOOK = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+_ASK_BOOTCAMPER_HOOK = _HOOKS_DIR / "ask-bootcamper.json"
 
 
 # ---------------------------------------------------------------------------

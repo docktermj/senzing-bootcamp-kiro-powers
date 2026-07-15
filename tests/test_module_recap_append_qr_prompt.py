@@ -1,9 +1,14 @@
-"""Tests for the module-recap-append hook prompt Paired_Schema wording.
+"""Tests for the module recap-append prompt Paired_Schema wording.
 
-Validates that the `module-recap-append.kiro.hook` prompt instructs the agent to
-author the recap using the Paired_Schema (a single `### Questions & Responses`
-section with interspersed `- **Q:**` / `- **R:**` items, four-space response
-indentation, a `- None` item when there are no substantive questions, and the
+The stop-hook-ux bugfix folded the standalone ``module-recap-append`` hook into
+``ask-bootcamper`` as Phase 0, so this suite now reads the recap-append prompt
+from ``ask-bootcamper.json`` (its Phase 0 carries the same recap-authoring
+contract verbatim).
+
+Validates that the recap-append prompt instructs the agent to author the recap
+using the Paired_Schema (a single `### Questions & Responses` section with
+interspersed `- **Q:**` / `- **R:**` items, four-space response indentation, a
+`- None` item when there are no substantive questions, and the
 `(no response recorded)` placeholder) and no longer instructs writing the legacy
 split `### Questions Asked` / `### Answers Given` sections.
 
@@ -26,9 +31,10 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 
 # Locate the hook file relative to the repo root (this file lives in repo-root
-# tests/, so the repo root is its parent's parent).
+# tests/, so the repo root is its parent's parent). The recap-append logic now
+# lives inside ask-bootcamper.json as Phase 0 (stop-hook-ux bugfix consolidation).
 _REPO_ROOT = Path(__file__).resolve().parent.parent
-HOOK_PATH = _REPO_ROOT / "senzing-bootcamp" / "hooks" / "module-recap-append.kiro.hook"
+HOOK_PATH = _REPO_ROOT / "senzing-bootcamp" / "hooks" / "ask-bootcamper.json"
 
 # Literal Paired_Schema tokens the prompt MUST describe.
 REQUIRED_TOKENS: list[str] = [
@@ -61,8 +67,8 @@ def load_hook() -> dict:
 
 
 def load_prompt() -> str:
-    """Return the then.prompt string from the hook."""
-    return load_hook()["then"]["prompt"]
+    """Return the action.prompt string from the v1 hook entry."""
+    return load_hook()["hooks"][0]["action"]["prompt"]
 
 
 def _mention_is_prohibited(prompt: str, needle: str) -> bool:
@@ -105,13 +111,18 @@ class TestModuleRecapAppendQRPrompt:
     """
 
     def test_hook_json_is_valid_and_well_formed(self) -> None:
-        """The hook file SHALL be valid JSON with name, version, when, then."""
-        data = load_hook()
-        for field in ("name", "version", "when", "then"):
-            assert field in data, f"Hook JSON missing required top-level field '{field}'"
-        assert isinstance(data["then"], dict), "'then' must be an object"
-        assert isinstance(data["then"].get("prompt"), str) and data["then"]["prompt"], (
-            "'then.prompt' must be a non-empty string"
+        """The hook file SHALL be a valid v1 wrapper with a well-formed entry."""
+        wrapper = load_hook()
+        assert wrapper.get("version") == "v1", "wrapper must declare version v1"
+        assert isinstance(wrapper.get("hooks"), list) and wrapper["hooks"], (
+            "wrapper must contain a non-empty 'hooks' array"
+        )
+        entry = wrapper["hooks"][0]
+        for field in ("name", "trigger", "action"):
+            assert field in entry, f"Hook entry missing required field '{field}'"
+        assert isinstance(entry["action"], dict), "'action' must be an object"
+        assert isinstance(entry["action"].get("prompt"), str) and entry["action"]["prompt"], (
+            "'action.prompt' must be a non-empty string"
         )
 
     def test_prompt_describes_paired_schema_heading(self) -> None:

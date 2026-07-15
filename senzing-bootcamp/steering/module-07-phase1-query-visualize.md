@@ -24,7 +24,7 @@ inclusion: manual
    - Present the derived requirements to the bootcamper with this attribution: "Based on your business problem from Module 1, here are the query requirements I've derived:"
    - List each requirement with its source (e.g., "From your success criterion about [X]..." or "From your desired output format of [Y]...")
 
-   👉 "Is there anything you'd like to add or change?"
+   👉 **"Is there anything you'd like to add or change?"**
 
    🛑 STOP — Wait for bootcamper response before proceeding.
 
@@ -116,7 +116,7 @@ inclusion: manual
 
    **Module 5 feedback loop (when quality is poor or bootcamper requests iteration):**
 
-   👉 "Would you like to return to Module 5 to refine your data mapping? Your loaded data and query programs will be preserved — after remapping, you'll reload the affected sources and re-evaluate here."
+   👉 **"Would you like to return to Module 5 to refine your data mapping? Your loaded data and query programs will be preserved — after remapping, you'll reload the affected sources and re-evaluate here."**
 
    🛑 STOP — Wait for bootcamper response before proceeding.
 

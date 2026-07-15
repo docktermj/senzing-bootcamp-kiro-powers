@@ -1,5 +1,5 @@
 ---
-inclusion: auto
+inclusion: manual
 description: Session resume preference loading and recovery behavior
 ---
 
@@ -43,18 +43,18 @@ If the preferences file is missing or contains invalid YAML (the `LoadResult.err
 
 1. Inform the bootcamper that preferences could not be loaded
 2. Do NOT assume default values silently
-3. Prompt for each required preference **one at a time** in this order:
-   - Language
-   - Track
+3. Prompt for each required preference **one at a time** in this order (matching the reordered preface capture order — detail level first, then track before language):
    - Verbosity
+   - Track
+   - Language
 4. After each answer, persist the value immediately via `write_preference()` before the next response
 
 ### Partial Preferences (Missing Fields)
 
 If the preferences file is valid but some required fields are missing (`LoadResult.missing_required` is non-empty while `preferences` is not None):
 
-1. Preserve all successfully loaded values — do not re-ask for fields that are already present
-2. Prompt only for each missing field individually, in order: language, track, verbosity (skipping any that are already loaded)
+1. Preserve all successfully loaded values — do not re-ask for fields that are already present. This is a specific instance of the **Ask-Once Guarantee** (see `conversation-protocol.md` → The Ask-Once Guarantee): an already-loaded preference corresponds to an answered Question_Key (`onboarding.verbosity`, `onboarding.track_selection`, `onboarding.language_selection`) — reuse the stored value rather than re-asking.
+2. Prompt only for each missing field individually, in order: verbosity, track, language (matching the reordered preface capture order — track before language — and skipping any that are already loaded)
 3. After each answer, persist the value immediately via `write_preference()` before the next response
 
 ### Persistence Before Next Response
@@ -71,7 +71,7 @@ Before running the full state reconstruction, check if a fast resume is possible
 4. `current_step` is present in the progress file (we know exactly where to resume)
 5. `hooks_installed` is present in preferences (no hook setup needed)
 
-**If ALL conditions are met:** Skip Steps 1–2 entirely. Jump directly to Step 2b, then Step 2c, then Step 3 using the data already read from the progress and preferences files.
+**If ALL conditions are met:** Skip Steps 1–2 entirely. Jump directly to Step 2b, then Step 2c, then Step 2f, then Step 3 using the data already read from the progress and preferences files.
 
 **If ANY condition fails:** Fall through to the Routing Logic evaluation, then the full Step 1–2 sequence below.
 
@@ -125,7 +125,7 @@ Based on the `language` field from preferences, load the corresponding language 
 
 **`conversation-protocol.md` is the authoritative source for all turn-taking and question-handling rules. These rules apply without exception after session resume.**
 
-Before interacting with the bootcamper, re-assert the five core conversation rules. These are summarized below — see `conversation-protocol.md` for complete definitions.
+Before interacting with the bootcamper, re-assert the six core conversation rules. These are summarized below — see `conversation-protocol.md` for complete definitions.
 
 ### Core Rules
 
@@ -134,6 +134,7 @@ Before interacting with the bootcamper, re-assert the five core conversation rul
 3. **STOP markers as absolute end-of-turn boundaries** — 🛑 STOP means produce zero additional tokens. Wait for the bootcamper's response (wait-for-response rule). Enforcement: any tokens after 🛑 STOP are discarded.
 4. **No self-answering** — Never generate text that answers, assumes, or implies a response to your own 👉 question. Enforcement: if self-answering is detected, truncate the response at the 👉 question.
 5. **No dead-end responses** — Every turn must advance the conversation with a next action. Enforcement: if no forward action is present, append a contextual 👉 question.
+6. **Bold question text** — Every 👉 leading question's text is wrapped in CommonMark bold (`**...**`). The 👉 pointer is outside the bold span. Explanatory context before the question stays plain. Numbered option lines stay plain. Enforcement: if a 👉 question's text lacks bold emphasis, wrap it before sending.
 
 ### Equal Priority Statement
 
@@ -141,7 +142,7 @@ Session resume does not reduce the authority of any behavioral rule. Conversatio
 
 ### Protocol Confirmation
 
-Before proceeding to Step 3, confirm that `conversation-protocol.md` is loaded (via its `inclusion: auto` setting) and its rules are active. If unavailable, the five rules above serve as the authoritative fallback.
+Before proceeding to Step 3, confirm that `conversation-protocol.md` is loaded (via its `inclusion: always` setting) and its rules are active. If unavailable, the six rules above serve as the authoritative fallback.
 
 ### Self-Answering Prohibition
 
@@ -157,7 +158,7 @@ I'd recommend Python since it has the best SDK support...
 **CORRECT** — Agent stops after the question:
 
 ```text
-👉 Which language would you like to use for the bootcamp?
+👉 **Which language would you like to use for the bootcamp?**
 🛑 STOP
 ```
 
@@ -171,7 +172,7 @@ Great, let's get started with the system verification...
 **CORRECT** — Agent waits for confirmation:
 
 ```text
-👉 Ready to continue with Module 3?
+👉 **Ready to continue with Module 3?**
 🛑 STOP
 ```
 
@@ -185,7 +186,7 @@ While you decide, here are some things to look for in the output...
 **CORRECT** — Agent produces zero tokens after the question:
 
 ```text
-👉 Would you like to see the entity resolution results?
+👉 **Would you like to see the entity resolution results?**
 🛑 STOP
 ```
 
@@ -218,6 +219,33 @@ See `session-resume-phase2-setup-recovery.md` for the full MCP health check proc
 
 If `show_whats_new` is not `false` in preferences AND `config/session_log.jsonl` exists, display a brief "What's New" summary of any power updates since the last session. Then set `show_whats_new: false` in preferences.
 
+## Step 2f: Setup Summary Replay
+
+After the progress reconstruction above, replay the one-time administrative setup summary so the bootcamper is reminded what their environment already has — without re-narrating or re-checking work onboarding already completed. This runs on every resume, including the fast path; present it once, just before the Step 3 welcome-back summary.
+
+Read the `setup_summary` block from the Progress_File already loaded in Step 1 (the member-specific progress file in team mode). It was written once during onboarding (§4.0) and records what the quiet setup phase actually did. Its shape is documented in `docs/guides/PROGRESS_FILE_SCHEMA.md`.
+
+### When `setup_summary` is present
+
+Present a concise, **verbosity-aware** "your environment already has…" recap drawn only from the recorded block, honoring the active `verbosity_preset` restored in Step 2c (see `verbosity-control.md`):
+
+- **concise** — one line, e.g. "Your environment already has your Senzing project directories, N background quality-check hooks, foundational steering, and a PASS preflight (power vX.Y.Z)."
+- **standard / detailed** — the same recap as short bullets: project directories (`directories_created`), `hooks_installed.count` background quality-check hooks, foundational steering (`steering_generated`), and the `preflight_verdict` preflight for `power_version`. At detailed you may also name the entries in `hooks_installed.names`.
+
+Draw every value from the recorded block — never re-derive, re-count, or re-probe anything.
+
+### Marking failed or deferred items
+
+If `preflight_verdict` is `WARN` or `FAIL`, or `preflight_warnings` / `deferrals` are non-empty, state each one plainly and note where it is revisited (usually Module 2) — e.g. "Senzing SDK not yet installed — revisited in Module 2." This keeps a deferred or failed setup item visible instead of silently forgotten.
+
+### When `setup_summary` is absent
+
+Proceed unchanged with no error and no recap. Older projects — and sessions where the onboarding write was skipped or failed — simply have no block; its absence is normal and never blocks resume.
+
+### Orientation only
+
+This replay reports recorded state only. Do **not** ask a question, present a gate, or re-run any setup step (directory creation, hook install, steering generation, preflight) — re-running setup on resume is a non-goal. Add no question of your own; the single Step 3 question follows.
+
 ## Step 3: Summarize and Confirm
 
 **Display the welcome back banner:**
@@ -248,7 +276,7 @@ If mapping checkpoints exist, display the mapping checkpoint summary. When multi
 - **Skip** — skip mapping and proceed to the next module step
 
 ```text
-👉 Ready to continue with Module [N], or would you like to do something else?
+👉 **Ready to continue with Module [N], or would you like to do something else?**
 ```
 
 Write `config/.question_pending` with the question text above.

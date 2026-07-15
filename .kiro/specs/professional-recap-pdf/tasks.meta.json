@@ -1,0 +1,234 @@
+{
+  "pbtResults": {
+    "2.1 Write property test for Cover_Page metadata round-trip": {
+      "status": "passed",
+      "lastRunTimestamp": 1783965512656
+    },
+    "3.1 Write property test for verification failure detection": {
+      "status": "passed",
+      "lastRunTimestamp": 1783965665818
+    },
+    "5.1 Write property test for placeholder-stub absence": {
+      "status": "passed",
+      "lastRunTimestamp": 1783966219105
+    },
+    "6.1 Write property test for atomic output safety": {
+      "status": "passed",
+      "lastRunTimestamp": 1783966299850
+    }
+  },
+  "executionHistory": {
+    "1.1 Add colored banner rendering to `_render_cover_page` in `generate_recap_pdf.py`": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783965318682
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783965327189
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966011636
+      }
+    ],
+    "1.2 Write unit test for Cover_Page banner rendering": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783965318850
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966018592
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966324557
+      }
+    ],
+    "2.1 Write property test for Cover_Page metadata round-trip": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783965318914
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783965328037
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966013624
+      }
+    ],
+    "3.1 Write property test for verification failure detection": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783965318950
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783965328796
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966013662
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783965318984
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783967446725
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783967983625
+      }
+    ],
+    "5.1 Write property test for placeholder-stub absence": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783965319028
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966019647
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966325569
+      }
+    ],
+    "6.1 Write property test for atomic output safety": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783965319058
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966020348
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966325822
+      }
+    ],
+    "7.1 Add post-render verification checks for placeholder stubs and legacy headings": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783965319088
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966342472
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966989177
+      }
+    ],
+    "7.2 Write unit tests for placeholder verification": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783965319117
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783967001351
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783967439321
+      }
+    ],
+    "8. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783965319148
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783967987498
+      },
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783968387650
+      }
+    ],
+    "2. Property-based test: Cover page metadata round-trip (Property 1)": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966013687
+      }
+    ],
+    "3. Property-based test: Verification detects missing content (Property 5)": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966013713
+      }
+    ],
+    "1. Implement Cover_Page colored banner (Requirement 2.1 gap)": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966324588
+      }
+    ],
+    "5. Property-based test: No placeholder stubs in substantive recaps (Property 6)": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966325599
+      }
+    ],
+    "6. Property-based test: Atomic output safety (Property 8)": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783966325855
+      }
+    ],
+    "7. Add placeholder/legacy heading verification to the Generator (Requirements 5.5, 5.6)": [
+      {
+        "executionId": "388806a1-b71a-4448-b44f-f0899f95c64e",
+        "chatSessionId": "sess_ba90ba23-54ee-4443-a24c-679e613f669e",
+        "timestamp": 1783967439370
+      }
+    ]
+  }
+}

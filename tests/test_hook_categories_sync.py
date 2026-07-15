@@ -1,7 +1,8 @@
 """Hook categories synchronization tests.
 
 Verifies bidirectional sync between hook-categories.yaml and the actual
-.kiro.hook files on disk, count validations, and uniqueness checks.
+Kiro 1.0 ``*.json`` v1 hook files on disk, count validations, and uniqueness
+checks.
 """
 
 from __future__ import annotations
@@ -19,6 +20,7 @@ from hook_test_helpers import (
     CRITICAL_HOOKS,
     HOOKS_DIR,
     get_hook_files,
+    hook_id_from_path,
     parse_categories_yaml,
 )
 
@@ -31,7 +33,7 @@ _all_category_hook_ids: list[str] = []
 for _ids in _categories.values():
     _all_category_hook_ids.extend(_ids)
 
-_hook_file_ids = [p.name.replace(".kiro.hook", "") for p in get_hook_files()]
+_hook_file_ids = [hook_id_from_path(p) for p in get_hook_files()]
 
 
 # ===========================================================================
@@ -39,15 +41,15 @@ _hook_file_ids = [p.name.replace(".kiro.hook", "") for p in get_hook_files()]
 # ===========================================================================
 
 class TestCategoriesFileToHookFiles:
-    """Verify every YAML entry has a corresponding .kiro.hook file."""
+    """Verify every YAML entry has a corresponding .json v1 hook file."""
 
     @pytest.mark.parametrize("hook_id", _all_category_hook_ids)
     def test_yaml_entry_has_hook_file(self, hook_id: str):
-        """Every hook identifier in categories YAML has a .kiro.hook file (Req 4.1)."""
-        hook_path = HOOKS_DIR / f"{hook_id}.kiro.hook"
+        """Every hook identifier in categories YAML has a .json hook file (Req 4.1)."""
+        hook_path = HOOKS_DIR / f"{hook_id}.json"
         assert hook_path.exists(), (
             f'Categories YAML lists "{hook_id}" but no file '
-            f'"{hook_id}.kiro.hook" exists in {HOOKS_DIR}'
+            f'"{hook_id}.json" exists in {HOOKS_DIR}'
         )
 
 
@@ -56,11 +58,11 @@ class TestCategoriesFileToHookFiles:
 # ===========================================================================
 
 class TestHookFilesToCategoriesFile:
-    """Verify every .kiro.hook file appears in the categories YAML."""
+    """Verify every .json v1 hook file appears in the categories YAML."""
 
     @pytest.mark.parametrize("hook_id", _hook_file_ids)
     def test_hook_file_in_categories(self, hook_id: str):
-        """Every .kiro.hook file appears in the categories YAML (Req 4.2).
+        """Every .json hook file appears in the categories YAML (Req 4.2).
 
         A hook may appear in multiple module sub-categories (e.g.,
         `enforce-visualization-offers` applies to Modules 3, 5, 7, 8), but
@@ -68,7 +70,7 @@ class TestHookFilesToCategoriesFile:
         """
         occurrences = _all_category_hook_ids.count(hook_id)
         assert occurrences >= 1, (
-            f'Hook file "{hook_id}.kiro.hook" does not appear in the '
+            f'Hook file "{hook_id}.json" does not appear in the '
             f"categories YAML (expected at least once)"
         )
 
@@ -78,7 +80,7 @@ class TestHookFilesToCategoriesFile:
 # ===========================================================================
 
 class TestCategoriesCounts:
-    """Verify critical category has 7 entries and total count matches file count."""
+    """Verify the critical category matches CRITICAL_HOOKS and total matches files."""
 
     def test_critical_category_has_expected_entries(self):
         """The critical category contains exactly len(CRITICAL_HOOKS) entries (Req 4.3)."""
@@ -95,11 +97,11 @@ class TestCategoriesCounts:
         total_on_disk = len(_hook_file_ids)
         assert total_unique_in_yaml == total_on_disk, (
             f"Categories YAML has {total_unique_in_yaml} unique hook identifiers "
-            f"but {total_on_disk} .kiro.hook files exist on disk"
+            f"but {total_on_disk} .json hook files exist on disk"
         )
 
     def test_critical_hooks_match_expected(self):
-        """Critical category contains the expected 7 hook identifiers."""
+        """Critical category contains exactly the expected CRITICAL_HOOKS identifiers."""
         critical = set(_categories.get("critical", []))
         expected = set(CRITICAL_HOOKS)
         assert critical == expected, (

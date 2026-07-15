@@ -11,8 +11,11 @@ real files on disk in ``tmp_path``:
 
 The flow modeled here is the one the aligned hooks / ``module-completion.md``
 workflow drive: on a completion boundary, run ``completion_artifacts.py --plan``,
-then generate exactly the missing recap sections, journal entries, and
-certificates (sourcing Durations from the planner, omitting when unreliable).
+then generate exactly the missing consolidated recap sections (each carrying a
+``### Journal`` narrative subsection) and certificates (sourcing Durations from
+the planner, omitting when unreliable). After the journal-recap consolidation the
+per-module journal content is folded into the recap's ``### Journal`` subsection
+in a single ``consolidated_append`` step rather than written to a separate file.
 
 Scenarios (from the design's Integration Tests):
     1. Final module of a track (Module 7 Core, Module 11 Advanced): recap section,
@@ -132,10 +135,13 @@ def _recap_header(total_duration: str | None) -> str:
 
 
 def _recap_section(module: int, date: str, duration: str | None) -> str:
-    """Format a single recap module section.
+    """Format a single consolidated recap module section.
 
-    The ``### Duration`` field is omitted entirely when ``duration`` is ``None``
-    (unreliable timing), never written as a placeholder.
+    Each section carries the structured recap subsections plus the consolidated
+    ``### Journal`` narrative subsection (the four fields formerly written to the
+    retired ``docs/bootcamp_journal.md``). The ``### Duration`` field is omitted
+    entirely when ``duration`` is ``None`` (unreliable timing), never written as
+    a placeholder; the ``### Journal`` subsection is always present.
     """
     parts = [
         "\n",
@@ -147,8 +153,52 @@ def _recap_section(module: int, date: str, duration: str | None) -> str:
     if duration is not None:
         parts.append("\n### Duration\n")
         parts.append(f"{duration}\n")
+    parts.append("\n### Journal\n")
+    parts.append(f"**What we did:** Completed Module {module}\n")
+    parts.append(f"**What was produced:** docs/module_{module}.md\n")
+    parts.append(f"**Why it matters:** Module {module} matters\n")
+    parts.append("**Bootcamper's takeaway:** N/A\n")
     parts.append("\n---\n")
     return "".join(parts)
+
+
+# Canonical ``### Journal`` narrative field labels folded into each consolidated
+# Recap_Section (formerly written to the retired docs/bootcamp_journal.md).
+_JOURNAL_FIELD_LABELS: tuple[str, ...] = (
+    "**What we did:**",
+    "**What was produced:**",
+    "**Why it matters:**",
+    "**Bootcamper's takeaway:**",
+)
+
+
+def _assert_consolidated_sections(recap_content: str, modules: list[int]) -> None:
+    """Assert every module's Recap_Section carries a consolidated ``### Journal``.
+
+    Verifies the consolidated Recap_Section format: for each module the text
+    between its ``## Module N:`` heading and the next module heading (or EOF)
+    contains a ``### Journal`` subsection with all four narrative fields.
+
+    Args:
+        recap_content: The full recap file content.
+        modules: The module numbers expected to have a consolidated section.
+    """
+    for module in sorted(modules):
+        heading = f"## Module {module}:"
+        start = recap_content.index(heading)
+        # Sections may be appended out of numeric order by the backfill applier,
+        # so bound each section by the next ``## Module `` heading occurring after
+        # this one in the file (by position, not module number), or EOF.
+        next_pos = recap_content.find("## Module ", start + len(heading))
+        end = next_pos if next_pos != -1 else len(recap_content)
+        section = recap_content[start:end]
+        assert "### Journal" in section, (
+            f"Module {module} section is missing the consolidated ### Journal subsection"
+        )
+        for label in _JOURNAL_FIELD_LABELS:
+            assert label in section, (
+                f"Module {module} ### Journal subsection is missing {label!r}"
+            )
 
 
 def _set_total_duration(recap_content: str, total_duration: str | None) -> str:
@@ -235,9 +285,18 @@ def _apply_plan(
     recap = _set_total_duration(recap, plan.total_duration)
     recap_path.write_text(recap, encoding="utf-8")
 
-    # Journal: append the missing entries.
+    # Journal: journal content is consolidated into the recap, so its per-module
+    # coverage now mirrors the recap rather than a separate planner-tracked gap
+    # list (plan.journal_modules is always empty). Append an entry for any module
+    # present in the recap that the journal is still missing.
+    recap_modules_present = validator.count_recap_sections(
+        recap_path.read_text(encoding="utf-8")
+    )
     journal = journal_path.read_text(encoding="utf-8")
-    for m in plan.journal_modules:
+    existing_journal = {
+        e.module_number for e in validator.parse_journal(journal).entries
+    }
+    for m in sorted(set(recap_modules_present) - existing_journal):
         journal += validator.format_journal_entry(
             module_number=m,
             module_name=MODULE_NAMES[m],
@@ -405,7 +464,8 @@ class TestFinalModuleOfTrackCompletionFlow:
             capsys=capsys,
         )
         assert final in payload["recap_modules"]
-        assert final in payload["journal_modules"]
+        # Journal is consolidated into the recap; it is no longer planned separately.
+        assert payload["journal_modules"] == []
         assert final in payload["certificate_modules"]
 
         plan = planner.plan_backfill(
@@ -429,6 +489,8 @@ class TestFinalModuleOfTrackCompletionFlow:
         journal_content = journal_path.read_text(encoding="utf-8")
         assert f"## Module {final}:" in recap_content
         assert validator.count_recap_sections(recap_content) == sorted(completed)
+        # Every recap section carries the consolidated ### Journal subsection.
+        _assert_consolidated_sections(recap_content, completed)
         journal_doc = validator.parse_journal(journal_content)
         assert sorted(e.module_number for e in journal_doc.entries) == sorted(completed)
         assert final in _discover_certificates(progress_dir)
@@ -531,7 +593,8 @@ class TestBackfillReportedState:
             capsys=capsys,
         )
         assert payload["recap_modules"] == [7]
-        assert payload["journal_modules"] == [1, 2, 4, 5]
+        # Journal is consolidated into the recap; no separate journal backfill.
+        assert payload["journal_modules"] == []
         assert payload["certificate_modules"] == [1, 2, 3, 4, 5]
         assert _looks_like_duration(payload["total_duration"])
 
@@ -559,6 +622,8 @@ class TestBackfillReportedState:
         assert validator.count_recap_sections(recap_content) == completed
         assert sorted(e.module_number for e in journal_doc.entries) == completed
         assert _discover_certificates(progress_dir) == set(completed)
+        # Every recap section carries the consolidated ### Journal subsection.
+        _assert_consolidated_sections(recap_content, completed)
 
         # Header Total Duration is a real cumulative time, not a placeholder.
         header = validator.parse_recap_header(recap_content)
@@ -742,9 +807,10 @@ class TestContextSwitchingDurations:
                 certificates=set(present),
             ),
         )
-        # Module 4 is the only gap across all three artifact types.
+        # Module 4 is the recap/certificate gap; journal is consolidated into the
+        # recap and is never planned as a separate artifact.
         assert plan.recap_modules == [4]
-        assert plan.journal_modules == [4]
+        assert plan.journal_modules == []
         assert plan.certificate_modules == [4]
 
         _apply_plan(
@@ -761,10 +827,15 @@ class TestContextSwitchingDurations:
         journal_doc = validator.parse_journal(journal_path.read_text(encoding="utf-8"))
         assert sorted(e.module_number for e in journal_doc.entries) == completed
         assert _discover_certificates(progress_dir) == set(completed)
+        # Every recap section carries the consolidated ### Journal subsection,
+        # including module 4 whose ### Duration field is omitted.
+        _assert_consolidated_sections(recap_content, completed)
 
-        # Module 4's section exists but omits the ### Duration field.
+        # Module 4's section exists but omits the ### Duration field (its
+        # consolidated ### Journal subsection is still present).
         section_4 = recap_content.split("## Module 4:", 1)[1].split("## Module 5:", 1)[0]
         assert "### Duration" not in section_4
+        assert "### Journal" in section_4
 
         # The validator passes for the fully backfilled set.
         assert _validate(progress_path, journal_path, recap_path) == 0

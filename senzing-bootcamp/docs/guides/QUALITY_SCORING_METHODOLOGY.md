@@ -218,7 +218,7 @@ Quality Score = (40 × 0.40) + (45 × 0.30) + (35 × 0.20) + (80 × 0.10)
 
 - [Module 5: Data Quality & Mapping](../modules/MODULE_5_DATA_QUALITY_AND_MAPPING.md) — Full module documentation with algorithm details
 - [Module 5 Steering File](../../steering/module-05-data-quality-mapping.md) — Agent workflow for Module 5
-- [Data Quality Check Hook](../../hooks/data-quality-check.kiro.hook) — Automated quality check hook
+- [Data Quality Check Hook](../../hooks/data-quality-check.json) — Automated quality check hook
 - [Performance Baselines](PERFORMANCE_BASELINES.md) — How data volume affects processing time and resource needs
 - [Common Mistakes](COMMON_MISTAKES.md) — Common data quality mistakes and how to avoid them
 

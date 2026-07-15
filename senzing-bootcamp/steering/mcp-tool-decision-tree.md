@@ -239,7 +239,7 @@ Before selecting an SDK method when the bootcamper's request is ambiguous (could
 The request could map to `how_entity`, `why_entities`, `why_records`, or `why_record_in_entity`. Discover the why/how category, then present choices:
 
 ```text
-👉 Which level of detail do you want?
+👉 **Which level of detail do you want?**
 1. how_entity — shows how a single entity was constructed from its records
 2. why_entities — explains why two entities resolved together
 3. why_records — explains why two specific records resolved together

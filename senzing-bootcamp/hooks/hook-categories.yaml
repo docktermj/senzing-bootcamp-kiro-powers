@@ -6,7 +6,6 @@ metadata:
 critical:
   - ask-bootcamper
   - code-style-check
-  - commonmark-validation
   - review-bootcamper-input
   - write-policy-gate
 
@@ -44,30 +43,24 @@ modules:
   11:
     - deployment-phase-gate
   any:
-    - backup-project-on-request
     - enforce-critical-artifacts
     - error-recovery-context
-    - git-commit-reminder
     - module-completion-celebration
-    - module-recap-append
     - session-log-events
 
 agentstop_order:
   - id: ask-bootcamper
     order: 1
-    rationale: "Owns answer-processing and closing questions; absolute precedence per agent-instructions."
-  - id: module-recap-append
-    order: 2
-    rationale: "Capture must run before celebration so the recap reflects the just-completed module."
+    rationale: "Owns answer-processing and closing questions; absolute precedence per agent-instructions. Now also handles recap capture internally at Phase 0."
   - id: module-completion-celebration
-    order: 3
+    order: 2
     rationale: "Celebrates a completed module; must yield to gate-violation output."
   - id: enforce-gate-on-stop
-    order: 4
+    order: 3
     rationale: "Mandatory-gate safety net; a gate violation outranks a celebration in the same turn."
   - id: enforce-visualization-offers
-    order: 5
+    order: 4
     rationale: "Lowest-stakes nudge; offers missed visualizations only when nothing higher fired."
   - id: enforce-critical-artifacts
-    order: 6
-    rationale: "Runs last so its blocking output appears only after higher-priority gate output clears; must run after module-recap-append (so the recap section exists to reconstruct/verify from) and after the celebration/gate hooks."
+    order: 5
+    rationale: "Runs last so its blocking output appears only after higher-priority gate output clears; runs after ask-bootcamper (which now handles recap at Phase 0, so the recap section exists to reconstruct/verify from) and after the celebration/gate hooks."

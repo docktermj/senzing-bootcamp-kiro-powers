@@ -50,10 +50,12 @@ def _read_phase2() -> str:
 def _read_phase1b() -> str:
     """Return the full text of onboarding-phase1b-intro-language.md.
 
-    Post-split, this phase file owns the entity-resolution intro (Step 3),
-    the Programming Language Selection step (Step 4), the welcome banner /
-    Bootcamp Introduction (Step 5), the verbosity preference (Step 5a), and
-    the comprehension check (Step 5b)."""
+    After the preface reorder (track before language), this phase file owns the
+    entity-resolution intro (Step 3), the welcome banner / Bootcamp Introduction
+    (Step 4), and the verbosity / Detail_Level preference (Step 4a). Programming
+    language selection and the comprehension check moved OUT of this file into
+    phase 2 (onboarding-phase2-track-setup.md), where they now follow track
+    selection."""
     return _ONBOARDING_PHASE1B_FILE.read_text(encoding="utf-8")
 
 
@@ -131,10 +133,10 @@ class TestBugConditionInlineQuestions:
         """Programming Language Selection should NOT contain
         '👉 Which language would you like to use?' with 'WAIT for response'.
 
-        Post-split, language selection moved out of onboarding-flow.md into
-        onboarding-phase1b-intro-language.md (Step 4)."""
-        text = _read_phase1b()
-        section = _extract_section(text, r"## 4\.")
+        After the preface reorder, language selection lives in phase 2
+        (onboarding-phase2-track-setup.md, Step 5a), after track selection."""
+        text = _read_phase2()
+        section = _extract_section(text, r"## 5a\.")
         assert "👉 Which language would you like to use?" not in section, (
             "Programming Language Selection contains inline closing question "
             "'👉 Which language would you like to use?'"
@@ -142,9 +144,9 @@ class TestBugConditionInlineQuestions:
 
     def test_step_2_no_wait(self) -> None:
         """Programming Language Selection should NOT contain a 'WAIT for
-        response' instruction (now in onboarding-phase1b, Step 4)."""
-        text = _read_phase1b()
-        section = _extract_section(text, r"## 4\.")
+        response' instruction (now in phase 2, Step 5a)."""
+        text = _read_phase2()
+        section = _extract_section(text, r"## 5a\.")
         assert "WAIT for response" not in section, (
             "Programming Language Selection contains 'WAIT for response' instruction"
         )
@@ -153,11 +155,12 @@ class TestBugConditionInlineQuestions:
         """Bootcamp Introduction should NOT contain
         '👉 Does this outline make sense?' with 'WAIT for response'.
 
-        Post-split, the bootcamp introduction / comprehension check moved out
-        of onboarding-flow.md into onboarding-phase1b-intro-language.md
-        (Step 5 plus sub-steps 5a/5b)."""
+        After the preface reorder, the bootcamp introduction / welcome banner is
+        Step 4 of onboarding-phase1b-intro-language.md (the verbosity sub-step
+        4a follows it; programming language selection and the comprehension
+        check moved to phase 2)."""
         text = _read_phase1b()
-        section = _extract_section(text, r"## 5\.")
+        section = _extract_section(text, r"## 4\.")
         assert "👉 Does this outline make sense?" not in section, (
             "Bootcamp Introduction contains inline closing question "
             "'👉 Does this outline make sense?'"
@@ -165,9 +168,9 @@ class TestBugConditionInlineQuestions:
 
     def test_step_4_no_wait(self) -> None:
         """Bootcamp Introduction should NOT contain a 'WAIT for response'
-        instruction (now in onboarding-phase1b, Step 5/5a/5b)."""
+        instruction (now in onboarding-phase1b, Step 4/4a)."""
         text = _read_phase1b()
-        section = _extract_section(text, r"## 5\.")
+        section = _extract_section(text, r"## 4\.")
         assert "WAIT for response" not in section, (
             "Bootcamp Introduction contains 'WAIT for response' instruction"
         )
@@ -187,7 +190,7 @@ class TestBugConditionInlineQuestions:
 # ---------------------------------------------------------------------------
 
 _HOOK_FILE = (
-    Path(__file__).resolve().parent.parent / "hooks" / "ask-bootcamper.kiro.hook"
+    Path(__file__).resolve().parent.parent / "hooks" / "ask-bootcamper.json"
 )
 
 _AGENT_INSTRUCTIONS_FILE = (
@@ -196,7 +199,7 @@ _AGENT_INSTRUCTIONS_FILE = (
 
 
 def _read_hook() -> str:
-    """Return the full text of ask-bootcamper.kiro.hook."""
+    """Return the full text of ask-bootcamper.json."""
     return _HOOK_FILE.read_text(encoding="utf-8")
 
 
@@ -278,16 +281,14 @@ def _strip_inline_questions_and_waits(section: str) -> str:
 # Expected step heading sequence in onboarding-flow.md (Phase 1 only after split).
 # Post-split, onboarding-flow.md owns Steps 0–2d (setup → MCP health → version →
 # directory → team detection → prerequisite gate), then directs the agent to load
-# onboarding-phase1b-intro-language.md. The entity-resolution intro (Step 3),
-# Programming Language Selection (Step 4), Bootcamp Introduction (Step 5), verbosity
-# (5a), and comprehension check (5b) now live in the phase1b file.
+# onboarding-phase1b-intro-language.md. After the preface reorder, the phase1b
+# file owns the entity-resolution intro (Step 3), the Bootcamp Introduction /
+# welcome banner (Step 4), and verbosity (Step 4a); track selection (Step 5),
+# programming language selection (Step 5a), and the comprehension check (Step 5b)
+# live in the phase2 track-setup file.
 _EXPECTED_HEADINGS = [
     "Phase Sub-Files",
     "0. Setup Preamble",
-    # Added by the write-policy-gate-ux batch (Change B): an onboarding section
-    # explaining the write-policy-gate intercept-retry ("Rejected"/"Accepted")
-    # cycle. Purely additive — sits between Step 0 and Step 0b.
-    '0a. Why You May See "Rejected"/"Accepted" Messages',
     "0b. MCP Health Check",
     "0c. Version Display",
     "1. Directory Structure",
@@ -295,9 +296,12 @@ _EXPECTED_HEADINGS = [
     "2. Prerequisite Check (Mandatory Gate)",
 ]
 
-# Expected headings in Phase 2 file
+# Expected headings in Phase 2 file. The reorder places Track Selection BEFORE
+# Programming Language Selection; asserting both here (as an ordered subsequence)
+# protects that Track_Selection precedes Language_Selection.
 _EXPECTED_PHASE2_HEADINGS = [
     "5. Track Selection",
+    "5a. Programming Language Selection",
     "Switching Tracks",
     "Changing Language",
     "Validation Gates",
@@ -309,8 +313,8 @@ _EXPECTED_PHASE2_HEADINGS = [
 # _HOOK_BASELINE_HASH, which broke on every benign edit to the hook prompt
 # without telling us whether the protected ownership behavior changed.)
 _HOOK_OWNERSHIP_MARKERS = (
-    '"agentStop"',  # the hook fires on agent stop ...
-    '"askAgent"',  # ... and asks the agent to act
+    '"Stop"',  # the hook fires on agent stop (Kiro 1.0 trigger) ...
+    '"agent"',  # ... and asks the agent to act (Kiro 1.0 action type)
     "PHASE 1: CLOSING QUESTION",  # Phase 1 owns the 👉 closing question
     "Closing_Question_Phase",
     "👉",  # the closing-question marker itself
@@ -460,10 +464,10 @@ class TestPreservation:
         detection, MCP query, language list, preference persistence) is
         preserved.
 
-        Post-split this content moved to Step 4 of
-        onboarding-phase1b-intro-language.md."""
-        text = _read_phase1b()
-        section = _extract_section(text, r"## 4\.")
+        After the preface reorder this content moved to Step 5a of
+        onboarding-phase2-track-setup.md, after Track Selection."""
+        text = _read_phase2()
+        section = _extract_section(text, r"## 5a\.")
         info = _strip_inline_questions_and_waits(section)
         for phrase in _STEP_2_KEY_CONTENT:
             assert phrase in info, (
@@ -475,10 +479,10 @@ class TestPreservation:
         """Bootcamp Introduction key informational content (welcome banners,
         overview points, module table reference) is preserved.
 
-        Post-split this content moved to Step 5 of
+        After the preface reorder this content is Step 4 of
         onboarding-phase1b-intro-language.md."""
         text = _read_phase1b()
-        section = _extract_section(text, r"## 5\.")
+        section = _extract_section(text, r"## 4\.")
         info = _strip_inline_questions_and_waits(section)
         for phrase in _STEP_4_KEY_CONTENT:
             assert phrase in info, (

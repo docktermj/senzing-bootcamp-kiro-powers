@@ -2,7 +2,7 @@
 
 This module builds a decision model of the `write-policy-gate` `preToolUse`
 hook from the *live* prompt text in
-``senzing-bootcamp/hooks/write-policy-gate.kiro.hook``. The model mirrors the
+``senzing-bootcamp/hooks/write-policy-gate.json``. The model mirrors the
 prompt's four-check branch logic and, critically, whether the prompt contains
 an INTERNAL-FILE PASS-THROUGH clause that excludes routine power-managed
 internal files from the intercept-retry cycle.
@@ -36,7 +36,7 @@ from pathlib import Path
 # Hook location
 # ---------------------------------------------------------------------------
 
-HOOK_PATH: Path = Path("senzing-bootcamp/hooks/write-policy-gate.kiro.hook")
+HOOK_PATH: Path = Path("senzing-bootcamp/hooks/write-policy-gate.json")
 
 # ---------------------------------------------------------------------------
 # Decision outcomes
@@ -92,7 +92,7 @@ def load_gate_prompt(hook_path: Path | None = None) -> str:
     path = hook_path or HOOK_PATH
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
-    return data["then"]["prompt"]
+    return data["hooks"][0]["action"]["prompt"]
 
 
 # ---------------------------------------------------------------------------

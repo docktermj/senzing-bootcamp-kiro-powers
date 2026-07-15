@@ -665,12 +665,19 @@ class TestProperty3ClassificationMatches:
             quoted = f"`{art.path}`"
             line = next(ln for ln in lines if quoted in ln)
 
-            if art.classification == "carry-forward":
-                assert "_(carry-forward)_" in line
-                assert "_(bootcamp record)_" not in line
-            else:  # "leave-behind"
-                assert "_(bootcamp record)_" in line
-                assert "_(carry-forward)_" not in line
+            # The classification tag is rendered as the trailing token of the
+            # line (``- `<path>` — <why> <tag>``). Anchor the check to that
+            # trailing ``  <tag>`` token instead of a bare substring search, so a
+            # path or note that happens to contain a tag-marker string is not
+            # mistaken for the artifact's actual tag.
+            expected_tag = gai.classification_tag(art.classification)
+            other_tag = (
+                "_(bootcamp record)_"
+                if art.classification == "carry-forward"
+                else "_(carry-forward)_"
+            )
+            assert line.endswith(f" {expected_tag}")
+            assert not line.endswith(f" {other_tag}")
 
 
 # ---------------------------------------------------------------------------

@@ -11,7 +11,7 @@ For critical hooks (created during onboarding), see `hook-registry-critical.md`.
 
 ## Module 11 Hooks
 
-**deployment-phase-gate** (postTaskExecution → askAgent)
+**deployment-phase-gate** (PostTaskExec → agent)
 
 Prompt:
 
@@ -45,4 +45,5 @@ WAIT for the bootcamper's response. Do NOT proceed to any deployment steps (Step
 
 - id: `deployment-phase-gate`
 - name: `to check the deployment phase gate`
-- description: `After packaging tasks complete in Module 11, displays a phase gate prompt asking the bootcamper whether to proceed to deployment or stop. Checks config/bootcamp_progress.json to confirm the current module is 11 before acting.`
+- trigger: `PostTaskExec`
+- action: `agent`

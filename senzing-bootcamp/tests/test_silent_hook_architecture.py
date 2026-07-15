@@ -20,12 +20,12 @@ class TestAskBootcamperSilencePattern:
 
     @pytest.fixture()
     def hook_data(self) -> dict:
-        path = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+        path = _HOOKS_DIR / "ask-bootcamper.json"
         return json.loads(path.read_text(encoding="utf-8"))
 
     @pytest.fixture()
     def hook_prompt(self, hook_data: dict) -> str:
-        return hook_data["then"]["prompt"]
+        return hook_data["hooks"][0]["action"]["prompt"]
 
     def test_contains_default_output_instruction(self, hook_prompt: str) -> None:
         """Hook prompt contains 'DEFAULT OUTPUT: .' instruction."""
@@ -45,16 +45,18 @@ class TestAskBootcamperSilencePattern:
         assert "NEVER generate text beginning with" in hook_prompt
 
     def test_hook_is_valid_json(self) -> None:
-        """Hook file is valid JSON with all required fields."""
-        path = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+        """Hook file is a valid v1 wrapper with all required fields."""
+        path = _HOOKS_DIR / "ask-bootcamper.json"
         data = json.loads(path.read_text(encoding="utf-8"))
-        assert "name" in data
-        assert "version" in data
-        assert "when" in data
-        assert "then" in data
-        assert data["when"]["type"] == "agentStop"
-        assert data["then"]["type"] == "askAgent"
-        assert len(data["then"]["prompt"]) > 100
+        assert data.get("version") == "v1"
+        assert isinstance(data.get("hooks"), list) and data["hooks"]
+        entry = data["hooks"][0]
+        assert "name" in entry
+        assert "trigger" in entry
+        assert "action" in entry
+        assert entry["trigger"] == "Stop"
+        assert entry["action"]["type"] == "agent"
+        assert len(entry["action"]["prompt"]) > 100
 
     def test_registry_matches_hook_file(self) -> None:
         """hook-registry-critical.md entry for ask-bootcamper contains DEFAULT OUTPUT."""

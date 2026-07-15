@@ -1,11 +1,11 @@
-"""Tests that hooks/README.md stays in sync with actual .kiro.hook files.
+"""Tests that hooks/README.md stays in sync with actual .json v1 hook files.
 
 Prevents documentation drift where the README documents hooks that don't
 exist as files, or hook files exist without README documentation.
 
 Validates:
-- Every hook filename referenced in the README has a corresponding .kiro.hook file
-- Every .kiro.hook file in the hooks directory is documented in the README
+- Every hook filename referenced in the README has a corresponding .json file
+- Every .json hook file in the hooks directory is documented in the README
 - The total hook count stated in the README matches the actual file count
 - The POWER.md hook list matches the actual file set
 """
@@ -30,9 +30,9 @@ README_PATH: Path = HOOKS_DIR / "README.md"
 POWER_MD_PATH: Path = Path("senzing-bootcamp/POWER.md")
 
 # Pattern matching hook filenames in README headings like:
-#   ### 5. Write Policy Gate (`write-policy-gate.kiro.hook`) ⭐
+#   ### 4. Write Policy Gate (`write-policy-gate.json`) ⭐
 HOOK_HEADING_PATTERN: re.Pattern[str] = re.compile(
-    r"###\s+\d+\.\s+.+\(`([a-z0-9-]+\.kiro\.hook)`\)"
+    r"###\s+\d+\.\s+.+\(`([a-z0-9-]+\.json)`\)"
 )
 
 # Pattern matching the total count claim like:
@@ -56,8 +56,8 @@ POWER_HOOK_ID_PATTERN: re.Pattern[str] = re.compile(r"`([a-z0-9-]+)`")
 # ---------------------------------------------------------------------------
 
 def _get_actual_hook_ids() -> set[str]:
-    """Return the set of hook IDs from actual .kiro.hook files on disk."""
-    return {p.name.replace(".kiro.hook", "") for p in get_hook_files()}
+    """Return the set of hook IDs from actual .json v1 hook files on disk."""
+    return {p.name.replace(".json", "") for p in get_hook_files()}
 
 
 def _get_readme_hook_filenames() -> list[str]:
@@ -69,7 +69,7 @@ def _get_readme_hook_filenames() -> list[str]:
 def _get_readme_hook_ids() -> set[str]:
     """Parse README.md and return hook IDs (filenames without extension)."""
     filenames = _get_readme_hook_filenames()
-    return {f.replace(".kiro.hook", "") for f in filenames}
+    return {f.replace(".json", "") for f in filenames}
 
 
 def _get_readme_count() -> int | None:
@@ -102,14 +102,14 @@ def _get_power_md_hook_ids() -> tuple[int | None, set[str]]:
 # ===========================================================================
 
 class TestReadmeHookFileSync:
-    """Verify README hook entries match actual .kiro.hook files."""
+    """Verify README hook entries match actual .json files."""
 
     def test_readme_exists(self):
         """README.md must exist in the hooks directory."""
         assert README_PATH.is_file(), f"Missing {README_PATH}"
 
     def test_no_phantom_hooks_in_readme(self):
-        """Every hook documented in README must have a .kiro.hook file."""
+        """Every hook documented in README must have a .json file."""
         readme_ids = _get_readme_hook_ids()
         actual_ids = _get_actual_hook_ids()
         phantom = readme_ids - actual_ids
@@ -118,7 +118,7 @@ class TestReadmeHookFileSync:
         )
 
     def test_no_undocumented_hook_files(self):
-        """Every .kiro.hook file must be documented in the README."""
+        """Every .json file must be documented in the README."""
         readme_ids = _get_readme_hook_ids()
         actual_ids = _get_actual_hook_ids()
         undocumented = actual_ids - readme_ids
@@ -132,7 +132,7 @@ class TestReadmeHookFileSync:
         assert stated is not None, "Could not find hook count in README"
         actual = len(get_hook_files())
         assert stated == actual, (
-            f"README claims {stated} hooks but {actual} .kiro.hook files exist"
+            f"README claims {stated} hooks but {actual} .json files exist"
         )
 
     def test_readme_ids_match_actual_ids_exactly(self):
@@ -151,7 +151,7 @@ class TestReadmeHookFileSync:
 # ===========================================================================
 
 class TestPowerMdHookSync:
-    """Verify POWER.md hook list matches actual .kiro.hook files."""
+    """Verify POWER.md hook list matches actual .json files."""
 
     def test_power_md_exists(self):
         """POWER.md must exist."""
@@ -163,7 +163,7 @@ class TestPowerMdHookSync:
         assert count is not None, "Could not find 'Available (N hooks):' in POWER.md"
         actual = len(get_hook_files())
         assert count == actual, (
-            f"POWER.md claims {count} hooks but {actual} .kiro.hook files exist"
+            f"POWER.md claims {count} hooks but {actual} .json files exist"
         )
 
     def test_power_md_ids_match_actual_ids(self):

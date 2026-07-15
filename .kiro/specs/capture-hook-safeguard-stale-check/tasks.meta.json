@@ -1,0 +1,132 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Falsifying example: test_v1_json_hooks_not_reported_missing(\n    state=V1HooksDirState(\n        formats=(('ask-bootcamper', 'json'), ('session-log-events', 'json')),\n        unrelated_filenames=(),\n    ),\n)\nAssertionError: detect_missing_capture_hooks() returns 'ask-bootcamper' even though ask-bootcamper.json exists in .kiro/hooks/\nassert 'ask-bootcamper' not in ['ask-bootcamper', 'session-log-events']",
+      "lastRunTimestamp": 1783961144980
+    },
+    "2. Write preservation property tests (BEFORE implementing fix)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783961328191
+    },
+    "3.2 Verify bug condition exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1783961475340
+    },
+    "3.3 Verify preservation tests still pass": {
+      "status": "passed",
+      "lastRunTimestamp": 1783961528470
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961002298
+      },
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961009425
+      },
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961166379
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961002452
+      },
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961172344
+      },
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961349230
+      }
+    ],
+    "3.1 Implement the fix": [
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961002534
+      },
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961352101
+      },
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961427741
+      }
+    ],
+    "3.2 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961002568
+      },
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961431860
+      },
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961486977
+      }
+    ],
+    "3.3 Verify preservation tests still pass": [
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961002601
+      },
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961489922
+      },
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961544850
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961002635
+      },
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961548100
+      },
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961603064
+      }
+    ],
+    "3. Fix for v1 JSON hooks falsely reported as missing": [
+      {
+        "executionId": "9feecd2c-e04b-4620-bc1f-eb3a06b0d47c",
+        "chatSessionId": "sess_eaeced5f-d994-4793-b083-c923ac12b2d2",
+        "timestamp": 1783961544885
+      }
+    ]
+  }
+}

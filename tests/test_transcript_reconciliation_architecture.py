@@ -29,7 +29,7 @@ from pathlib import Path
 
 _PROJECT_ROOT: Path = Path(__file__).resolve().parent.parent
 _HOOKS_DIR: Path = _PROJECT_ROOT / "senzing-bootcamp" / "hooks"
-_SESSION_LOG_HOOK: Path = _HOOKS_DIR / "session-log-events.kiro.hook"
+_SESSION_LOG_HOOK: Path = _HOOKS_DIR / "session-log-events.json"
 _GRADUATION_DOC: Path = _PROJECT_ROOT / "senzing-bootcamp" / "steering" / "graduation.md"
 
 # The feature's reconciliation entry point. A write-tool hook or the
@@ -39,62 +39,65 @@ _RECONCILE_MARKER: str = "reconcile_transcript"
 
 
 def _hook_files() -> list[Path]:
-    """Return all ``*.kiro.hook`` files under the hooks directory.
+    """Return all ``*.json`` v1 hook files under the hooks directory.
 
     Returns:
         Sorted list of hook file paths.
     """
-    return sorted(_HOOKS_DIR.glob("*.kiro.hook"))
+    return sorted(_HOOKS_DIR.glob("*.json"))
 
 
 def _load_hook(path: Path) -> dict:
-    """Parse a ``.kiro.hook`` JSON file.
+    """Parse a ``.json`` v1 hook file and return its single entry (hooks[0]).
 
     Args:
         path: Path to the hook file.
 
     Returns:
-        The parsed hook object.
+        The v1 hook entry object.
     """
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8"))["hooks"][0]
+
+
+_WRITE_MATCHER_TOKENS = ("fs_write", "str_replace", "fs_append")
 
 
 def _is_write_tool_hook(hook: dict) -> bool:
-    """Return True if the hook targets tool-write events (pre/postToolUse write).
+    """Return True if the entry targets tool-write events (Pre/PostToolUse write).
 
-    A "write-tool hook" is one whose ``when`` block fires on ``write`` tool
-    operations — i.e. ``when.type`` is a tool-use trigger and its
-    ``toolTypes`` include ``"write"``.
+    A "write-tool hook" fires on the 1.0 ``PreToolUse``/``PostToolUse`` triggers
+    and scopes to the write-tool matcher (``fs_write|str_replace|fs_append``).
 
     Args:
-        hook: Parsed hook object.
+        hook: The v1 hook entry.
 
     Returns:
         True when the hook fires on write-tool events.
     """
-    when = hook.get("when", {})
-    when_type = when.get("type")
-    tool_types = when.get("toolTypes", []) or []
-    return when_type in {"preToolUse", "postToolUse"} and "write" in tool_types
+    trigger = hook.get("trigger")
+    matcher = hook.get("matcher") or ""
+    return trigger in {"PreToolUse", "PostToolUse"} and any(
+        token in matcher for token in _WRITE_MATCHER_TOKENS
+    )
 
 
 def _is_post_write_tool_hook(hook: dict) -> bool:
-    """Return True if the hook is specifically a ``postToolUse`` write hook.
+    """Return True if the entry is specifically a ``PostToolUse`` write hook.
 
     Args:
-        hook: Parsed hook object.
+        hook: The v1 hook entry.
 
     Returns:
-        True when ``when.type == "postToolUse"`` and ``"write"`` is targeted.
+        True when ``trigger == "PostToolUse"`` and the write matcher is present.
     """
-    when = hook.get("when", {})
-    return when.get("type") == "postToolUse" and "write" in (
-        when.get("toolTypes", []) or []
+    matcher = hook.get("matcher") or ""
+    return hook.get("trigger") == "PostToolUse" and any(
+        token in matcher for token in _WRITE_MATCHER_TOKENS
     )
 
 
 def _hook_id(path: Path) -> str:
-    """Return the hook id (file name without the ``.kiro.hook`` suffix).
+    """Return the hook id (file name without the ``.json`` suffix).
 
     Args:
         path: Path to the hook file.
@@ -102,7 +105,7 @@ def _hook_id(path: Path) -> str:
     Returns:
         The hook id, e.g. ``session-log-events``.
     """
-    return path.name[: -len(".kiro.hook")]
+    return path.name[: -len(".json")]
 
 
 class TestNoNewWriteToolReconciliationHook:
@@ -176,11 +179,11 @@ class TestSessionLogEventsHookUnmodified:
         """The hook must remain a postToolUse write logger (its original shape)."""
         hook = _load_hook(_SESSION_LOG_HOOK)
         assert _is_post_write_tool_hook(hook), (
-            "session-log-events must remain a postToolUse write-tool hook"
+            "session-log-events must remain a PostToolUse write-tool hook"
         )
         # It logs; it must not have been repurposed into a reconciliation trigger.
-        assert hook.get("then", {}).get("type") == "runCommand", (
-            "session-log-events must remain a runCommand logging hook"
+        assert hook.get("action", {}).get("type") == "command", (
+            "session-log-events must remain a command logging hook"
         )
 
     def test_session_log_hook_does_not_reference_reconciliation(self) -> None:

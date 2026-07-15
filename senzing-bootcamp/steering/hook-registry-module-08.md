@@ -11,7 +11,7 @@ For critical hooks (created during onboarding), see `hook-registry-critical.md`.
 
 ## Module 8 Hooks
 
-**enforce-visualization-offers** (agentStop → askAgent)
+**enforce-visualization-offers** (Stop → agent)
 
 Prompt:
 
@@ -39,9 +39,10 @@ Process missed checkpoints one at a time. Do not batch multiple offers into a si
 
 - id: `enforce-visualization-offers`
 - name: `to offer visualizations`
-- description: `When the agent stops during a visualization-capable module (3, 5, 7, 8), checks the visualization tracker to verify all required offers were made. Prompts for missed offers.`
+- trigger: `Stop`
+- action: `agent`
 
-**validate-benchmark-results** (fileEdited → askAgent, filePatterns: `tests/performance/*.*`)
+**validate-benchmark-results** (PostFileSave → agent, matcher: `^(?:tests/performance/[^/]*\.[^/]*)$`)
 
 Prompt:
 
@@ -51,4 +52,6 @@ A benchmark script in tests/performance/ was just modified. Before recording res
 
 - id: `validate-benchmark-results`
 - name: `to validate benchmark results`
-- description: `When benchmark scripts are created or modified in tests/performance/, validates that they produce parseable output with required metrics (records/sec, latency percentiles).`
+- trigger: `PostFileSave`
+- matcher: `^(?:tests/performance/[^/]*\.[^/]*)$`
+- action: `agent`

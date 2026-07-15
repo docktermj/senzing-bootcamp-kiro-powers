@@ -32,9 +32,12 @@ from version import (  # noqa: E402
 # ---------------------------------------------------------------------------
 _POWER_ROOT = Path(__file__).resolve().parent.parent
 _ONBOARDING_FLOW = _POWER_ROOT / "steering" / "onboarding-flow.md"
-# After the onboarding split, the welcome banner (Bootcamp Introduction,
-# Step 5) moved into onboarding-phase1b-intro-language.md, while the version
-# display (Step 0c) stays in onboarding-flow.md.
+# After the onboarding split, the welcome banner (Bootcamp Introduction) moved
+# into onboarding-phase1b-intro-language.md, while the version display
+# (Step 0c) stays in onboarding-flow.md. The preface reorder (track before
+# language) then renumbered the banner step to Step 4 — programming language
+# selection moved out of phase 1b into phase 2, so Bootcamp Introduction is now
+# Step 4 (immediately after the entity-resolution intro, Step 3).
 _ONBOARDING_PHASE1B = _POWER_ROOT / "steering" / "onboarding-phase1b-intro-language.md"
 _VERSION_FILE = _POWER_ROOT / "VERSION"
 
@@ -53,7 +56,7 @@ class TestReadVersion:
     def test_read_version_from_default_path(self) -> None:
         """read_version() reads from the default VERSION file without error."""
         version = read_version()
-        assert version == "0.1.3"
+        assert version == "0.2.0"
 
     def test_missing_file_raises_error(self, tmp_path: Path) -> None:
         """read_version raises VersionError when the file does not exist."""
@@ -123,7 +126,7 @@ class TestCli:
             main(["--format", "raw"])
         assert exc_info.value.code == 0
         captured = capsys.readouterr()
-        assert captured.out.strip() == "0.1.3"
+        assert captured.out.strip() == "0.2.0"
 
     def test_cli_display_format(self, capsys: pytest.CaptureFixture[str]) -> None:
         """CLI with --format display outputs the full display string."""
@@ -131,7 +134,7 @@ class TestCli:
             main(["--format", "display"])
         assert exc_info.value.code == 0
         captured = capsys.readouterr()
-        assert captured.out.strip() == "Senzing Bootcamp Power v0.1.3"
+        assert captured.out.strip() == "Senzing Bootcamp Power v0.2.0"
 
     def test_cli_missing_file_exit_code(
         self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
@@ -167,10 +170,13 @@ class TestOnboardingIntegration:
 
         After the onboarding split, the version display stays in
         onboarding-flow.md (Step 0c) while the welcome banner moved to
-        onboarding-phase1b-intro-language.md (Step 5, Bootcamp Introduction).
-        Ordering is therefore asserted across files via the documented load
-        sequence ("After Step 2d, load onboarding-phase1b-intro-language.md")
-        rather than within a single file.
+        onboarding-phase1b-intro-language.md. After the preface reorder (track
+        before language), the welcome banner is Step 4 (Bootcamp Introduction) —
+        programming language selection moved to phase 2, so the banner now
+        immediately follows the entity-resolution intro. Ordering is therefore
+        asserted across files via the documented load sequence ("After Step 2d,
+        load onboarding-phase1b-intro-language.md") rather than within a single
+        file.
         """
         flow = _ONBOARDING_FLOW.read_text(encoding="utf-8")
         phase1b = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
@@ -179,10 +185,10 @@ class TestOnboardingIntegration:
         assert "## 0c. Version Display" in flow, (
             "Version Display (0c) must remain in onboarding-flow.md"
         )
-        # The welcome banner now lives in Step 5 (Bootcamp Introduction) of the
-        # phase file.
-        assert "## 5. Bootcamp Introduction" in phase1b, (
-            "Bootcamp Introduction (Step 5) must be in "
+        # The welcome banner now lives in Step 4 (Bootcamp Introduction) of the
+        # phase file (renumbered from Step 5 by the preface reorder).
+        assert "## 4. Bootcamp Introduction" in phase1b, (
+            "Bootcamp Introduction (Step 4) must be in "
             "onboarding-phase1b-intro-language.md"
         )
         assert "WELCOME TO THE SENZING BOOTCAMP" in phase1b, (

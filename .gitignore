@@ -17,6 +17,10 @@ config/.question_pending
 # MCP health check status (transient, written by agent at session start)
 config/.mcp_status
 
+# Bootcamp progress written at runtime when the bootcamp is exercised from the
+# repo root (dogfooding). It is runtime state, not a tracked fixture.
+config/bootcamp_progress.json
+
 # User-state files (created at runtime, not shipped with the power)
 senzing-bootcamp/config/bootcamp_progress.json
 senzing-bootcamp/config/bootcamp_preferences.yaml

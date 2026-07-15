@@ -1,0 +1,107 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Define the precise 👉 leading-question counting rule": [
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784058430025
+      },
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784058438538
+      },
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784058897006
+      }
+    ],
+    "2. Add the Leading-Question Count Audit phase to `ask-bootcamper`": [
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784058430733
+      },
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784058899922
+      },
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784059699781
+      }
+    ],
+    "3. Keep it lightweight and off the write path": [
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784058430950
+      },
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784059703169
+      },
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784059849771
+      }
+    ],
+    "4. Non-blocking / never-worsen guarantees": [
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784058431217
+      },
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784059854219
+      },
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784059970595
+      }
+    ],
+    "5. Regenerate registry + lock and re-sync steering budget": [
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784058431300
+      },
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784059973981
+      },
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784060094922
+      }
+    ],
+    "6*. (Optional) Property/example tests for the counting rule and phases": [
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784058431462
+      },
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784060106568
+      },
+      {
+        "executionId": "f5a61c23-aa59-446a-9c4a-9e6c6ab869dc",
+        "chatSessionId": "sess_39171c51-9599-40a4-8af9-7303faee43cf",
+        "timestamp": 1784060395550
+      }
+    ]
+  }
+}

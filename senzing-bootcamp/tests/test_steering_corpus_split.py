@@ -145,6 +145,67 @@ GENERATED_FILES: frozenset[str] = frozenset(
 # sibling module-01-phase1-discovery.md exemption for the same in-flow option
 # pattern — this single unit is exempted with this justification. It remains
 # indexed in file_metadata.
+#
+# module-04-data-collection.md (module4-sqlite-load-time-warning spec): the
+# Module 4 collection flow gained the Step 8b in-flow SQLite Load_Time_Warning
+# (a collection-time heads-up placed after Step 8a and before the Step 9
+# transition — the should_warn_load_time trigger, the MCP-sourced TimingGuidance
+# presentation, the proceed / sample / switch-database options with the sampling
+# sub-choice, and the shared sqlite_volume_prompt decision-marker recording),
+# growing the file from 4888 to 6112 tokens — past the 5000 split_threshold. The
+# Module 4 Steps 1-9 data-collection flow is a single cohesive, sequential
+# workflow whose steps are interdependent and must load together (the load-time
+# heads-up lives in-flow after the Step 8a record-count back-fill and routes into
+# the Step 9 transition), and the surfaced wording is asserted by
+# test_load_time_steering.py, so it cannot be trimmed without dropping
+# requirement-linked steering behavior. The split_threshold_tokens budget value
+# is held at 5000 across the corpus; rather than fragment a workflow that must be
+# read as a whole — mirroring the sibling module-01-phase1-discovery.md and
+# module-02-sdk-setup.md in-flow-option exemptions — this single unit is exempted
+# with this justification. It remains indexed in file_metadata.
+#
+# conversation-protocol.md (clean-question-presentation bugfix): this is the
+# single cohesive, always-loaded turn-taking / question-protocol GOVERNING
+# document — the One Question Rule, the Question Stop Protocol, Question
+# Disambiguation, the Pre-Output Validation Checklist, the Self-Check, and the
+# Violation Examples all live here and must load together as one unit, because
+# the agent applies these interdependent turn-taking rules on every yielding
+# turn. The clean-question-presentation bugfix made the 🛑 STOP / ⛔ MANDATORY
+# GATE markers internal-only directives and added the internal-only-directive
+# rule, the compose-clean-first and no-duplicate-re-display rules, Pre-Output
+# Validation Checklist items 8/9, and Self-Check items 7/8, growing the file
+# 4600 -> 5179 tokens — just past the 5000 split_threshold. It is not divisible
+# into independently-loadable units without harming agent comprehension of the
+# interdependent turn-taking rules (splitting the question-protocol governing
+# rules across files would let the agent load one half without the other), and
+# it would also re-churn the always-loaded token baselines re-pinned this
+# checkpoint. The always-loaded budget remains well within threshold
+# (measure_steering --check passes at ~12.4% of the warn level), so rather than
+# fragment a governing document that must be read as a whole this single unit is
+# exempted with this justification. It remains indexed in file_metadata (so
+# test_exemptions_exist_in_index passes).
+#
+# agent-instructions.md (single-ask-question-guarantee spec): this is the single
+# cohesive, always-loaded root instruction document — session-start/resume
+# routing, the Answer Processing Priority / Delete-and-process rule, the State &
+# Progress model (current_step/step_history checkpointing and now the
+# Question_Ledger operations), and the Question_Pending file format all live here
+# and must load together as one unit on every turn. The
+# single-ask-question-guarantee spec added the Question_Ledger operational
+# guidance (the Question_Key scheme — onboarding.<step> / module.<N>.<step> /
+# global.<name> — plus the record-asked / mark-answered / is-answered operations
+# and the degrade-safely fallback) required by design task 2.2 and asserted by
+# tests/test_ask_once_guarantee_content.py and tests/test_ask_once_degrade_safely.py,
+# growing the file just past the 5000 split_threshold (to ~5355 tokens). That
+# content is required by the spec's own passing content tests and cannot be
+# trimmed or relocated without breaking them, and this file — like
+# conversation-protocol.md above — is a governing always-loaded document that is
+# not divisible into independently-loadable units without harming agent
+# comprehension of the interdependent instructions. The always-loaded budget
+# remains well within threshold (measure_steering --check passes at ~14.3% of the
+# warn level), so rather than fragment the root instruction document this single
+# unit is exempted with this justification. It remains indexed in file_metadata
+# (so test_exemptions_exist_in_index passes).
 EXEMPTIONS: frozenset[str] = frozenset(
     {
         "module-completion.md",
@@ -153,6 +214,9 @@ EXEMPTIONS: frozenset[str] = frozenset(
         "graduation.md",
         "module-03-phase2-visualization.md",
         "module-02-sdk-setup.md",
+        "module-04-data-collection.md",
+        "conversation-protocol.md",
+        "agent-instructions.md",
     }
 )
 

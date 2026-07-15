@@ -20,7 +20,7 @@ from hypothesis import strategies as st
 # Constants
 # ---------------------------------------------------------------------------
 
-HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.kiro.hook")
+HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.json")
 
 # Regeneration instruction phrases that must appear in Phase 4.
 # These verify Requirement 2.1: the hook instructs the agent to regenerate
@@ -47,10 +47,10 @@ SUPPRESSION_PHRASES: list[str] = [
 
 
 def load_hook_prompt() -> str:
-    """Load and return the then.prompt field from the consolidated hook file."""
+    """Load and return the action.prompt field from the consolidated v1 hook."""
     with open(HOOK_PATH, encoding="utf-8") as f:
         data = json.load(f)
-    return data["then"]["prompt"]
+    return data["hooks"][0]["action"]["prompt"]
 
 
 def extract_phase4_section(prompt: str) -> str:

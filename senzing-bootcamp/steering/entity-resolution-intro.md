@@ -6,15 +6,18 @@ inclusion: manual
 
 Loaded via `#[[file:]]` from `onboarding-flow.md` during Step 3.
 
-<!-- AGENT INSTRUCTION — not shown to the bootcamper.
-Before presenting this section, call `search_docs` from the Senzing MCP server:
-1. search_docs("Senzing principle-based entity resolution approach")
-2. search_docs("entity resolution relationships disclosed discovered")
-3. search_docs("entity resolution ambiguous match possible match")
-4. search_docs("Senzing differentiators real-time explainability attribution")
-5. search_docs("entity resolution pipeline standardization blocking scoring clustering")
-Use retrieved content to fill in Senzing-specific claims dynamically.
--->
+<!-- AGENT INSTRUCTION (not shown to bootcamper): Display the banner below
+VERBATIM as the FIRST output, before any prose (Req 1.1). Show it once per
+Preface run; do NOT re-display when re-presenting the gate (Req 1.4). -->
+
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🧩🧩🧩  ENTITY RESOLUTION CONCEPTS  🧩🧩🧩
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+<!-- AGENT INSTRUCTION (not shown to bootcamper): Source Senzing claims below
+from `search_docs` (Senzing MCP), not training data. -->
 
 ## What entity resolution is
 
@@ -48,26 +51,18 @@ The most capable engines go one step further: each inbound record is compared ag
 ## How Senzing handles it
 
 <!-- AGENT INSTRUCTION — not shown to the bootcamper.
-Call `search_docs("Senzing principle-based entity resolution approach")` and
-`search_docs("Senzing differentiators real-time explainability attribution")`
-to retrieve current Senzing-specific claims. Present the retrieved content to
-the bootcamper covering:
-- Senzing's principle-based matching approach (frequency, exclusivity, stability)
+From `search_docs` (Senzing MCP) results (not training data), present:
+- Principle-based matching (frequency, exclusivity, stability)
 - Pre-configured for people and organizations
-- Key differentiators (real-time, no training required, explainability, scalability)
-Do NOT present hardcoded facts from training data. All Senzing claims must come
-from the MCP search_docs results.
+- Differentiators (real-time, no training, explainability, scalability)
 -->
 
 ## Relationships and ambiguous matches
 
 <!-- AGENT INSTRUCTION — not shown to the bootcamper.
-Call `search_docs("entity resolution relationships disclosed discovered")` and
-`search_docs("entity resolution ambiguous match possible match")` to retrieve
-current content. Present the retrieved content covering:
+From `search_docs` (Senzing MCP) results (not training data), present:
 - Disclosed vs discovered relationships
 - Ambiguous matches and possible-match handling
-Do NOT present hardcoded Senzing facts from training data.
 -->
 
 Matching records is half the job. Relationship awareness — tracking how resolved entities connect to one another — turns the match graph into something investigators, compliance analysts, and KYC workflows can reason over.
@@ -85,19 +80,24 @@ Those outputs underpin use cases like fraud detection, compliance and KYC, custo
 ## Explore Further
 
 <!-- AGENT INSTRUCTION — not shown to the bootcamper.
-This is a mandatory gate. The agent MUST stop here and wait for the
-bootcamper to either ask follow-up questions or signal readiness to proceed.
-
-Handling rules:
+Mandatory gate — the agent MUST stop and wait for a follow-up or readiness
+signal. Rules:
 - If the bootcamper asks a follow-up question: answer it using search_docs
-  from the Senzing MCP server, then re-present this gate.
-- If the bootcamper signals readiness to proceed (e.g., "ready", "let's go",
-  "continue", "next"): allow the flow to continue to the next section.
-- If the bootcamper provides an ambiguous response: treat it as a follow-up
-  question, attempt to answer it using MCP tools, then re-present this gate.
-- If search_docs returns no relevant results or the tool call fails: inform
-  the bootcamper that no documentation was found for their specific question,
-  suggest they rephrase or ask a different question, then re-present this gate.
+  (Senzing MCP), then re-present this gate.
+- Readiness signal ("ready", "let's go", "continue", "next"): continue.
+- Ambiguous response: treat as a follow-up question, answer via MCP, re-present.
+- If search_docs returns no relevant results or fails: say no documentation was
+  found, suggest a rephrase, then re-present.
+-->
+
+<!-- AGENT INSTRUCTION — not shown to the bootcamper.
+ILLUSTRATION_OFFER (Req 1.1, 2.2, 2.3). End this gate turn with the single 👉
+below — an OPTIONAL, non-compound, verbosity-aware offer to view the
+ER_Illustration (a tiny match + non-match teaser). One 👉 only; never changes
+the gate's wait semantics:
+- Accept: render the illustration inline, then re-present the gate.
+- Decline or a readiness signal: proceed, no penalty; do not re-offer once
+  answered (Ask-Once), and never re-display the banner.
 -->
 
 ⛔ **MANDATORY GATE** — Entity Resolution Exploration
@@ -112,12 +112,27 @@ Here are some questions other bootcampers have found useful:
 
 You can ask any question about entity resolution — not just these examples. When you're ready to move on, just say so.
 
+👉 **Want to see a quick two-record example of a match and a non-match before we move on?**
+
 🛑 **STOP — End your response here.** Do not proceed. Do not assume a response. Wait for the bootcamper's real input.
+
+<!-- AGENT INSTRUCTION — not shown to the bootcamper.
+ER_ILLUSTRATION (Req 1.2-1.4, 2.4, 3.1, 3.2). Render INLINE only on ACCEPT, then
+re-present the gate (banner once-only). Conceptual teaser ONLY — no SDK, data,
+code, server, or graph; do NOT reproduce the Module 3 "wow" visualization. End
+with a PREVIEW line pointing to that hands-on Module 3 visualization on their own
+data. Sourcing (MCP-first, Req 1.4): prefer records + reasoning via find_examples
+/ search_docs; else a GENERIC FALLBACK (label "illustrative, not Senzing data"):
+- MATCH: "Robert Smith, 12 Oak St" vs "Bob Smith, 48 Elm Ave (prior)" — name
+  variation + prior address; same entity; missing it = FALSE NEGATIVE.
+- NON-MATCH / POSSIBLE MATCH: "William Jones b.1958" vs "William Jones b.1985"
+  (father/son, shared name+address) — different entities; merging = FALSE
+  POSITIVE (keep apart/flag).
+-->
 
 ## Sources
 
 <!-- AGENT INSTRUCTION — not shown to the bootcamper.
-All Senzing-specific claims in this file are retrieved dynamically via
-`search_docs` from the Senzing MCP server at presentation time.
-Cite "Senzing documentation via MCP" when the bootcamper asks for sources.
+Senzing claims come from `search_docs` (Senzing MCP) at presentation time; cite
+"Senzing documentation via MCP" for sources.
 -->

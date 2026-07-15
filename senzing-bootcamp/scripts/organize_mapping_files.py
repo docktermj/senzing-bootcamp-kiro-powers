@@ -92,18 +92,28 @@ ROUTING_RULE_LIST: list[RoutingRule] = [
     RoutingRule(match_name("senzing_entity_specification.md"), "docs/reference"),
     RoutingRule(match_suffix("_mapper.md"), "docs/mapping"),
     RoutingRule(match_ext(".md"), "docs/mapping"),
+    # Downloaded Senzing resources (from mcp.senzing.com/resources) route to
+    # src/resources; these name rules precede the generic .py rule below.
+    RoutingRule(match_name("sz_json_analyzer.py"), "src/resources"),
+    RoutingRule(match_name("sz_verbatim_check.py"), "src/resources"),
+    RoutingRule(match_name("sz_routing_report.py"), "src/resources"),
     RoutingRule(match_ext(".py"), "src/mapping"),
-    RoutingRule(match_ext(".jsonl"), "data"),
+    # Mapping working data (per-source sample JSONL and mapping specs) routes to
+    # data/mapping; these suffix rules precede the generic .jsonl/.json rules below.
+    RoutingRule(match_suffix("_sample.jsonl"), "data/mapping"),
+    RoutingRule(match_ext(".jsonl"), "data/transformed"),
+    RoutingRule(match_suffix("_mapping_spec.json"), "data/mapping"),
     RoutingRule(match_ext(".json"), "config"),
 ]
 
 # Extension -> subdir compatibility table (see module note above). Kept in sync
-# with the extension-level entries in ROUTING_RULE_LIST. ``.jsonl`` and ``.json``
-# destinations are unchanged from prior behavior.
+# with the extension-level entries in ROUTING_RULE_LIST. Generic ``.jsonl`` now
+# routes to ``data/transformed`` (the canonical home for transformed output);
+# ``.json`` remains ``config``.
 ROUTING_RULES: dict[str, str] = {
     ".py": "src/mapping",
     ".md": "docs/mapping",
-    ".jsonl": "data",
+    ".jsonl": "data/transformed",
     ".json": "config",
 }
 

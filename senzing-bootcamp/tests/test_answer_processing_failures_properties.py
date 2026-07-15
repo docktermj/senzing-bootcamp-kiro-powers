@@ -21,7 +21,7 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 _HOOK_PATH = (
-    Path(__file__).resolve().parent.parent / "hooks" / "ask-bootcamper.kiro.hook"
+    Path(__file__).resolve().parent.parent / "hooks" / "ask-bootcamper.json"
 )
 
 VALID_TYPES = {
@@ -84,7 +84,7 @@ def load_hook_prompt() -> str:
     """Load and return the hook prompt text from the JSON hook file.
 
     Returns:
-        The prompt string from the hook's then.prompt field.
+        The prompt string from the v1 hook entry's ``action.prompt`` field.
 
     Raises:
         FileNotFoundError: If the hook file does not exist.
@@ -92,7 +92,7 @@ def load_hook_prompt() -> str:
     if not _HOOK_PATH.exists():
         raise FileNotFoundError(f"Hook file not found: {_HOOK_PATH}")
     hook_data = json.loads(_HOOK_PATH.read_text(encoding="utf-8"))
-    return hook_data["then"]["prompt"]
+    return hook_data["hooks"][0]["action"]["prompt"]
 
 
 # Load hook prompt once at module level for all tests

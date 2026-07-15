@@ -5,7 +5,7 @@ Validates that the new enforcement hook is correctly registered:
 1. It is listed in ``hook-categories.yaml`` under the ``any`` bucket.
 2. It has an entry in the ``agentstop_order`` precedence list.
 3. ``hooks.lock.yaml`` is in sync — the hook is present with an ``event_type``
-   matching the ``.kiro.hook`` file's ``when.type``, and
+   matching the ``.json`` v1 hook file's ``trigger``, and
    ``sync_hook_registry.py --verify`` exits 0 on the canonical repository.
 
 Mirrors the existing registry-preservation / sync tests
@@ -26,12 +26,12 @@ _TESTS_DIR = str(Path(__file__).resolve().parent)
 if _TESTS_DIR not in sys.path:
     sys.path.insert(0, _TESTS_DIR)
 
-from hook_test_helpers import HOOKS_DIR, load_hook, parse_categories_yaml
+from hook_test_helpers import HOOKS_DIR, load_hook, load_hook_wrapper, parse_categories_yaml
 
 _REPO_ROOT: Path = Path(__file__).resolve().parent.parent
 
 HOOK_ID = "enforce-critical-artifacts"
-HOOK_FILE = HOOKS_DIR / f"{HOOK_ID}.kiro.hook"
+HOOK_FILE = HOOKS_DIR / f"{HOOK_ID}.json"
 CATEGORIES_PATH = HOOKS_DIR / "hook-categories.yaml"
 LOCKFILE_PATH = HOOKS_DIR / "hooks.lock.yaml"
 SYNC_SCRIPT = _REPO_ROOT / "senzing-bootcamp" / "scripts" / "sync_hook_registry.py"
@@ -105,6 +105,7 @@ _categories = parse_categories_yaml()
 _agentstop_order_ids = _parse_agentstop_order_ids()
 _lock_entries = _parse_lockfile()
 _hook_data = load_hook(HOOK_FILE)
+_hook_wrapper = load_hook_wrapper(HOOK_FILE)
 
 
 class TestEnforceCriticalArtifactsInCategories:
@@ -161,15 +162,16 @@ class TestEnforceCriticalArtifactsInAgentStopOrder:
         )
 
     def test_ordered_after_higher_priority_hooks(self) -> None:
-        """The hook runs after module-recap-append and the gate/celebration hooks.
+        """The hook runs after the celebration and gate hooks.
 
         Per the design, it is placed at the end so its blocking output appears
         only after higher-priority output clears and after the recap section is
-        captured.
+        captured (recap now runs inside ``ask-bootcamper`` Phase 0 after the
+        stop-hook-ux bugfix folded the standalone ``module-recap-append`` hook in).
         """
         idx = _agentstop_order_ids.index(HOOK_ID)
         for predecessor in (
-            "module-recap-append",
+            "ask-bootcamper",
             "module-completion-celebration",
             "enforce-gate-on-stop",
         ):
@@ -194,19 +196,19 @@ class TestEnforceCriticalArtifactsLockfileSync:
         )
 
     def test_lockfile_event_type_matches_hook_file(self) -> None:
-        """The lock file event_type matches the hook file's when.type."""
+        """The lock file event_type matches the hook file's 1.0 trigger."""
         lock_event_type = _lock_entries[HOOK_ID].get("event_type")
-        hook_event_type = _hook_data["when"]["type"]
-        assert lock_event_type == hook_event_type == "agentStop", (
-            f'Lock event_type "{lock_event_type}" must equal hook when.type '
-            f'"{hook_event_type}" and be "agentStop"'
+        hook_trigger = _hook_data["trigger"]
+        assert lock_event_type == hook_trigger == "Stop", (
+            f'Lock event_type "{lock_event_type}" must equal hook trigger '
+            f'"{hook_trigger}" and be "Stop"'
         )
 
     def test_lockfile_version_matches_hook_file(self) -> None:
-        """The lock file version matches the hook file's version."""
-        assert _lock_entries[HOOK_ID].get("version") == _hook_data["version"], (
+        """The lock file version matches the hook file's ``v1`` wrapper version."""
+        assert _lock_entries[HOOK_ID].get("version") == _hook_wrapper["version"], (
             f'Lock version "{_lock_entries[HOOK_ID].get("version")}" != hook '
-            f'version "{_hook_data["version"]}"'
+            f'wrapper version "{_hook_wrapper["version"]}"'
         )
 
     def test_sync_hook_registry_verify_passes(self) -> None:

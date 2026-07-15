@@ -49,13 +49,18 @@ _SLICE_FILES = (
 
 # Top-level ``##`` section headings present in the pre-refactor
 # ``module-completion.md``. Two stay in the Root; the rest moved to slices.
+#
+# ``Bootcamp Journal`` was removed by the journal-recap-consolidation feature:
+# the standalone journal section was folded into each Recap_Section as a
+# ``### Journal`` subsection of the Consolidated_Log (docs/bootcamp_recap.md),
+# so it is no longer a top-level ``##`` section. Content was consolidated into
+# the ``Recap Append`` section, not deleted.
 _PRE_REFACTOR_SECTIONS = (
     "Completion Step Ordering",
     "Shared Boundary-Detection Trigger",
     "Backfill for Already-Completed Modules",
     "Non-Blocking Error Handling",
     "Recap Append",
-    "Bootcamp Journal",
     "Module Completion Certificate",
     "Next-Step Options",
     "Path Completion Detection",

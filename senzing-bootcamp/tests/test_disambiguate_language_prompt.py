@@ -23,24 +23,26 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-# The Programming Language Selection step was moved out of onboarding-flow.md
-# (pre-split Step 2) into onboarding-phase1b-intro-language.md (Step 4). The
-# assertions below now target the shipped post-split location.
-_ONBOARDING_PHASE1B = _BOOTCAMP_DIR / "steering" / "onboarding-phase1b-intro-language.md"
+# The Programming Language Selection step moved out of onboarding-flow.md
+# (pre-split Step 2) into the phase files. The preface reorder (track before
+# language) then relocated it into onboarding-phase2-track-setup.md as Step 5a
+# (immediately after Track Selection). The assertions below target that shipped
+# location.
+_ONBOARDING_PHASE2 = _BOOTCAMP_DIR / "steering" / "onboarding-phase2-track-setup.md"
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
-# Programming Language Selection is Step 4 in the phase file; the next top-level
-# step is Step 5 (Bootcamp Introduction).
+# Programming Language Selection is Step 5a in the phase 2 file; the next
+# heading is the comprehension check (### 5b), which bounds the section.
 _STEP2_HEADING_PATTERN = re.compile(
-    r"^##\s+4\.\s+(.+)$",
+    r"^##\s+5a\.\s+(.+)$",
     re.MULTILINE,
 )
 
 _NEXT_STEP_HEADING_PATTERN = re.compile(
-    r"^##\s+5\.\s+",
+    r"^###\s+5b\.\s+",
     re.MULTILINE,
 )
 
@@ -66,8 +68,11 @@ _WORDING_DIRECTIVE_PATTERN = re.compile(
 
 
 def _read_onboarding_flow() -> str:
-    """Read the full content of the phase file owning language selection."""
-    return _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
+    """Read the full content of the phase file owning language selection.
+
+    After the preface reorder this is onboarding-phase2-track-setup.md, where
+    programming language selection lives as Step 5a (after Track Selection)."""
+    return _ONBOARDING_PHASE2.read_text(encoding="utf-8")
 
 
 def _extract_step2_section(markdown: str) -> str:
@@ -274,8 +279,34 @@ _CONFIG_PERSISTENCE_PATTERN = re.compile(
     r"config/bootcamp_preferences\.yaml",
 )
 
-_MANDATORY_GATE_PATTERN = re.compile(
+# A *rendered* ⛔ MANDATORY GATE marker line (the ⛔ glyph and the words on a
+# single line). After the clean-question-presentation fix this form is NO LONGER
+# emitted beside the 👉 question — the gate is an internal-only directive.
+_RENDERED_GATE_MARKER_PATTERN = re.compile(
     r"⛔.*MANDATORY\s+GATE",
+)
+
+# Backwards-compatible alias retained so any external reference keeps resolving.
+_MANDATORY_GATE_PATTERN = _RENDERED_GATE_MARKER_PATTERN
+
+# The mandatory-gate *semantics* (the gate still governs agent behavior) — this
+# text survives the fix, just as an internal directive rather than a rendered
+# marker beside the question.
+_GATE_SEMANTICS_PATTERN = re.compile(
+    r"MANDATORY\s+GATE",
+    re.IGNORECASE,
+)
+
+# The clean-question-presentation fix frames the gate/stop directives as
+# internal-only ("Internal directive ... not shown to the bootcamper").
+_INTERNAL_DIRECTIVE_PATTERN = re.compile(
+    r"internal\s+directive",
+    re.IGNORECASE,
+)
+
+_NOT_SHOWN_PATTERN = re.compile(
+    r"not\s+shown\s+to\s+the\s+bootcamper",
+    re.IGNORECASE,
 )
 
 _STOP_INSTRUCTION_PATTERN = re.compile(
@@ -489,16 +520,44 @@ class TestPreservationPBT:
     # ------------------------------------------------------------------
 
     def test_step2_contains_mandatory_gate_marker(self) -> None:
-        """Step 2 must contain the ⛔ mandatory gate marker.
+        """Step 4 keeps the mandatory-gate semantics as an INTERNAL directive.
 
-        This verifies the mandatory gate is present in the current
-        unfixed code (baseline).
+        The clean-question-presentation fix makes ``⛔ MANDATORY GATE`` an
+        internal-only directive: the gate still governs agent behavior, but it
+        is no longer rendered as a single ``⛔ MANDATORY GATE`` line beside the
+        👉 question. This preservation test therefore now verifies the
+        internal-directive form rather than the old rendered marker:
+
+        - the MANDATORY GATE semantics (and the ⛔ glyph) are still present;
+        - they are framed as an internal directive not shown to the bootcamper;
+        - the ``⛔ MANDATORY GATE`` marker is no longer rendered on one line.
         """
         content = _read_onboarding_flow()
         step2 = _extract_step2_section(content)
-        assert step2, "Step 2 section not found in onboarding-flow.md"
-        assert _MANDATORY_GATE_PATTERN.search(step2), (
-            "Step 2 does not contain the ⛔ MANDATORY GATE marker."
+        assert step2, "Step 4 (Programming Language Selection) section not found"
+
+        # Gate semantics preserved (the gate still governs behavior).
+        assert _GATE_SEMANTICS_PATTERN.search(step2), (
+            "Step 4 must retain the MANDATORY GATE semantics for language "
+            "selection (the gate still governs agent behavior)."
+        )
+        assert "⛔" in step2, (
+            "Step 4 must retain the ⛔ gate glyph within its internal directive."
+        )
+
+        # Framed as an internal directive, not rendered content.
+        assert _INTERNAL_DIRECTIVE_PATTERN.search(step2) and _NOT_SHOWN_PATTERN.search(
+            step2
+        ), (
+            "Step 4 must frame the gate/stop directives as an internal directive "
+            "that is not shown to the bootcamper."
+        )
+
+        # The old rendered ⛔ MANDATORY GATE marker line no longer sits beside
+        # the 👉 question.
+        assert not _RENDERED_GATE_MARKER_PATTERN.search(step2), (
+            "Step 4 must NOT render '⛔ MANDATORY GATE' on a single line beside "
+            "the 👉 question — the gate is now an internal-only directive."
         )
 
     def test_step2_contains_stop_instruction(self) -> None:
@@ -520,17 +579,31 @@ class TestPreservationPBT:
     def test_mandatory_gate_present_in_full_section(
         self, bounds: tuple[int, int]
     ) -> None:
-        """For any substring boundary within Step 2, the full section always
-        contains the mandatory gate marker and STOP instruction.
+        """For any substring boundary within Step 4, the full section always
+        keeps the gate/stop semantics as an internal directive.
+
+        After the clean-question-presentation fix the ⛔ MANDATORY GATE marker
+        is internal-only: the gate semantics and STOP instruction survive as an
+        internal directive, but they are not rendered as a single
+        ``⛔ MANDATORY GATE`` line beside the 👉 question.
         """
         content = _read_onboarding_flow()
         step2 = _extract_step2_section(content)
         assume(len(step2) > 0)
-        assert _MANDATORY_GATE_PATTERN.search(step2), (
-            "Mandatory gate marker missing from Step 2."
+        # Gate semantics + STOP instruction survive as an internal directive.
+        assert _GATE_SEMANTICS_PATTERN.search(step2), (
+            "MANDATORY GATE semantics missing from Step 4."
+        )
+        assert _INTERNAL_DIRECTIVE_PATTERN.search(step2), (
+            "Internal-directive framing missing from Step 4."
         )
         assert _STOP_INSTRUCTION_PATTERN.search(step2), (
-            "STOP instruction missing from Step 2."
+            "STOP instruction (internal directive) missing from Step 4."
+        )
+        # The rendered ⛔ MANDATORY GATE marker line is no longer emitted.
+        assert not _RENDERED_GATE_MARKER_PATTERN.search(step2), (
+            "⛔ MANDATORY GATE must not be rendered on a single line beside the "
+            "👉 question in Step 4 (internal-only directive)."
         )
 
     # ------------------------------------------------------------------

@@ -9,13 +9,13 @@
     },
     {
       "role": "agent",
-      "content": "Got it — let's capture your data sources.\n\n👉 How many distinct data sources or systems will we be working with?\n\n🛑 STOP — End your response here and wait for the bootcamper's real input.",
+      "content": "Got it — let's capture your data sources.\n\n👉 How many distinct data sources or systems will we be working with?",
       "assertions": [
         {"type": "exactly_one_pointer"},
         {"type": "ends_with_question_then_stop"},
         {"type": "no_compound_question"},
         {"type": "no_self_answer"},
-        {"type": "contains_marker", "marker": "🛑"}
+        {"type": "absent_marker", "marker": "🛑"}
       ]
     }
   ]

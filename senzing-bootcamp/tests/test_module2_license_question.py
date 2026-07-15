@@ -312,13 +312,21 @@ _STEP_HASHES: dict[str, str] = {
     # install guidance (Step 3) were added/expanded, and the Step 2 routing list
     # was de-bolded so it is no longer misread as numbered workflow steps
     # (single-question-per-step fix). Hashes recomputed from current content.
+    # Step 3 re-baselined again for the question-visibility bold-emphasis change
+    # (task 2.1): the 👉 EULA question text in Step 3 is now wrapped in a single
+    # **...** span; only the bold markers changed.
     "Step 2": "44100571bfe4bf1b3d7351a589c993a24f367595084e07f51a124412cb158966",
-    "Step 3": "cd7fb25dd412d810ef9bef712fbf62b17af6f8fbf066a106373882ee8d6a96c0",
+    "Step 3": "ecb35523a49ae44d6fce7c9acb0f4b7ecc6cce40e46a660325aff87053298fb2",
     "Step 4": "5ee5168b5bfe301fcf7f6841ef78f3ab334dfc1b413e7440cc598fc72d69e6be",
     "Step 6": "67f0d91f31c40a0ef08336845a0a001ab959d4dc38c8ef5864e7a0141df4837f",
     "Step 7": "e70acaae1640b0259e3cc5927f5ea27c88a98b3625cc2d5a6eca36ca367bb7a2",
     "Step 8": "a7589b48765763d59c3b6ebff53af14dee93bf8823d2f9e948f58334b85f3305",
-    "Step 9": "feae2a6c6c0dc8af1450941a29336be77de8058412bd2243c9d01ec88da74fce",
+    # Step 9 re-baselined for the question-visibility spec: the bold-conversion
+    # pass normalized `**Success indicator**:` to `**Success indicator:**` (colon
+    # inside the bold span, matching the file's `**Checkpoint:**` label style).
+    # This is the stable on-disk form and valid CommonMark; only the bold markers
+    # moved.
+    "Step 9": "92bbabbc6fe4a92f39e91c1958503558e1340b65a1bd6bfb4613268df9ba16b0",
 }
 
 _PREAMBLE_HASH = "fff013f0d734fc39030466998832565051b3768a8c1b14c441145b8d501c6ca6"

@@ -11,7 +11,7 @@ For critical hooks (created during onboarding), see `hook-registry-critical.md`.
 
 ## Module 3 Hooks
 
-**enforce-gate-on-stop** (agentStop → askAgent)
+**enforce-gate-on-stop** (Stop → agent)
 
 Prompt:
 
@@ -40,9 +40,10 @@ If CONDITION A is not met: The agent has reached or passed Step 9 without execut
 
 - id: `enforce-gate-on-stop`
 - name: `to enforce mandatory gate execution on agent stop`
-- description: `After each agent turn during Module 3, verifies that Step 9 (⛔ mandatory gate) has been executed if the agent has reached or passed it. Forces immediate execution if the gate checkpoint is missing.`
+- trigger: `Stop`
+- action: `agent`
 
-**enforce-mandatory-gate** (preToolUse → askAgent, toolTypes: write)
+**enforce-mandatory-gate** (PreToolUse → agent, matcher: `fs_write|str_replace|fs_append`)
 
 Prompt:
 
@@ -68,9 +69,11 @@ Do not proceed with the write operation.
 
 - id: `enforce-mandatory-gate`
 - name: `to enforce mandatory gate step execution before advancement`
-- description: `Blocks step advancement past a ⛔ mandatory gate step in bootcamp_progress.json when the corresponding checkpoint is missing. Step 9 is unconditional and cannot be satisfied by a skip. This is a proactive guard that fires BEFORE the agent advances past a mandatory gate, unlike the module-completion hook which fires at the end.`
+- trigger: `PreToolUse`
+- matcher: `fs_write|str_replace|fs_append`
+- action: `agent`
 
-**enforce-visualization-offers** (agentStop → askAgent)
+**enforce-visualization-offers** (Stop → agent)
 
 Prompt:
 
@@ -98,9 +101,10 @@ Process missed checkpoints one at a time. Do not batch multiple offers into a si
 
 - id: `enforce-visualization-offers`
 - name: `to offer visualizations`
-- description: `When the agent stops during a visualization-capable module (3, 5, 7, 8), checks the visualization tracker to verify all required offers were made. Prompts for missed offers.`
+- trigger: `Stop`
+- action: `agent`
 
-**gate-module3-visualization** (preToolUse → askAgent, toolTypes: write)
+**gate-module3-visualization** (PreToolUse → agent, matcher: `fs_write|str_replace|fs_append`)
 
 Prompt:
 
@@ -126,9 +130,11 @@ Do not proceed with the write operation.
 
 - id: `gate-module3-visualization`
 - name: `to gate Module 3 completion on visualization step`
-- description: `Prevents Module 3 from being marked complete unless Step 9 (Web Service + Visualization) checkpoints are present in bootcamp_progress.json. Step 9 is an unconditional ⛔ mandatory gate and cannot be skipped.`
+- trigger: `PreToolUse`
+- matcher: `fs_write|str_replace|fs_append`
+- action: `agent`
 
-**verify-demo-results** (postTaskExecution → askAgent)
+**verify-demo-results** (PostTaskExec → agent)
 
 Prompt:
 
@@ -148,4 +154,5 @@ If the results match the TruthSet expectations, confirm success: "System verific
 
 - id: `verify-demo-results`
 - name: `to verify demo results`
-- description: `After Module 3 tasks complete, verifies that system verification produced entity resolution results matching the Senzing TruthSet expected output before marking the module complete.`
+- trigger: `PostTaskExec`
+- action: `agent`

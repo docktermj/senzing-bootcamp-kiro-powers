@@ -47,7 +47,7 @@ from hypothesis import strategies as st
 
 _PROJECT_ROOT: Path = Path(__file__).resolve().parent.parent
 _HOOK_FILE: Path = (
-    _PROJECT_ROOT / "senzing-bootcamp" / "hooks" / "session-log-events.kiro.hook"
+    _PROJECT_ROOT / "senzing-bootcamp" / "hooks" / "session-log-events.json"
 )
 _INSTALLED_SCRIPTS: Path = _PROJECT_ROOT / "senzing-bootcamp" / "scripts"
 
@@ -81,8 +81,8 @@ def _hook_command() -> str:
         The raw command string from the real hook file (e.g.
         ``python3 senzing-bootcamp/scripts/log_write_event.py``).
     """
-    hook = json.loads(_HOOK_FILE.read_text(encoding="utf-8"))
-    return hook.get("then", {}).get("command", "")
+    entry = json.loads(_HOOK_FILE.read_text(encoding="utf-8"))["hooks"][0]
+    return entry.get("action", {}).get("command", "")
 
 
 def _make_workspace() -> Path:

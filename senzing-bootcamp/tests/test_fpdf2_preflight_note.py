@@ -223,23 +223,25 @@ class TestGatingDecision:
 
 
 class TestAbsentBranchNoteContent:
-    """The absent-branch note states both facts and the exact install command.
+    """The absent-branch note states the guaranteed-PDF facts and install command.
 
     **Validates: Requirements 1.1, 1.2**
 
     For any environment in which ``fpdf2`` is unavailable, the string returned
     by ``preflight_note()`` is a single line (contains no newline) that
-    communicates that installing ``fpdf2`` enables the PDF, that the Markdown
-    output is produced regardless, and contains the exact substring
-    ``pip install fpdf2``.
+    communicates the guaranteed-recap-pdf facts: a valid PDF is produced even
+    without ``fpdf2`` (via a best-effort auto-install or the stdlib-only
+    fallback writer) and installing ``fpdf2`` yields the nicer, professionally
+    designed PDF — and it contains the exact substring ``pip install fpdf2``.
     """
 
-    # Feature: fpdf2-preflight-note, Property 2: The absent-branch note states
-    # both facts and the exact install command — for any environment where
-    # fpdf2 is unavailable, preflight_note() returns a single line (contains no
-    # newline) communicating that installing fpdf2 enables the PDF, that the
-    # Markdown output is produced regardless, and containing the exact substring
-    # `pip install fpdf2`.
+    # Feature: fpdf2-preflight-note (updated for guaranteed-recap-pdf Req 5.5),
+    # Property 2: The absent-branch note states the guaranteed-PDF facts and the
+    # exact install command — for any environment where fpdf2 is unavailable,
+    # preflight_note() returns a single line (contains no newline) communicating
+    # that a valid PDF is guaranteed even without fpdf2 (auto-install / stdlib
+    # fallback) and that installing fpdf2 yields the nicer PDF, containing the
+    # exact substring `pip install fpdf2`.
     @given(available=st_availability())
     def test_absent_branch_note_states_facts_and_command(
         self, available: bool
@@ -276,14 +278,22 @@ class TestAbsentBranchNoteContent:
         )
 
         lowered = note.lower()
-        # Fact 1: installing fpdf2 enables the PDF (Requirement 1.1).
+        # Fact 1: installing fpdf2 yields the nicer PDF (Requirement 1.1).
         assert "fpdf2" in lowered and "pdf" in lowered, (
-            "the note must communicate that installing fpdf2 enables the PDF"
+            "the note must communicate that installing fpdf2 yields the PDF"
         )
-        # Fact 2: the Markdown output is produced regardless (Requirement 1.1).
-        assert "markdown" in lowered and "regardless" in lowered, (
-            "the note must communicate that the Markdown output is produced "
-            "regardless"
+        # Fact 2 (guaranteed-recap-pdf Req 5.5): a valid PDF is guaranteed even
+        # without fpdf2, via a best-effort auto-install or the stdlib-only
+        # fallback writer. The stale "Markdown produced regardless" wording is
+        # replaced by the guaranteed-PDF wording.
+        assert "guaranteed" in lowered, (
+            "the note must communicate that a valid PDF is guaranteed"
+        )
+        assert "without fpdf2" in lowered, (
+            "the note must communicate the PDF is guaranteed even without fpdf2"
+        )
+        assert "stdlib" in lowered, (
+            "the note must communicate the stdlib-only fallback writer path"
         )
 
 

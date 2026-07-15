@@ -32,3 +32,12 @@ When the bootcamper encounters an error during this module:
 2. **Load `common-pitfalls.md`** for known issues (port conflicts on 8080, database lock contention, missing language toolchains, MCP proxy connectivity).
 3. **Cross-module resources:** SDK install/config issues → Module 2 remediation; MCP issues → connectivity troubleshooting; language toolchains → platform-specific SDK guide.
 4. **Timeouts:** Each step has an explicit timeout (MCP 10s, TruthSet 30s, SDK init 30s, build 120s, data loading 120s, web service 10s per endpoint). On timeout, terminate the process, record a fail with a timeout Fix_Instruction, and continue to the next check (no short-circuit).
+
+### TruthSet Fallback Source
+
+The MCP server is the primary and preferred TruthSet source — it always takes precedence. Only when `get_sample_data` does not expose a named TruthSet — the response holds only the CORD collections (Las Vegas, London, Moscow) — does Step 2 fall back to acquiring the demo TruthSet DATA from a sanctioned external source.
+
+- **Sanctioned source:** Reference it only by its registry identifier `senzing_truthset_demo`, declared in `config/fallback_sources.yaml`. Never embed the raw URL in steering. The registry is the single reviewed place this source is defined.
+- **Approval rationale:** The workspace normally allows only `mcp.senzing.com` as an external endpoint. This exception is approved because the source is the official Senzing-published deterministic data with a ground-truth key, needed to preserve deterministic verification when the MCP TruthSet is unavailable.
+- **Scope limit:** The fallback fetches TruthSet DATA only. All Senzing SDK facts, method signatures, and expected-behavior definitions continue to come from the MCP server.
+- **Details:** See the Step 2 TruthSet acquisition flow in `module-03-phase1-verification.md` for detection, provenance recording, and graceful degradation.

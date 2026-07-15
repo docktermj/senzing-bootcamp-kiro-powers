@@ -250,10 +250,15 @@ class TestAgentInstructionsSkipOfferProhibition:
 
 
 class TestConversationProtocolSelfCheck:
-    """Test 2 — Self-Check section has only 4 items (no mandatory gate check).
+    """Test 2 — Self-Check section includes the mandatory gate skip-offer check.
 
-    The Self-Check section validates question format but does NOT check whether
-    a question offers to skip a ⛔ mandatory gate step.
+    The Self-Check section validates question format and now also checks whether
+    a question offers to skip a ⛔ mandatory gate step. It additionally carries
+    the bold-emphasis check (R4.5) added by the question-visibility spec, and the
+    two checks added by the clean-question-presentation bugfix — a
+    no-leaked-marker check (no rendered ``🛑 STOP`` / ``⛔`` beside a question)
+    and a no-duplicate check (the question was not already shown) — for a total
+    of 8 items.
 
     **Validates: Requirements 1.2**
     """
@@ -266,25 +271,33 @@ class TestConversationProtocolSelfCheck:
             "Self-Check section not found in conversation-protocol.md"
         )
 
-    def test_self_check_has_five_items(self) -> None:
-        """The Self-Check section has 5 items (including mandatory gate check).
+    def test_self_check_has_six_items(self) -> None:
+        """The Self-Check section has 8 items.
 
-        After the fix, the Self-Check has 5 items:
+        The Self-Check has 8 items:
         1. Multiple questions check
         2. Missing prefix check
         3. Content after question check
         4. Self-answering check
         5. Mandatory gate skip-offer check
+        6. Bold-emphasis check
+        7. No-leaked-marker check (no rendered 🛑 STOP / ⛔ beside a question)
+        8. No-duplicate check (question was not already shown)
 
-        This confirms the fix has been applied.
+        Item 5 confirms the no-skip-offer fix is applied; item 6 is the
+        bold-emphasis check required by the question-visibility spec (R4.5);
+        items 7 and 8 are added by the clean-question-presentation bugfix
+        (internal-only markers and no duplicate question).
         """
         content = _read_file(_CONVERSATION_PROTOCOL)
         section = _extract_self_check_section(content)
         item_count = _count_self_check_items(section)
 
-        assert item_count == 5, (
-            f"Self-Check section has {item_count} items, expected 5. "
-            f"The fix should add item 5 (mandatory gate skip-offer check). "
+        assert item_count == 8, (
+            f"Self-Check section has {item_count} items, expected 8. "
+            f"The Self-Check must include item 5 (mandatory gate skip-offer "
+            f"check), item 6 (bold-emphasis check, R4.5), item 7 "
+            f"(no-leaked-marker check) and item 8 (no-duplicate check). "
             f"Section content:\n{section[:500]}"
         )
 

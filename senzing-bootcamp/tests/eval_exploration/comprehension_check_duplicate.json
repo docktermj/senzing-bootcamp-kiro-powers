@@ -1,0 +1,19 @@
+{
+  "scenario": "comprehension_check_duplicate",
+  "description": "Fix-oracle exploration fixture (C2) for clean-question-presentation. Reconciled in task 4.6 (analogous to the shipped-fixture reconciliation in task 4.3): it now models the FIXED rendered comprehension-check turn — one clean, single, non-compound question composed the first time ('Does the overview make sense before we choose a track?') and shown exactly once, with the prose 'or ... clarify?' compound draft and the 'Let me ask that more cleanly as a single question.' regeneration line removed. Previously this fixture modeled the CURRENT (buggy) turn where the compound draft and its regenerated clean question BOTH reached the bootcamper, so the fixed-behavior assertions (exactly_one_pointer, no_compound_question) FAILED, confirming C2. With the turn reconciled to the single clean question those same assertions now PASS, validating that C2 is fixed. This fixture lives outside senzing-bootcamp/tests/eval on purpose so the default harness run and the shipped-fixture count stay unaffected.",
+  "rule_ref": "conversation-protocol.md#question-disambiguation; agent-behavior-rules.md#rule-3",
+  "turns": [
+    {
+      "role": "bootcamper",
+      "content": "That was a helpful overview of entity resolution."
+    },
+    {
+      "role": "agent",
+      "content": "Good — that covers the entity resolution overview before we pick a track.\n\n👉 **Does the overview make sense before we choose a track?**",
+      "assertions": [
+        {"type": "exactly_one_pointer"},
+        {"type": "no_compound_question"}
+      ]
+    }
+  ]
+}

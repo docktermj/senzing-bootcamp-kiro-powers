@@ -42,6 +42,7 @@ KNOWN_TOP_LEVEL_KEYS: set[str] = {
     "hardware_target",
     "production_specs",
     "sqlite_volume_prompt",
+    "fpdf2_hint_shown",
 }
 
 CONVERSATION_STYLE_KEYS: set[str] = {
@@ -58,15 +59,22 @@ PRODUCTION_SPECS_KEYS: set[str] = {
     "database",
 }
 
-# Sub-keys for the Module 6 SQLite volume Hard_Prompt decision marker.
-# Records the bootcamper's proceed/migrate choice for a given load so the
+# Sub-keys for the shared SQLite volume decision marker. Originally recorded
+# the Module 6 Hard_Prompt proceed/migrate choice for a given load so the
 # prompt is not re-presented for the same load (module6-sqlite-volume-hard
-# -prompt spec, Requirement 2.4).
+# -prompt spec, Requirement 2.4). Additively extended for the Module 4
+# Load_Time_Warning (module4-sqlite-load-time-warning spec, Requirement 6.2):
+# the marker now also carries a `source` discriminator and a `load_identity`
+# so a Module 4 decision can be scoped to a specific load. Both marker shapes
+# share this key set; `tier`/`raw_value` (Module 6) and `source`/`load_identity`
+# (Module 4) are all optional, so either shape validates.
 SQLITE_VOLUME_PROMPT_KEYS: set[str] = {
     "decided",
     "choice",
     "tier",
     "raw_value",
+    "source",
+    "load_identity",
 }
 
 VALID_MAPPING_VERBOSITY: tuple[str, ...] = ("verbose", "concise")
@@ -79,8 +87,19 @@ VALID_PACING: tuple[str, ...] = ("one_concept_per_turn", "grouped_concepts")
 # Enum constraints for the sqlite_volume_prompt decision marker. The tier
 # vocabulary mirrors volume_utils.VALID_TIERS; it is restated here (rather than
 # imported) to keep preferences_utils dependency-free and self-contained.
-VALID_SQLITE_VOLUME_CHOICE: tuple[str, ...] = ("proceed", "migrate")
+# The choice vocabulary spans both marker shapes: "proceed"/"migrate" are the
+# Module 6 Hard_Prompt choices; "sample"/"switch_db" are the additional Module 4
+# Load_Time_Warning choices (module4-sqlite-load-time-warning spec, Req 6.2).
+VALID_SQLITE_VOLUME_CHOICE: tuple[str, ...] = (
+    "proceed",
+    "migrate",
+    "sample",
+    "switch_db",
+)
 VALID_SQLITE_VOLUME_TIER: tuple[str, ...] = ("demo", "small", "medium", "large")
+# Which check recorded the marker: "module6_volume" (tier-based Module 6
+# Hard_Prompt) or "module4_load_time" (collected-total Module 4 Load_Time_Warning).
+VALID_SQLITE_VOLUME_SOURCE: tuple[str, ...] = ("module4_load_time", "module6_volume")
 
 
 # ---------------------------------------------------------------------------
@@ -117,6 +136,7 @@ class PreferencesSchema:
     hardware_target: str | None = None
     production_specs: dict | None = None
     sqlite_volume_prompt: dict | None = None
+    fpdf2_hint_shown: bool | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -840,6 +860,7 @@ _BOOL_OR_NONE_KEYS: set[str] = {
     "skip_graduation",
     "scoop_installed_during_onboarding",
     "prerequisite_installation_deferred",
+    "fpdf2_hint_shown",
 }
 
 # Enum constraints for conversation_style sub-keys
@@ -858,18 +879,24 @@ _PRODUCTION_SPECS_TYPES: dict[str, type] = {
     "database": str,
 }
 
-# Type expectations for sqlite_volume_prompt sub-keys
+# Type expectations for sqlite_volume_prompt sub-keys. `tier`/`raw_value`
+# (Module 6) and `source`/`load_identity` (Module 4) are all optional — only
+# the sub-keys actually present in a given marker are type-checked — so both
+# marker shapes validate against this shared map.
 _SQLITE_VOLUME_PROMPT_TYPES: dict[str, type] = {
     "decided": bool,
     "choice": str,
     "tier": str,
     "raw_value": int,
+    "source": str,
+    "load_identity": str,
 }
 
 # Enum constraints for sqlite_volume_prompt sub-keys
 _SQLITE_VOLUME_PROMPT_ENUMS: dict[str, tuple[str, ...]] = {
     "choice": VALID_SQLITE_VOLUME_CHOICE,
     "tier": VALID_SQLITE_VOLUME_TIER,
+    "source": VALID_SQLITE_VOLUME_SOURCE,
 }
 
 

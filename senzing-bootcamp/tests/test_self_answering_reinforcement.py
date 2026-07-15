@@ -38,9 +38,10 @@ class TestOnboardingStopMarkers:
 
     @pytest.fixture()
     def onboarding(self) -> str:
-        # The verbosity preference and comprehension check questions moved out
-        # of onboarding-flow.md into onboarding-phase1b-intro-language.md
-        # (shipped Steps 5a/5b), so the STOP markers are asserted there.
+        # The verbosity preference question is Step 4a in
+        # onboarding-phase1b-intro-language.md. After the preface reorder, the
+        # comprehension check moved to phase 2 (Step 5b); its STOP marker is
+        # asserted via the onboarding_phase2 fixture.
         return (_STEERING_DIR / "onboarding-phase1b-intro-language.md").read_text(
             encoding="utf-8"
         )
@@ -50,17 +51,35 @@ class TestOnboardingStopMarkers:
         return (_STEERING_DIR / "onboarding-phase2-track-setup.md").read_text(encoding="utf-8")
 
     def test_stop_after_verbosity_question(self, onboarding: str) -> None:
-        """🛑 STOP exists after the verbosity preference 👉 question."""
+        """A stop-and-wait directive follows the verbosity preference 👉 question.
+
+        After the clean-question-presentation fix the 🛑/⛔ glyph is an
+        internal-only directive that need not render beside the question, so a
+        textual stop-and-wait directive ("end your turn" / "wait for the
+        bootcamper") is an equally valid boundary — the same reconciliation
+        TestStopMarkerProperty applies.
+        """
         idx = onboarding.find("how much detail they want")
         assert idx != -1
-        after = onboarding[idx:idx + 500]
-        assert "🛑" in after
+        after = onboarding[idx:idx + 900]
+        lowered = after.lower()
+        assert (
+            "🛑" in after
+            or "⛔" in after
+            or "end your turn" in lowered
+            or "wait for the bootcamper" in lowered
+        )
 
-    def test_stop_after_comprehension_check(self, onboarding: str) -> None:
-        """🛑 STOP exists after the comprehension check 👉 question."""
-        idx = onboarding.find("does everything so far make sense")
+    def test_stop_after_comprehension_check(self, onboarding_phase2: str) -> None:
+        """🛑 STOP exists after the comprehension check 👉 question.
+
+        After the preface reorder, the comprehension check follows programming
+        language selection and lives in onboarding-phase2-track-setup.md
+        (Step 5b), so the STOP marker is asserted there.
+        """
+        idx = onboarding_phase2.find("does everything so far make sense")
         assert idx != -1
-        after = onboarding[idx:idx + 200]
+        after = onboarding_phase2[idx:idx + 300]
         assert "🛑" in after
 
     def test_stop_after_track_selection_question(self, onboarding_phase2: str) -> None:
@@ -76,9 +95,9 @@ class TestAskBootcamperAntiFabrication:
 
     @pytest.fixture()
     def hook_prompt(self) -> str:
-        path = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+        path = _HOOKS_DIR / "ask-bootcamper.json"
         data = json.loads(path.read_text(encoding="utf-8"))
-        return data["then"]["prompt"]
+        return data["hooks"][0]["action"]["prompt"]
 
     def test_contains_human_colon_prohibition(self, hook_prompt: str) -> None:
         """Hook prompt prohibits generating 'Human:' text."""
@@ -127,7 +146,13 @@ class TestStopMarkerProperty:
         chosen = data.draw(st.sampled_from(all_questions))
         filename, idx, lines = chosen
 
-        # Check for 🛑 or ⛔ within 5 non-blank lines after
+        # Check for a stop-and-wait directive within 5 non-blank lines after the
+        # question. Accept the 🛑 / ⛔ glyphs OR an explicit textual
+        # stop-and-wait directive: the programming-language gate (now in phase 2
+        # after the preface reorder) places its "end your turn ... wait for the
+        # bootcamper" internal directive immediately after the 👉 question, with
+        # the 🛑 glyph farther down in the same gate block. Both forms are valid
+        # stop-and-wait boundaries that prevent the agent from self-answering.
         found_marker = False
         non_blank_seen = 0
         for scan_idx in range(idx + 1, min(len(lines), idx + 10)):
@@ -135,13 +160,20 @@ class TestStopMarkerProperty:
             if not scan_line.strip():
                 continue
             non_blank_seen += 1
-            if "🛑" in scan_line or "⛔" in scan_line:
+            lowered = scan_line.lower()
+            if (
+                "🛑" in scan_line
+                or "⛔" in scan_line
+                or "end your turn" in lowered
+                or "wait for the bootcamper" in lowered
+            ):
                 found_marker = True
                 break
             if non_blank_seen >= 5:
                 break
 
         assert found_marker, (
-            f"{filename} line {idx + 1} has a 👉 question without 🛑/⛔ within 5 lines:\n"
-            f"  {lines[idx].strip()[:80]}"
+            f"{filename} line {idx + 1} has a 👉 question without a stop-and-wait "
+            f"directive (🛑/⛔ or 'end your turn'/'wait for the bootcamper') "
+            f"within 5 lines:\n  {lines[idx].strip()[:80]}"
         )

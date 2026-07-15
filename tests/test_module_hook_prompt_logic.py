@@ -27,12 +27,12 @@ _HOOKS_DIR = Path("senzing-bootcamp/hooks")
 
 
 def _load_prompt(hook_id: str) -> str:
-    """Load and return the prompt text for a given hook ID."""
-    path = _HOOKS_DIR / f"{hook_id}.kiro.hook"
+    """Load and return the action.prompt text for a given hook ID."""
+    path = _HOOKS_DIR / f"{hook_id}.json"
     assert path.exists(), f"Hook file not found: {path}"
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
-    return data["then"]["prompt"]
+    return data["hooks"][0]["action"]["prompt"]
 
 
 # ===========================================================================
@@ -99,7 +99,7 @@ class TestEnforceSingleQuestion:
     5. Block and require rewrite on violation
     6. Silent pass when rules are satisfied
 
-    Note: This logic is now consolidated into write-policy-gate.kiro.hook.
+    Note: This logic is now consolidated into write-policy-gate.json.
     """
 
     @pytest.fixture(autouse=True)

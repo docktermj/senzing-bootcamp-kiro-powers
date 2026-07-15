@@ -607,6 +607,10 @@ class TestAlwaysLoadedBudgetCheck:
         assert str(result.footprint_tokens) in text
         assert str(result.warn_threshold_tokens) in text
         assert f"{result.pct_of_warn:.1f}%" in text
+        # Feature: steering-inclusion-auto-audit, Property 6: the over-budget
+        # decision report states both the footprint and the ceiling in tokens
+        # (Requirement 5.3), not only the footprint/warn-threshold figures.
+        assert str(result.ceiling_tokens) in text
 
         # Requirement 3.2: on failure, every contributing file is named.
         if result.over_budget:
@@ -979,3 +983,75 @@ class TestAlwaysLoadedBudgetCheckIntegration:
         finally:
             shutil.rmtree(steering_dir, ignore_errors=True)
 
+
+
+class TestPostReclassificationCorpus:
+    """Confirm the real post-reclassification steering corpus stays in budget.
+
+    After the eleven Auto_Files were re-classified to standard modes (Task 4),
+    the committed ``senzing-bootcamp/steering`` corpus plus its shipped
+    ``steering-index.yaml`` must still pass the always-loaded budget check and
+    the full ``measure_steering.py --check`` gate. These example tests lock in
+    that post-migration state against the real, shipped corpus (not a synthetic
+    one), complementing the property tests above. ``--check`` is read-only, so
+    pointing it at the committed index never mutates the working tree.
+    """
+
+    # Feature: steering-inclusion-auto-audit, Property 5: Baseline_Footprint
+    # equals the measured always-loaded sum; Property 6: over-budget decision
+    # matches the configured ceiling boundary — both confirmed on the real,
+    # re-classified corpus (footprint <= ceiling ⇒ not over budget).
+    # Validates: Requirements 5.1, 5.2, 5.3
+    def test_real_corpus_always_loaded_within_ceiling(self):
+        """check_always_loaded_budget over the real corpus is not over budget."""
+        steering_dir = Path("senzing-bootcamp/steering")
+        assert steering_dir.is_dir(), "Real steering directory not found"
+        index_path = steering_dir / "steering-index.yaml"
+        assert index_path.exists(), "steering-index.yaml not found"
+
+        file_metadata = measure_steering.scan_steering_files(steering_dir)
+        result = measure_steering.check_always_loaded_budget(
+            index_path, steering_dir, file_metadata
+        )
+
+        # The finalized always-set (Decision_Record) is within the ceiling.
+        assert result.over_budget is False
+        assert result.footprint_tokens <= result.ceiling_tokens
+
+        # The footprint equals the measured sum over exactly the always-set,
+        # confirming Property 5 on the real corpus.
+        expected_footprint = measure_steering.compute_baseline_footprint(
+            result.always_loaded, file_metadata
+        )
+        assert result.footprint_tokens == expected_footprint
+
+        # Files re-classified to `always` are present in the always-set; files
+        # demoted to `manual` / `fileMatch` are absent from it — confirming the
+        # re-classification took effect in the shipped corpus.
+        for promoted in (
+            "agent-behavior-rules.md",
+            "conversation-protocol.md",
+            "qa-transcript.md",
+        ):
+            assert promoted in result.always_loaded
+        for demoted in (
+            "file-placement.md",       # -> fileMatch
+            "session-resume.md",       # -> manual
+            "verbosity-control.md",    # -> manual
+            "project-structure.md",    # -> manual
+        ):
+            assert demoted not in result.always_loaded
+
+    # Feature: steering-inclusion-auto-audit, Property 7 (reconciliation) +
+    # Req 5.4: the full `measure_steering.py --check` gate — which validates the
+    # always-loaded ceiling AND per-file token_count/size_category tolerance —
+    # exits 0 over the real post-reclassification corpus, matching CI.
+    # Validates: Requirements 5.1, 5.2, 5.3, 5.4
+    def test_real_corpus_check_cli_exits_zero(self):
+        """measure_steering.py --check over the real corpus exits 0."""
+        steering_dir = Path("senzing-bootcamp/steering")
+        index_path = steering_dir / "steering-index.yaml"
+        exit_code, out = _run_main_check(steering_dir, index_path)
+        assert exit_code == 0, f"--check exited {exit_code}; output: {out!r}"
+        assert "within budget" in out
+        assert "within 10% tolerance" in out

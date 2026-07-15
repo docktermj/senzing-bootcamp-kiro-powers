@@ -27,7 +27,7 @@ from hypothesis import strategies as st
 # Constants
 # ---------------------------------------------------------------------------
 
-HOOK_PATH = Path("senzing-bootcamp/hooks/write-policy-gate.kiro.hook")
+HOOK_PATH = Path("senzing-bootcamp/hooks/write-policy-gate.json")
 
 # Senzing database indicators that must be referenced in SQL blocking instructions.
 SENZING_DB_INDICATORS = [
@@ -43,8 +43,8 @@ SENZING_DB_INDICATORS = [
     "sz_dm_",
 ]
 
-# Required top-level hook JSON fields.
-REQUIRED_HOOK_FIELDS = ["name", "version", "description", "when", "then"]
+# Required v1 hook entry fields.
+REQUIRED_HOOK_FIELDS = ["name", "trigger", "action"]
 
 # Canonical feedback path that must appear in the prompt.
 CANONICAL_FEEDBACK_PATH = "docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md"
@@ -68,15 +68,15 @@ ORIGINAL_SLOW_PATH_TEXT = (
 
 
 def load_hook_data() -> dict:
-    """Load and return the full parsed JSON from the hook file."""
+    """Load and return the single v1 hook entry (hooks[0]) from the hook file."""
     with open(HOOK_PATH, encoding="utf-8") as f:
-        return json.load(f)
+        return json.load(f)["hooks"][0]
 
 
 def load_hook_prompt() -> str:
-    """Load and return the then.prompt field from the hook file."""
+    """Load and return the action.prompt field from the v1 hook entry."""
     data = load_hook_data()
-    return data["then"]["prompt"]
+    return data["action"]["prompt"]
 
 
 def extract_slow_path_section(prompt: str) -> str:
@@ -391,32 +391,32 @@ class TestPreservationProperties:
 
         **Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.5, 3.6**
 
-        Property 2c: All required JSON fields (name, version, description,
-        when, then) are present with valid values. Nested fields (when.type,
-        when.toolTypes, then.type, then.prompt) are also validated.
+        Property 2c: All required v1 entry fields (name, trigger, action) are
+        present with valid values. The 1.0 trigger, write matcher, and action
+        type/prompt are also validated.
         """
         data = load_hook_data()
 
-        # Top-level required field must exist and not be None
+        # Required entry field must exist and not be None
         assert field in data, (
-            f"Hook JSON missing required field: '{field}'"
+            f"Hook entry missing required field: '{field}'"
         )
         assert data[field] is not None, (
-            f"Hook JSON field '{field}' is None"
+            f"Hook entry field '{field}' is None"
         )
 
-        # Validate nested required fields for structural integrity
-        assert data["when"]["type"] == "preToolUse", (
-            f"Expected when.type='preToolUse', got '{data['when']['type']}'"
+        # Validate the 1.0 trigger, write matcher, and action for structural integrity
+        assert data["trigger"] == "PreToolUse", (
+            f"Expected trigger='PreToolUse', got '{data['trigger']}'"
         )
-        assert data["when"]["toolTypes"] == ["write"], (
-            f"Expected when.toolTypes=['write'], got '{data['when']['toolTypes']}'"
+        assert data.get("matcher") == "fs_write|str_replace|fs_append", (
+            f"Expected write matcher, got '{data.get('matcher')}'"
         )
-        assert data["then"]["type"] == "askAgent", (
-            f"Expected then.type='askAgent', got '{data['then']['type']}'"
+        assert data["action"]["type"] == "agent", (
+            f"Expected action.type='agent', got '{data['action']['type']}'"
         )
-        assert "prompt" in data["then"], "Hook JSON missing then.prompt field"
-        assert len(data["then"]["prompt"]) > 0, "Hook JSON then.prompt is empty"
+        assert "prompt" in data["action"], "Hook entry missing action.prompt field"
+        assert len(data["action"]["prompt"]) > 0, "Hook entry action.prompt is empty"
 
     @given(
         path=st.from_regex(r"[a-z][a-z0-9_/]{1,20}\.[a-z]{1,4}", fullmatch=True),
@@ -633,7 +633,7 @@ class TestPreservationProperties:
 # ---------------------------------------------------------------------------
 
 QUESTION_FORMAT_GATE_HOOK_PATH = Path(
-    "senzing-bootcamp/hooks/ask-bootcamper.kiro.hook"
+    "senzing-bootcamp/hooks/ask-bootcamper.json"
 )
 
 # Forbidden narration phrases for the Question Format Phase (consolidated hook).
@@ -651,15 +651,15 @@ QUESTION_FORMAT_GATE_FORBIDDEN_PHRASES = [
 
 
 def load_question_format_gate_data() -> dict:
-    """Load and return the full parsed JSON from the consolidated ask-bootcamper hook file."""
+    """Load and return the v1 hook entry from the consolidated ask-bootcamper hook file."""
     with open(QUESTION_FORMAT_GATE_HOOK_PATH, encoding="utf-8") as f:
-        return json.load(f)
+        return json.load(f)["hooks"][0]
 
 
 def load_question_format_gate_prompt() -> str:
     """Load and return the Phase 4 (Question Format) section from the consolidated hook."""
     data = load_question_format_gate_data()
-    full_prompt = data["then"]["prompt"]
+    full_prompt = data["action"]["prompt"]
     # Extract Phase 4 section from the consolidated prompt
     phase4_start = full_prompt.find("PHASE 4:")
     assert phase4_start != -1, "Consolidated hook missing PHASE 4 section"

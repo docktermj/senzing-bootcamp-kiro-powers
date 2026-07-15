@@ -19,7 +19,9 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
+import hook_renames as renames  # noqa: E402
 import mcp_tool_inventory as inventory  # noqa: E402
+import test_hooks  # noqa: E402
 import track_switcher  # noqa: E402
 from version import (  # noqa: E402
     VersionError,
@@ -64,7 +66,7 @@ def check_steering_files():
         check(False, "steering/ directory exists")
         return
 
-    valid_inclusions = {"always", "auto", "fileMatch", "manual"}
+    valid_inclusions = {"always", "fileMatch", "manual"}
     for f in sorted(steering_dir.glob("*.md")):
         with open(f) as fh:
             content = fh.read()
@@ -83,7 +85,7 @@ def check_steering_files():
 
 
 def check_hook_categories_sync():
-    """Verify every .kiro.hook file is in hook-categories.yaml and vice versa."""
+    """Verify every shipped v1 hook (*.json) is in hook-categories.yaml and vice versa."""
     print("\n=== Hook ↔ Categories Sync ===")
     hooks_dir = POWER_DIR / "hooks"
     categories_path = hooks_dir / "hook-categories.yaml"
@@ -125,12 +127,14 @@ def check_hook_categories_sync():
             if hook_id:
                 category_ids.add(hook_id)
 
-    # Get all .kiro.hook files on disk
-    hook_files = sorted(hooks_dir.glob("*.kiro.hook"))
-    disk_ids = set()
-    for f in hook_files:
-        hook_id = f.name.replace(".kiro.hook", "")
-        disk_ids.add(hook_id)
+    # Get all shipped v1 hook (*.json) files on disk (filename stem == hook id).
+    # The legacy *.kiro.hook files are intentionally ignored so this cross-checks
+    # hook-categories.yaml against the migrated v1 hook set. The manual hooks
+    # (backup-project-on-request, git-commit-reminder, commonmark-validation)
+    # ship no hook file and are absent from the categories map, so they cannot
+    # produce a spurious mismatch here.
+    hook_files = test_hooks.discover_hooks(hooks_dir)
+    disk_ids = {test_hooks.hook_id_from_path(f) for f in hook_files}
 
     # Check: every file has a category entry
     files_without_category = disk_ids - category_ids
@@ -149,6 +153,110 @@ def check_hook_categories_sync():
     )
 
 
+def _check_v1_hook_entry(label, hook):
+    """Validate a single V1_Hook entry against the Kiro 1.0 schema.
+
+    Applies Req 6.2 (required fields), 6.3 (1.0 trigger names only), 6.4 (1.0
+    action types only), 6.5 (a present matcher compiles), and the matcher-when-
+    required rule sourced from ``hook_renames`` (never hardcoded here). An
+    optional hook-level ``timeout`` integer (e.g. ``session-log-events``) is
+    accepted rather than rejected as an unknown field.
+
+    Args:
+        label: Human-readable prefix identifying the file and entry index.
+        hook: The parsed hook entry object.
+    """
+    if not isinstance(hook, dict):
+        check(False, f"{label}: entry is an object")
+        return
+
+    # Req 6.6: a legacy when/then shape inside an entry is a stale definition.
+    if "when" in hook or "then" in hook:
+        check(False, f"{label}: uses legacy when/then schema")
+        return
+
+    # Req 6.2: name present.
+    check("name" in hook, f"{label}: has 'name' field")
+
+    # Req 6.2 / 6.3: trigger present and a valid 1.0 trigger name (rejects
+    # legacy names such as fileEdited/agentStop/userTriggered).
+    trigger = hook.get("trigger", "")
+    trigger_ok = trigger in renames.VALID_V1_TRIGGERS
+    check(trigger_ok, f"{label}: trigger '{trigger}' is a valid 1.0 trigger")
+
+    # Req 6.2 / 6.4: action present with a valid 1.0 action type (rejects the
+    # legacy askAgent/runCommand types).
+    action = hook.get("action")
+    action_type = action.get("type", "") if isinstance(action, dict) else ""
+    check(
+        action_type in renames.VALID_V1_ACTION_TYPES,
+        f"{label}: action type '{action_type}' is a valid 1.0 action type",
+    )
+
+    # Req 6.2 / 6.5: a matcher is required for scoped triggers (file-path or
+    # tool-name), and any present matcher must compile as a regex.
+    matcher = hook.get("matcher")
+    if trigger_ok:
+        kind = renames.matcher_kind(trigger)
+        if kind != renames.MATCHER_KIND_UNSCOPED:
+            check(
+                isinstance(matcher, str) and matcher.strip() != "",
+                f"{label}: {trigger} requires a {kind} matcher",
+            )
+    if isinstance(matcher, str) and matcher != "":
+        try:
+            re.compile(matcher)
+            check(True, f"{label}: matcher compiles as a regex")
+        except re.error as exc:
+            check(False, f"{label}: matcher compiles as a regex — {exc}")
+    elif matcher is not None and not isinstance(matcher, str):
+        check(False, f"{label}: matcher is a string")
+
+    # Accept an optional hook-level timeout (integer) without treating it as an
+    # unknown/invalid field (session-log-events carries "timeout": 10).
+    if "timeout" in hook:
+        timeout = hook.get("timeout")
+        check(
+            isinstance(timeout, int) and not isinstance(timeout, bool),
+            f"{label}: optional 'timeout' is an integer",
+        )
+
+
+def _check_v1_hook_file(path, data):
+    """Validate one hook file's top-level V1 wrapper and its entries.
+
+    Applies Req 6.1 (top-level ``version == "v1"`` plus a ``hooks`` array) and
+    Req 6.6 (a legacy when/then shape is reported rather than accepted), then
+    delegates each entry to :func:`_check_v1_hook_entry`.
+
+    Args:
+        path: Path to the hook file (used only for messages).
+        data: The parsed top-level JSON object.
+    """
+    name = path.name
+
+    # Req 6.6: a legacy top-level when/then shape is a stale definition.
+    if isinstance(data, dict) and ("when" in data or "then" in data):
+        check(False, f"{name}: uses legacy when/then schema (expected v1 wrapper)")
+        return
+
+    # Req 6.1: top-level version == "v1".
+    check(
+        isinstance(data, dict) and data.get("version") == "v1",
+        f"{name}: top-level version is 'v1'",
+    )
+
+    # Req 6.1: top-level hooks array.
+    hooks = data.get("hooks") if isinstance(data, dict) else None
+    if not isinstance(hooks, list):
+        check(False, f"{name}: has a 'hooks' array")
+        return
+    check(True, f"{name}: has a 'hooks' array")
+
+    for idx, hook in enumerate(hooks):
+        _check_v1_hook_entry(f"{name} hooks[{idx}]", hook)
+
+
 def check_hooks():
     print("\n=== Hooks ===")
     hooks_dir = POWER_DIR / "hooks"
@@ -156,28 +264,38 @@ def check_hooks():
         check(False, "hooks/ directory exists")
         return
 
-    valid_events = {
-        "fileEdited", "fileCreated", "fileDeleted", "userTriggered",
-        "promptSubmit", "agentStop", "preToolUse", "postToolUse",
-        "preTaskExecution", "postTaskExecution",
-    }
-    valid_actions = {"askAgent", "runCommand"}
+    # Req 6.6 / 14.5: any residual legacy *.kiro.hook file is a validation error
+    # (these are removed in the version-bump task; until then this reports them).
+    for legacy in sorted(hooks_dir.glob("*.kiro.hook")):
+        check(False, f"{legacy.name}: legacy *.kiro.hook file must be migrated to v1 JSON")
 
-    for f in sorted(hooks_dir.glob("*.kiro.hook")):
+    # Req 6.1-6.5: discover and validate the shipped v1 hook files.
+    hook_ids: set[str] = set()
+    for f in sorted(hooks_dir.glob("*.json")):
+        hook_ids.add(f.stem)
         try:
-            with open(f) as fh:
-                hook = json.load(fh)
-            check(True, f"{f.name}: valid JSON")
-            check("name" in hook, f"{f.name}: has 'name' field")
-            check("version" in hook, f"{f.name}: has 'version' field")
-            when = hook.get("when", {})
-            event_type = when.get("type", "")
-            check(event_type in valid_events, f"{f.name}: event type '{event_type}' is valid")
-            then = hook.get("then", {})
-            action_type = then.get("type", "")
-            check(action_type in valid_actions, f"{f.name}: action type '{action_type}' is valid")
+            with open(f, encoding="utf-8") as fh:
+                data = json.load(fh)
         except json.JSONDecodeError as e:
             check(False, f"{f.name}: valid JSON — {e}")
+            continue
+        check(True, f"{f.name}: valid JSON")
+        _check_v1_hook_file(f, data)
+
+    # Req 6.7: shipped hook ids and hook-registry ids reference the same set.
+    # Reuses the registry-consistency logic against the discovered v1 ids.
+    registry_path = POWER_DIR / "steering" / "hook-registry-critical.md"
+    registry = test_hooks.check_registry_consistency(hook_ids, registry_path)
+    check(
+        not registry.orphaned_hooks,
+        "All shipped hooks have registry entries"
+        + (f" — orphaned: {registry.orphaned_hooks}" if registry.orphaned_hooks else ""),
+    )
+    check(
+        not registry.stale_entries,
+        "All registry entries have shipped hooks"
+        + (f" — stale: {registry.stale_entries}" if registry.stale_entries else ""),
+    )
 
 
 def check_module_docs():

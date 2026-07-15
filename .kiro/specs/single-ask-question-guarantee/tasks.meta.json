@@ -1,0 +1,220 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Implement `scripts/question_ledger.py`": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047152551
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047165354
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047415226
+      }
+    ],
+    "1.2 Property-based tests `test_question_ledger.py`": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047152964
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047421764
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047636575
+      }
+    ],
+    "2.1 Add the normative Ask-Once Guarantee rule": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047153493
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047644315
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047857012
+      }
+    ],
+    "2.2 Record/mark ledger entries at question boundaries": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047154295
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047862665
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784048085473
+      }
+    ],
+    "2.3 Consolidate the scattered \"do not re-ask\" notes": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047154948
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784048089679
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784048330029
+      }
+    ],
+    "3.1 Update `ask-bootcamper` hook": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047155229
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784048333696
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784048444700
+      }
+    ],
+    "3.2 Update `review-bootcamper-input` hook": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047155351
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784048447897
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784048558111
+      }
+    ],
+    "3.3 Keep the hook registry in sync": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047156230
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784048561808
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784048754919
+      }
+    ],
+    "4.1 Content/hook tests": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047156501
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784048763968
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784048959481
+      }
+    ],
+    "4.2 Degrade-safely assertion": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047157114
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784048963079
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784049169211
+      }
+    ],
+    "5. Checkpoint - Verify": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047157835
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784049172879
+      },
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784051221103
+      }
+    ],
+    "1. Build the ledger helper script": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784047636623
+      }
+    ],
+    "2. Wire the ledger into the question lifecycle (steering)": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784048330090
+      }
+    ],
+    "3. Enforce via hooks": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784048754980
+      }
+    ],
+    "4. Tests and safety net": [
+      {
+        "executionId": "de1e43ba-579a-4e82-994a-ae02896272a7",
+        "chatSessionId": "sess_5bffde7d-c63f-4967-9509-41fcc5b0b450",
+        "timestamp": 1784049169247
+      }
+    ]
+  }
+}

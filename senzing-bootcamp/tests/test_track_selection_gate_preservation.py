@@ -23,11 +23,13 @@ from hypothesis import strategies as st
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _ONBOARDING_FLOW = _BOOTCAMP_DIR / "steering" / "onboarding-flow.md"
 # After the onboarding split, the Bootcamp Introduction (welcome banner +
-# overview bullets) moved from "Step 4" of onboarding-flow.md into "Step 5"
-# of onboarding-phase1b-intro-language.md. Content markers are read from there.
+# overview bullets) moved from "Step 4" of onboarding-flow.md into
+# onboarding-phase1b-intro-language.md. The preface reorder (track before
+# language) then left it as "Step 4. Bootcamp Introduction" there (programming
+# language selection moved to phase 2). Content markers are read from there.
 _ONBOARDING_PHASE1B = _BOOTCAMP_DIR / "steering" / "onboarding-phase1b-intro-language.md"
 _ONBOARDING_PHASE2 = _BOOTCAMP_DIR / "steering" / "onboarding-phase2-track-setup.md"
-_HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "ask-bootcamper.kiro.hook"
+_HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "ask-bootcamper.json"
 _HOOK_REGISTRY = _BOOTCAMP_DIR / "steering" / "hook-registry.md"
 
 
@@ -81,9 +83,9 @@ def _parse_onboarding_steps(markdown: str) -> dict[str, str]:
 
 
 def _get_hook_prompt(hook_path: Path) -> str:
-    """Read the ask-bootcamper hook JSON and return ``then.prompt``."""
+    """Read the ask-bootcamper v1 hook JSON and return ``hooks[0].action.prompt``."""
     data = json.loads(hook_path.read_text(encoding="utf-8"))
-    return data.get("then", {}).get("prompt", "")
+    return data["hooks"][0].get("action", {}).get("prompt", "")
 
 
 def _get_registry_prompt(registry_path: Path) -> str:
@@ -153,17 +155,18 @@ class TestStep4ContentMarkers:
 
     **Validates: Requirements 3.2**
 
-    The Bootcamp Introduction (Step 5 of ``onboarding-phase1b-intro-language.md``
-    after the onboarding split — formerly "Step 4. Bootcamp Introduction" in
-    ``onboarding-flow.md``) must contain the guided discovery framing, module
-    overview, test data mention, eval license info, and glossary reference.
-    The content moved unchanged; only its file location and step number changed.
+    The Bootcamp Introduction (Step 4 of ``onboarding-phase1b-intro-language.md``
+    after the onboarding split and the preface reorder — formerly "Step 4.
+    Bootcamp Introduction" in ``onboarding-flow.md``) must contain the guided
+    discovery framing, module overview, test data mention, eval license info,
+    and glossary reference. The content moved unchanged; only its file location
+    changed.
     """
 
     def test_step4_contains_guided_discovery(self) -> None:
         """Assert the Bootcamp Introduction mentions guided discovery."""
         content = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
-        step4 = _extract_section(content, "5. Bootcamp Introduction")
+        step4 = _extract_section(content, "4. Bootcamp Introduction")
         assert step4, "Bootcamp Introduction section not found"
         assert re.search(r"guided discovery", step4, re.IGNORECASE), (
             "Bootcamp Introduction missing 'guided discovery' content marker"
@@ -172,7 +175,7 @@ class TestStep4ContentMarkers:
     def test_step4_contains_module_overview(self) -> None:
         """Assert the Bootcamp Introduction mentions module overview table."""
         content = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
-        step4 = _extract_section(content, "5. Bootcamp Introduction")
+        step4 = _extract_section(content, "4. Bootcamp Introduction")
         assert step4, "Bootcamp Introduction section not found"
         assert re.search(r"[Mm]odule overview", step4, re.IGNORECASE), (
             "Bootcamp Introduction missing 'module overview' content marker"
@@ -181,7 +184,7 @@ class TestStep4ContentMarkers:
     def test_step4_contains_test_data(self) -> None:
         """Assert the Bootcamp Introduction mentions test data or sample data."""
         content = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
-        step4 = _extract_section(content, "5. Bootcamp Introduction")
+        step4 = _extract_section(content, "4. Bootcamp Introduction")
         assert step4, "Bootcamp Introduction section not found"
         assert re.search(r"[Tt]est data|[Ss]ample data", step4, re.IGNORECASE), (
             "Bootcamp Introduction missing 'test data' or 'sample data' content marker"
@@ -190,7 +193,7 @@ class TestStep4ContentMarkers:
     def test_step4_contains_eval_license_info(self) -> None:
         """Assert the Bootcamp Introduction mentions eval license or 500-record limit."""
         content = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
-        step4 = _extract_section(content, "5. Bootcamp Introduction")
+        step4 = _extract_section(content, "4. Bootcamp Introduction")
         assert step4, "Bootcamp Introduction section not found"
         has_eval = re.search(r"eval license", step4, re.IGNORECASE)
         has_500 = re.search(r"500-record", step4, re.IGNORECASE)
@@ -201,7 +204,7 @@ class TestStep4ContentMarkers:
     def test_step4_contains_glossary_reference(self) -> None:
         """Assert the Bootcamp Introduction provides term-definition guidance."""
         content = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
-        step4 = _extract_section(content, "5. Bootcamp Introduction")
+        step4 = _extract_section(content, "4. Bootcamp Introduction")
         assert step4, "Bootcamp Introduction section not found"
         has_terms = re.search(r"unfamiliar terms", step4, re.IGNORECASE)
         has_glossary = re.search(r"glossary", step4, re.IGNORECASE)
@@ -324,12 +327,13 @@ class TestHookRecapLogicPreserved:
 
 
 class TestHookJsonStructure:
-    """The ask-bootcamper.kiro.hook file is valid JSON with required keys.
+    """The ask-bootcamper.json file is a valid v1 wrapper with required keys.
 
     **Validates: Requirements 3.3**
 
-    The hook file must parse as valid JSON and contain the keys:
-    name, version, description, when.type, then.type, then.prompt.
+    The hook file must parse as valid JSON, declare ``version == "v1"`` with a
+    non-empty ``hooks`` array, and its single entry must contain the keys:
+    name, trigger, action.type, action.prompt.
     """
 
     def test_hook_file_is_valid_json(self) -> None:
@@ -339,26 +343,29 @@ class TestHookJsonStructure:
         assert isinstance(data, dict), "Hook file root is not a JSON object"
 
     def test_hook_file_has_required_top_level_keys(self) -> None:
-        """Assert the hook file has name, version, description."""
+        """Assert the wrapper declares version 'v1' and the entry has a name."""
         data = json.loads(_HOOK_FILE.read_text(encoding="utf-8"))
-        for key in ("name", "version", "description"):
-            assert key in data, f"Hook file missing required key: {key}"
-            assert isinstance(data[key], str), (
-                f"Hook file key '{key}' is not a string"
-            )
+        assert data.get("version") == "v1", "Wrapper must declare version 'v1'"
+        assert isinstance(data.get("hooks"), list) and data["hooks"], (
+            "Wrapper must contain a non-empty 'hooks' array"
+        )
+        entry = data["hooks"][0]
+        assert "name" in entry, "Hook entry missing required key: name"
+        assert isinstance(entry["name"], str), "Hook entry 'name' is not a string"
 
     def test_hook_file_has_when_type(self) -> None:
-        """Assert the hook file has when.type."""
+        """Assert the hook entry has a trigger (Kiro 1.0 replacement for when.type)."""
         data = json.loads(_HOOK_FILE.read_text(encoding="utf-8"))
-        assert "when" in data, "Hook file missing 'when' key"
-        assert "type" in data["when"], "Hook file missing 'when.type'"
+        entry = data["hooks"][0]
+        assert "trigger" in entry, "Hook entry missing 'trigger'"
 
     def test_hook_file_has_then_type_and_prompt(self) -> None:
-        """Assert the hook file has then.type and then.prompt."""
+        """Assert the hook entry has action.type and action.prompt."""
         data = json.loads(_HOOK_FILE.read_text(encoding="utf-8"))
-        assert "then" in data, "Hook file missing 'then' key"
-        assert "type" in data["then"], "Hook file missing 'then.type'"
-        assert "prompt" in data["then"], "Hook file missing 'then.prompt'"
+        entry = data["hooks"][0]
+        assert "action" in entry, "Hook entry missing 'action' key"
+        assert "type" in entry["action"], "Hook entry missing 'action.type'"
+        assert "prompt" in entry["action"], "Hook entry missing 'action.prompt'"
 
 
 # ---------------------------------------------------------------------------
@@ -389,8 +396,8 @@ class TestHookRegistryEntryFormat:
         content = _HOOK_REGISTRY.read_text(encoding="utf-8")
         section = _extract_section(content, "Critical Hooks")
         assert section, "Critical Hooks section not found"
-        assert "agentStop" in section, (
-            "Registry missing agentStop event type for ask-bootcamper"
+        assert "Stop" in section, (
+            "Registry missing Stop trigger for ask-bootcamper"
         )
 
     def test_registry_has_ask_bootcamper_description(self) -> None:
@@ -398,9 +405,12 @@ class TestHookRegistryEntryFormat:
         content = _HOOK_REGISTRY.read_text(encoding="utf-8")
         section = _extract_section(content, "Critical Hooks")
         assert section, "Critical Hooks section not found"
-        # The description should mention closing question or recap
+        # The Kiro 1.0 registry renders each hook's conversational name as its
+        # description; ask-bootcamper's is "to wait for your answer" (the
+        # closing-question/recap wait). Accept that phrasing or the older
+        # closing-question/recap wording.
         assert re.search(
-            r"closing question|recap", section, re.IGNORECASE
+            r"closing question|recap|wait for your answer", section, re.IGNORECASE
         ), "Registry missing description content for ask-bootcamper"
 
 

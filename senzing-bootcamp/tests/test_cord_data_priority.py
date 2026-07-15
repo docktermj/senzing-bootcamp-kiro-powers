@@ -90,6 +90,26 @@ CORD_PROHIBITION_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
+# Pattern recognizing the sanctioned degraded-path NON-DETERMINISTIC CORD
+# substitute introduced by the truthset-fallback-source feature (Requirements
+# 7.2/7.3). When BOTH the MCP TruthSet and the sanctioned GitHub fallback source
+# are unavailable, Module 3's Step 2a offers — and the Step 10 report records —
+# a clearly labeled CORD substitute that is explicitly non-deterministic
+# (recorded as `non_deterministic`, never `passed`, leaving Module 3
+# `incomplete`). Example (steering/module-03-phase3-report-close.md): "a
+# non-deterministic CORD substitute was used and Module 3 is `incomplete`". Such
+# a line documents a degraded fallback provenance label, NOT a recommendation to
+# use CORD as a data source, so it must not be treated as a CORD recommendation
+# that requires the CORD reference URL / get_sample_data tool / on-demand lookup.
+# This mirrors the ON_DEMAND_CORD_PATTERN carve-out below and stays deliberately
+# narrow: only a CORD line that ALSO carries the non-deterministic / substitute
+# framing is exempted, so real CORD recommendations elsewhere still require the
+# URL or tool reference.
+CORD_SUBSTITUTE_CARVEOUT_PATTERN = re.compile(
+    r"non[- ]?deterministic|substitute",
+    re.IGNORECASE,
+)
+
 
 # ---------------------------------------------------------------------------
 # File collection helpers
@@ -172,19 +192,32 @@ def _has_cord_recommendation(
     """Return True if content mentions CORD as a recommendation (not a prohibition).
 
     A CORD mention counts as a recommendation when it appears on a line that is
-    not in a prohibition/negative context. If every CORD-bearing line forbids
-    the dataset, the file is not recommending CORD.
+    neither a prohibition/negative context nor the sanctioned non-deterministic
+    CORD substitute (see CORD_SUBSTITUTE_CARVEOUT_PATTERN). If every CORD-bearing
+    line either forbids the dataset or is the sanctioned degraded-path
+    substitute, the file is not recommending CORD.
 
     Args:
         content: The file content to inspect.
         cord_pattern: Compiled regex for CORD mentions.
 
     Returns:
-        True if at least one non-prohibition CORD mention exists.
+        True if at least one CORD mention is a genuine recommendation.
     """
     for line in content.splitlines():
-        if cord_pattern.search(line) and not CORD_PROHIBITION_PATTERN.search(line):
-            return True
+        if not cord_pattern.search(line):
+            continue
+        # A prohibition ("Do not use CORD...") is not a recommendation.
+        if CORD_PROHIBITION_PATTERN.search(line):
+            continue
+        # Carve-out: the sanctioned non-deterministic CORD substitute
+        # (truthset-fallback-source, Requirements 7.2/7.3) documents a degraded
+        # fallback provenance label, not a CORD recommendation, so it does not
+        # require the CORD URL / get_sample_data reference. See
+        # CORD_SUBSTITUTE_CARVEOUT_PATTERN for the rationale.
+        if CORD_SUBSTITUTE_CARVEOUT_PATTERN.search(line):
+            continue
+        return True
     return False
 
 
@@ -335,8 +368,9 @@ class TestCordDataPriorityExamples:
         """Bootcamp Introduction step mentions CORD with description, before synthesized data.
 
         The Bootcamp Introduction (which carries the CORD overview bullet) was
-        moved out of onboarding-flow.md into onboarding-phase1b-intro-language.md
-        (shipped Step 5).
+        moved out of onboarding-flow.md into onboarding-phase1b-intro-language.md.
+        After the preface reorder (track before language), it is Step 4
+        (programming language selection moved to phase 2).
 
         Validates: Requirements 2.1, 2.2, 2.4
         """
@@ -344,7 +378,7 @@ class TestCordDataPriorityExamples:
         content = path.read_text(encoding="utf-8")
 
         # Requirement 2.1: CORD is mentioned in the Bootcamp Introduction section
-        step4_marker = content.find("## 5. Bootcamp Introduction")
+        step4_marker = content.find("## 4. Bootcamp Introduction")
         assert step4_marker != -1, (
             "Bootcamp Introduction section not found in "
             "onboarding-phase1b-intro-language.md"

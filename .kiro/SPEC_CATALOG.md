@@ -8,7 +8,7 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 290
+- implemented: 291
 - superseded: 1
 - abandoned: 0
 - unknown: 0
@@ -190,6 +190,7 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/clean-question-presentation/](.kiro/specs/clean-question-presentation/)
+- Related: module-transition-question-duplication, single-ask-question-guarantee
 
 ### completion-summary
 
@@ -1104,6 +1105,14 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/module-start-banners/](.kiro/specs/module-start-banners/)
 
+### module-transition-question-duplication
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/module-transition-question-duplication/](.kiro/specs/module-transition-question-duplication/)
+- Related: clean-question-presentation, single-ask-question-guarantee
+
 ### module-transition-stall-fix
 
 - Status: implemented
@@ -1656,6 +1665,7 @@
 - Type: unknown
 - Workflow: unknown
 - Directory: [.kiro/specs/single-ask-question-guarantee/](.kiro/specs/single-ask-question-guarantee/)
+- Related: clean-question-presentation, module-transition-question-duplication
 
 ### single-question-format
 

@@ -25,7 +25,12 @@ supersessions:
   - supersedes: guaranteed-qa-capture
     superseded: bootcamp-qa-transcript
 
-# The module recap document and its follow-up fix are mutually related.
+# Mutually-related spec groups (each inner list is one related group).
 related:
-  - module-recap-document
-  - module-recap-document-fix
+  # The module recap document and its follow-up fix are mutually related.
+  - - module-recap-document
+    - module-recap-document-fix
+  # Duplicate / single-question rendering line of work.
+  - - module-transition-question-duplication
+    - clean-question-presentation
+    - single-ask-question-guarantee

@@ -78,6 +78,7 @@ Then follow the journal and path-completion rules in `module-completion.md`.
 
 - Module transition questions are commitments: asking the question means the agent is prepared to execute the transition if confirmed.
 - If context limits may prevent completing the next module, do NOT ask the transition question. Instead, transparently inform the bootcamper about the limitation and offer to save progress.
+- **Single transition prompt:** At a module-completion boundary the forward transition question ("Ready to start Module N+1: [Name]?") is presented to the bootcamper **exactly once per turn** — as the single final pending 👉 question. Do not render the same transition question a second time (for example, once inline as the "Proceed" next-step option and again re-surfaced as the final message). See the render-once rule in `module-completion.md` and `module-completion-next-steps.md`.
 
 ## Confirmation Response Requirements
 

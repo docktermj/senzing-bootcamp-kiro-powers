@@ -385,7 +385,7 @@ file_metadata:
     token_count: 2598
     size_category: large
   hook-registry-critical.md:
-    token_count: 14312
+    token_count: 14654
     size_category: large
   hook-registry-module-01.md:
     token_count: 434
@@ -571,19 +571,19 @@ file_metadata:
     token_count: 637
     size_category: medium
   module-completion-next-steps.md:
-    token_count: 705
+    token_count: 970
     size_category: medium
   module-completion-track.md:
     token_count: 4282
     size_category: large
   module-completion.md:
-    token_count: 2432
+    token_count: 2593
     size_category: large
   module-prerequisites.md:
     token_count: 1395
     size_category: medium
   module-transitions.md:
-    token_count: 2106
+    token_count: 2228
     size_category: large
   onboarding-flow.md:
     token_count: 4138
@@ -662,7 +662,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 230680
+  total_tokens: 231570
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

@@ -1,0 +1,192 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Hypothesis falsifying example (Property 1 scoped PBT — test_render_once_guidance_present_for_all_targets):\n\n    Falsifying example: test_render_once_guidance_present_for_all_targets(\n        self=<TestTransitionQuestionRenderedExactlyOnceProperty>,\n        requirement_key='completion_render_once_clause',\n    )\n    AssertionError: [completion_render_once_clause] module-completion.md\n    'Final-Message Ordering' section describes ordering (recap-before vs.\n    re-surface) but carries NO explicit 'render exactly once' clause.\n\nThis failure is the SUCCESS case for a bug-condition exploration test: it confirms the missing render-once/de-dup guidance. All 6 requirement checks fail on unfixed code (7 test cases total). Counterexamples per target file:\n- module-completion-next-steps.md: same_question=False, render_once=False (Proceed prompt and final-message 👉 not stated to be the SAME question rendered once); no \"exactly one rendered\" de-dup note.\n- module-completion.md: Final-Message Ordering has no \"render exactly once\" / \"a single time\" / \"does not duplicate\" clause.\n- module-transitions.md: Module Completion / Transition Integrity do not state the transition question is presented exactly once per turn.\n- ask-bootcamper.json: Phase 1 / Phase 1.5 region has transition=False (no inline-transition-prompt recognition; guard only checks for a 👉 anywhere) and no \"second copy\"/\"duplicate transition\" de-dup instruction.",
+      "lastRunTimestamp": 1784132864766
+    },
+    "3.6 Verify bug condition exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1784134633399
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784132521821
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784132528256
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784132887038
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784132521863
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784132889955
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784133960894
+      }
+    ],
+    "3.1 Edit `senzing-bootcamp/steering/module-completion-next-steps.md` — Same-question / render-once note": [
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784132521897
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784133971912
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134091227
+      }
+    ],
+    "3.2 Edit `senzing-bootcamp/steering/module-completion.md` — Render-once clause in Final-Message Ordering": [
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784132521930
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134094645
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134191986
+      }
+    ],
+    "3.3 Edit `senzing-bootcamp/steering/module-transitions.md` — Single transition prompt statement": [
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784132521962
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134195082
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134294457
+      }
+    ],
+    "3.4 Edit `senzing-bootcamp/hooks/ask-bootcamper.json` — Recognize an already-present inline transition prompt (Phase 1 / Phase 1.5)": [
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784132522015
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134297683
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134479059
+      }
+    ],
+    "3.5 Re-sync composed hook prompts and the hook registry": [
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784132522046
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134483274
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134587481
+      }
+    ],
+    "3.6 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784132522080
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134590576
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134647270
+      }
+    ],
+    "3.7 Verify preservation tests still pass": [
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784132522112
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134650347
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134702888
+      }
+    ],
+    "4. Checkpoint — Ensure all tests and CI gates pass": [
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784132522147
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134706139
+      },
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784138797561
+      }
+    ],
+    "3. Fix so the module-transition question renders exactly once per turn": [
+      {
+        "executionId": "12fac199-4ee6-48f9-9249-9c6e421145dd",
+        "chatSessionId": "sess_ea9bade1-f50b-462e-8aeb-4dd9696b755f",
+        "timestamp": 1784134702921
+      }
+    ]
+  }
+}

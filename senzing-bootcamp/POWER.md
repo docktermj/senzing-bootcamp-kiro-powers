@@ -128,7 +128,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `file-placement.md` | 515 | medium |
 | `graduation.md` | 11812 | large |
 | `hook-architecture.md` | 2598 | large |
-| `hook-registry-critical.md` | 14312 | large |
+| `hook-registry-critical.md` | 14654 | large |
 | `hook-registry-module-01.md` | 434 | small |
 | `hook-registry-module-02.md` | 269 | small |
 | `hook-registry-module-03.md` | 2124 | large |
@@ -190,11 +190,11 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-11-phase2-deploy.md` | 850 | medium |
 | `module-completion-artifacts.md` | 3551 | large |
 | `module-completion-error-handling.md` | 637 | medium |
-| `module-completion-next-steps.md` | 705 | medium |
+| `module-completion-next-steps.md` | 970 | medium |
 | `module-completion-track.md` | 4282 | large |
-| `module-completion.md` | 2432 | large |
+| `module-completion.md` | 2593 | large |
 | `module-prerequisites.md` | 1395 | medium |
-| `module-transitions.md` | 2106 | large |
+| `module-transitions.md` | 2228 | large |
 | `onboarding-flow.md` | 4138 | large |
 | `onboarding-phase1b-intro-language.md` | 2546 | large |
 | `onboarding-phase2-track-setup.md` | 2979 | large |
@@ -221,7 +221,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 230680 tokens
+**Total budget:** 231570 tokens
 
 <!-- END GENERATED: steering-files -->
 

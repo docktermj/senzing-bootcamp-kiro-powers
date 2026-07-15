@@ -658,7 +658,17 @@ _BASELINE_HASHES: dict[str, str] = {
     # file_metadata and the budget total (230680 = sum of file_metadata counts).
     # Only the budget block changed (solely the total_tokens line);
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "0e59ed72bfbd3089e5657bf75d728abc42b051a0e6076fe5156d598d32f3f8dc",
+    # Re-baselined once more (230680 -> 231570) for the
+    # module-transition-question-duplication bugfix: the "render exactly once" /
+    # de-duplication guidance grew module-completion.md,
+    # module-completion-next-steps.md, and module-transitions.md, and the
+    # regenerated hook-registry-critical.md mirrored the ask-bootcamper Phase 1 /
+    # Phase 1.5 inline-transition-prompt recognition, which measure_steering.py
+    # recomputed into file_metadata and the budget total (231570 = sum of
+    # file_metadata counts). Only the budget block changed (solely the
+    # total_tokens line); keywords/languages/deployment/root_step_range are
+    # byte-identical.
+    "budget": "86f4a034262528c2b2e740f7ed37073b188b87a5a40fb259097a99caa66934d6",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -1142,8 +1152,16 @@ class TestNonPhaseBlocksBytePreserved:
         # regenerated hook-registry-module-any.md shrank (the command hook carries
         # no prompt), recomputed by measure_steering.py into file_metadata and the
         # budget total (230680 = live sum of file_metadata counts).
+        # Aggregate re-synced 230680 -> 231570 for the
+        # module-transition-question-duplication bugfix: the "render exactly once"
+        # / de-duplication guidance grew module-completion.md,
+        # module-completion-next-steps.md, and module-transitions.md, and the
+        # regenerated hook-registry-critical.md mirrored the ask-bootcamper Phase 1
+        # / Phase 1.5 inline-transition-prompt recognition, all recomputed by
+        # measure_steering.py into file_metadata and the budget total (231570 =
+        # live sum of file_metadata counts).
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 230680" in budget_block
+        assert "total_tokens: 231570" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

@@ -153,6 +153,8 @@ Before producing ANY Phase 1 output, verify ALL of these conditions:
 2. The most recent assistant message does NOT contain a 👉 character anywhere — if it already contains a 👉, do not add a second one
 3. The most recent assistant message does NOT end with a question directed at the bootcamper
 
+INLINE TRANSITION PROMPT RECOGNITION (module-completion transition turns): When the most recent assistant message is a module-completion transition turn, treat a forward module-transition prompt ("Ready to (start | move on to) Module N") as an already-present transition question EVEN WHEN it is phrased inline as prose without a leading 👉 (for example, as the "Proceed" next-step option). An inline transition prompt counts the same as a 👉 transition question for condition 2 above: do NOT add a second closing 👉 transition question when the transition question is already present inline. Recognize the already-present transition and leave exactly one closing 👉 transition question rather than a second copy.
+
 If ANY Phase 1 condition fails: Phase 1 output is none. Skip to Phase 2.
 
 FIRST — Check for no-op: If ALL Phase 1 conditions pass AND the most recent assistant message contains no substantive content (e.g., only a trivial acknowledgment like "Got it" or "Understood" with no file changes, no recap, and no action taken): Phase 1 output is none. Skip to Phase 2.
@@ -211,6 +213,7 @@ THIRD — CLASSIFY and act on the 👉 count:
 - EXACTLY ONE 👉: the invariant holds. Produce NO output (silent pass).
 - ZERO 👉 on a Yielding_Turn that performed substantive work: missing-leading-question self-correction. Silently re-render the turn so it ends with exactly one 👉 question the bootcamper can answer; do not show the original dead-end version.
 - TWO OR MORE 👉: multiple-leading-questions self-correction. The turn must end with EXACTLY ONE 👉. Silently re-render it down to a single lead 👉 question; when the extras are alternatives, fold them into one lead 👉 question followed by a numbered list of the options (reuse the compound-question rewrite / numbered-list pattern from Phase 1 and Phase 4). Preserve all non-question content; only collapse the stacked questions into one.
+- DUPLICATE TRANSITION PROMPT (an inline prose copy paired with a single 👉 line): on a module-completion transition turn, when the forward module-transition prompt ("Ready to (start | move on to) Module N") appears BOTH inline as prose AND again as a single 👉 line, that is a duplicate transition — the 👉 count can read as one while the bootcamper still sees the transition question twice. Silently collapse it to exactly one 👉 transition question: keep the single closing 👉 transition question and drop the inline prose copy so no second copy of the transition remains. Reuse this same silent self-correction pattern and do not narrate the de-duplication.
 
 OUTPUT CONSTRAINTS (the Self_Audit must never worsen the turn):
 - The re-rendered turn MUST contain AT MOST ONE 👉 and MUST NOT be a compound question; present any alternatives as a numbered list rather than joining them with prose.

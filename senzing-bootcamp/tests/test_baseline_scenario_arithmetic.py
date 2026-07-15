@@ -156,8 +156,18 @@ AUTO_FILES: tuple[str, ...] = (
 # before, the values are read from steering-index.yaml via measure_steering and
 # cross-checked against the on-disk scan, so they track the corpus rather than a
 # hand-maintained literal.
-DOCUMENTED_FINALIZED_BASELINE = 17_036   # finalized always-set (Decision_Record baseline, Req 2.5)
-DOCUMENTED_PRE_EXISTING_ALWAYS = 7_739   # three pre-existing `always` files
+# Re-pinned once more (17_036 -> 17_158 / 7_739 -> 7_861) for the
+# module-transition-question-duplication bugfix: module-transitions.md (a
+# pre-existing `always` file AND part of the finalized always-set) gained the
+# "single transition prompt" statement, growing 2106 -> 2228 (+122). Both the
+# finalized always-set baseline (+122) and DOCUMENTED_PRE_EXISTING_ALWAYS (+122)
+# moved by the same amount; agent-instructions.md and security-privacy.md were
+# untouched, and none of the three shared always/Auto files changed, so the
+# newly-promoted sum stays 9_297. The loads-always footprint also moved +122
+# (30_041 -> 30_163) but remains within the 1% tolerance band, so
+# DOCUMENTED_LOADS_ALWAYS is left at 30_041.
+DOCUMENTED_FINALIZED_BASELINE = 17_158   # finalized always-set (Decision_Record baseline, Req 2.5)
+DOCUMENTED_PRE_EXISTING_ALWAYS = 7_861   # three pre-existing `always` files
 # Re-pinned once more (25_261 -> 25_623) for the session-handoff spec: task 5.1
 # added the "### Session Handoff Offer" hook-in to agent-context-management.md
 # (one of the eleven Auto_Files), growing its measured count 1326 -> 1616 (+290),
@@ -216,10 +226,10 @@ class TestBaselineScenarioArithmetic:
 
         Reads the per-file ``token_count`` from the shipped ``steering-index.yaml``
         ``file_metadata`` and asserts the six finalized ``always`` files sum to
-        exactly the current baseline of 17,036 tokens; confirms the same
+        exactly the current baseline of 17,158 tokens; confirms the same
         figure equals ``measure_steering``'s computed Baseline_Footprint for the
         real corpus (the ``inclusion: always`` set); and pins the composition
-        identity 7,739 (pre-existing) + 9,297 (newly promoted) == 17,036.
+        identity 7,861 (pre-existing) + 9,297 (newly promoted) == 17,158.
         """
         stored = measure_steering._parse_stored_metadata(
             measure_steering.load_yaml_content(_INDEX_PATH)

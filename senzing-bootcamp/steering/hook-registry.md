@@ -37,7 +37,7 @@ inclusion: manual
 | security-scan-on-save | 9 | PostFileSave → agent | to run a security scan |
 | validate-alert-config | 10 | PostFileCreate → agent | to validate alert configuration |
 | deployment-phase-gate | 11 | PostTaskExec → agent | to check the deployment phase gate |
-| enforce-critical-artifacts | any | Stop → agent | to enforce critical graduation artifacts on agent stop |
+| enforce-critical-artifacts | any | Stop → command | to guarantee critical graduation artifacts on agent stop |
 | error-recovery-context | any | PostToolUse → agent | to help recover from errors |
 | module-completion-celebration | any | Stop → agent | to celebrate module completion |
 | session-log-events | any | PostToolUse → command | to log session events after write operations |

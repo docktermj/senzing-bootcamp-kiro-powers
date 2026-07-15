@@ -376,7 +376,7 @@ class TestOnlyCurrentVersionHasWhatsNewSection:
     Validates: Requirements 1.2, 1.3, 7.2
     """
 
-    # Feature: power-whats-new-cleanup, Property 2: Only the current version has a What's New section
+    # Feature: power-whats-new-cleanup, Property 2: only the current version has a section
     @given(version=st_semver().filter(lambda v: v != _CURRENT_VERSION))
     def test_no_non_current_version_has_a_section(self, version: str) -> None:
         """The real POWER.md heads no What's New section for a non-current version.

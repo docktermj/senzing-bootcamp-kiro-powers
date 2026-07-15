@@ -2367,6 +2367,10 @@ class TestMergedSectionEmptyState:
             answers_given=[],
             actions_taken=["Ran the resolver."],
             duration="1h 5m",
+            # Populate the journal too so the merged Q&R section is the ONLY
+            # empty subsection; otherwise an empty Journal would add its own
+            # "None" empty-state and defeat the single-"None" isolation below.
+            journal=["**What we did:** Loaded and resolved sample records."],
         )
 
         headings, body = _render_section_headings_and_body(section)
@@ -2377,7 +2381,8 @@ class TestMergedSectionEmptyState:
         )
 
         # The existing "None" empty-state is rendered exactly once -- only for
-        # the merged section (Information Shared / Actions Taken are populated).
+        # the merged section (Information Shared / Actions Taken / Journal are
+        # populated).
         assert body.count("None") == 1, (
             f"Expected a single 'None' empty-state for the merged section, "
             f"got body: {body!r}"

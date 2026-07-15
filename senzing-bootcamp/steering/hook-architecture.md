@@ -61,10 +61,15 @@ Each hook's position in the precedence list is justified as follows.
   gate-violation message wins over a celebration message.
 - `enforce-visualization-offers` (order 4) — This is the lowest-stakes nudge. It offers missed
   visualization opportunities only when nothing higher in the list has fired.
-- `enforce-critical-artifacts` (order 5) — This is the graduation-artifact completion safety net. It
-  runs last so its blocking output appears only after any higher-priority gate output has cleared,
-  and it must run after `ask-bootcamper` (so the recap section captured in its Phase 0 exists to
-  reconstruct or verify from) and after the celebration and gate hooks.
+- `enforce-critical-artifacts` (order 5) — This is the graduation-artifact completion safety net.
+  Unlike the other four Stop hooks it is a **deterministic `command` hook**, not an `agent` hook: on
+  every Stop it runs `ensure_graduation_artifacts.py --stop-hook`, which itself gates on the pending
+  question and the track-end stopping point before regenerating any missing artifact. Because it
+  emits **no agent output**, it never competes for the single-winner slot and never stacks a message
+  onto the turn — it is listed last only nominally, so the `agentstop_order` set stays exactly equal
+  to the Stop-trigger hook set. It still runs conceptually after `ask-bootcamper` (whose Phase 0
+  recap is a reconstruct/verify source) and the celebration and gate hooks, but as a runtime-executed
+  command it does not depend on IDE firing order or on the agent choosing to act.
 
 ## Closing-Question Ownership and Conflict Resolution
 
@@ -79,9 +84,11 @@ questions. Closing-question ownership is the higher rule; the precedence list ne
 While `config/.question_pending` exists (or the most recent assistant message contains a pending
 👉 question awaiting a bootcamper response), every `Stop`-trigger hook emits zero output. No hook may
 add a competing message, a celebration, a recap, a gate notice, or a visualization offer while a
-question is pending — the turn must end cleanly so the bootcamper can answer. Each `Stop`-trigger
-hook's prompt therefore begins with a guard clause to the effect of: if `config/.question_pending`
-exists, produce no output at all and defer to `ask-bootcamper`.
+question is pending — the turn must end cleanly so the bootcamper can answer. Each `agent`
+`Stop`-trigger hook's prompt therefore begins with a guard clause to the effect of: if
+`config/.question_pending` exists, produce no output at all and defer to `ask-bootcamper`. The
+`enforce-critical-artifacts` `command` hook enforces the same guard in code: `ensure_graduation_artifacts.py --stop-hook`
+does nothing and produces no output while `config/.question_pending` exists.
 
 ## Single-Winner Precedence Rule
 

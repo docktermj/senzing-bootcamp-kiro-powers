@@ -214,7 +214,9 @@ class TestMainDefaults:
 
         The shipped ``governance-rules.yaml`` is conformant (task 7.1), so a
         no-arg run exits 0 and prints the success message plus the completion
-        counts (fourteen rules checked, zero violations) to stdout.
+        counts (fifteen rules checked, zero violations) to stdout. The
+        guaranteed-recap-pdf work added the ``critical-artifacts-command-hook``
+        rule, bringing the statically-checkable count to fifteen.
         """
         exit_code = main([])
         captured = capsys.readouterr()
@@ -224,7 +226,7 @@ class TestMainDefaults:
             f"stderr was:\n{captured.err}"
         )
         assert "Governance rule conformance: PASS" in captured.out
-        assert "Rule Entries checked: 14" in captured.out
+        assert "Rule Entries checked: 15" in captured.out
         assert "Violations found: 0" in captured.out
         # Success path writes nothing to stderr.
         assert captured.err == ""

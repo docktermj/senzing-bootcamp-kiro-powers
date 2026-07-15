@@ -395,3 +395,24 @@ rules:
       - type: "substring_present"
         file: "senzing-bootcamp/steering/visualization-guide.md"
         value: "clear_first_visualization_owed"
+
+  # ----------------------------------------------------------------------
+  # guaranteed-recap-pdf feature addition.
+  # The enforce-critical-artifacts Stop hook is a DETERMINISTIC command hook:
+  # the runtime runs ensure_graduation_artifacts.py --stop-hook on every Stop,
+  # so the crown-jewel recap PDF ("trophy") is produced by the runtime rather
+  # than depending on the agent acting on a prompt. Guards against a regression
+  # back to an agent-prompt hook (which made recap-PDF generation inconsistent).
+  # ----------------------------------------------------------------------
+  - id: "critical-artifacts-command-hook"
+    rule: "The enforce-critical-artifacts Stop hook is a deterministic command hook that runs ensure_graduation_artifacts.py --stop-hook, so the guaranteed recap PDF is produced by the runtime rather than depending on the agent acting on a prompt."
+    category: "hook-architecture"
+    enforced_by:
+      - "senzing-bootcamp/hooks/enforce-critical-artifacts.json"
+    assertions:
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/enforce-critical-artifacts.json"
+        pattern: "\"type\":\\s*\"command\""
+      - type: "substring_present"
+        file: "senzing-bootcamp/hooks/enforce-critical-artifacts.json"
+        value: "ensure_graduation_artifacts.py --stop-hook"

@@ -117,6 +117,11 @@ class RecapSection:
     schema: str = "none"
     actions_taken: list[str] = field(default_factory=list)
     duration: str = ""
+    # Verbatim non-blank lines of the ``### Journal`` subsection (the four
+    # narrative fields: What we did / What was produced / Why it matters /
+    # Bootcamper's takeaway). A first-class subsection so it renders under a
+    # "Journal" heading and survives Markdown normalization intact.
+    journal: list[str] = field(default_factory=list)
     generic_content: list[str] = field(default_factory=list)
 
 
@@ -146,6 +151,11 @@ _MODULE_HEADING_RE = re.compile(
 _MODULE_HEADING_LOOSE_RE = re.compile(
     r"^##\s+Module\s+(\d+):\s+(.+?)\s*$", re.MULTILINE
 )
+
+# A Markdown thematic break (horizontal rule): a line of three or more dashes,
+# asterisks, or underscores. Used to exclude the section-separating ``---`` from
+# captured Journal content so it never leaks into a subsection's body.
+_THEMATIC_BREAK_RE = re.compile(r"^\s*(?:-{3,}|\*{3,}|_{3,})\s*$")
 
 
 def _parse_header(content: str) -> RecapHeader:
@@ -202,6 +212,7 @@ _KNOWN_SUBSECTIONS = frozenset(
         "questions & responses",
         "actions taken",
         "duration",
+        "journal",
     }
 )
 
@@ -425,6 +436,17 @@ def _parse_sections(content: str) -> list[RecapSection]:
                 section.duration = stripped
                 break
 
+        # Journal is a set of bold-labeled narrative lines (not a bulleted
+        # list), so capture every non-blank line verbatim to preserve the four
+        # fields (What we did / What was produced / Why it matters / takeaway).
+        # A trailing ``---`` section separator is excluded so it never leaks
+        # into the journal body and breaks normalization idempotency.
+        section.journal = [
+            line.rstrip()
+            for line in subsections.get("journal", "").splitlines()
+            if line.strip() and not _THEMATIC_BREAK_RE.match(line)
+        ]
+
         sections.append(section)
 
     return sections
@@ -511,6 +533,15 @@ def format_recap_section(section: RecapSection) -> str:
     lines.append("### Duration")
     lines.append(section.duration)
     lines.append("")
+
+    # Journal — re-emit the narrative fields verbatim so a normalization
+    # round-trip preserves them (and downstream consumers that parse the
+    # ``### Journal`` subsection, e.g. record_export.py and the graduation
+    # certificate, keep working). Omitted when the section has no journal.
+    if section.journal:
+        lines.append("### Journal")
+        lines.extend(section.journal)
+        lines.append("")
 
     return "\n".join(lines)
 
@@ -864,9 +895,20 @@ def _render_module_page(pdf: "FPDF", section: RecapSection) -> None:  # noqa: F8
         new_x="LMARGIN",
         new_y="NEXT",
     )
+    pdf.ln(2)
+
+    # Journal — the module's narrative reflection, rendered as a first-class
+    # subsection (matching the stdlib writer) so it is never buried under
+    # "Additional Notes". Each captured line renders as its own paragraph.
+    render_heading(pdf, "Journal", level=3)
+    if section.journal:
+        render_generic_blocks(pdf, section.journal)
+    else:
+        pdf.set_font("Helvetica", "I", 11)
+        pdf.cell(0, 6, "None", new_x="LMARGIN", new_y="NEXT")
 
     # Generic_Content — prose, code blocks, and other headings the strict
-    # parser would otherwise discard. Rendered after the five known subsections.
+    # parser would otherwise discard. Rendered after the known subsections.
     if section.generic_content:
         render_heading(pdf, "Additional Notes", level=3)
         render_generic_blocks(pdf, section.generic_content)
@@ -959,6 +1001,7 @@ def collect_verification_targets(
             body_lines.extend(section.actions_taken)
             if section.duration:
                 body_lines.append(section.duration)
+            body_lines.extend(section.journal)
             body_lines.extend(section.generic_content)
         return module_numbers, body_lines
 

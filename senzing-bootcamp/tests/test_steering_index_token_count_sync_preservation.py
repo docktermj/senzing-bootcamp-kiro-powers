@@ -650,7 +650,15 @@ _BASELINE_HASHES: dict[str, str] = {
     # (230741 = sum of file_metadata counts). Only the budget block changed (solely
     # the total_tokens line); keywords/languages/deployment/root_step_range are
     # byte-identical.
-    "budget": "74326216a0d06db1bd6b02c3cdac961ea0fffd39b4ec72aea5ff6badcf607fdb",
+    # Re-baselined once more (230741 -> 230680) for the guaranteed-recap-pdf work:
+    # graduation.md / module-completion-track.md / hook-architecture.md grew from
+    # the recap-PDF value-emphasis and command-hook documentation edits, and the
+    # regenerated hook-registry-module-any.md shrank (the enforce-critical-artifacts
+    # command hook carries no prompt), which measure_steering.py recomputed into
+    # file_metadata and the budget total (230680 = sum of file_metadata counts).
+    # Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "0e59ed72bfbd3089e5657bf75d728abc42b051a0e6076fe5156d598d32f3f8dc",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -1128,8 +1136,14 @@ class TestNonPhaseBlocksBytePreserved:
         # ER-questions prompt content was added, recomputed by measure_steering.py
         # into file_metadata and the budget total (230741 = live sum of
         # file_metadata counts).
+        # Aggregate re-synced 230741 -> 230680 for the guaranteed-recap-pdf work:
+        # graduation.md / module-completion-track.md / hook-architecture.md grew
+        # from the recap-PDF value-emphasis + command-hook documentation, and the
+        # regenerated hook-registry-module-any.md shrank (the command hook carries
+        # no prompt), recomputed by measure_steering.py into file_metadata and the
+        # budget total (230680 = live sum of file_metadata counts).
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 230741" in budget_block
+        assert "total_tokens: 230680" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

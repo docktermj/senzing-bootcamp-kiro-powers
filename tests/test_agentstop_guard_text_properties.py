@@ -5,14 +5,18 @@ that yields zero output while a question is pending: a reference to
 ``config/.question_pending`` paired with a no-output / defer-to-``ask-bootcamper``
 clause.
 
-The guard-clause hooks (`module-completion-celebration`, `enforce-gate-on-stop`,
-`enforce-visualization-offers`, and `enforce-critical-artifacts`) open with the
+The agent-prompt guard-clause hooks (`module-completion-celebration`,
+`enforce-gate-on-stop`, and `enforce-visualization-offers`) open with the
 leading clause "If ``config/.question_pending`` exists, produce no output at
 all — defer to ``ask-bootcamper``." The `ask-bootcamper` hook owns the
 closing question and expresses the same silence semantic with its own
 phrasing (it checks that ``config/.question_pending`` does NOT exist and that
-phases "produce no output" / are "none"). The assertions below are written to
-hold for ALL of the real agentStop hook prompts.
+phases "produce no output" / are "none"). ``enforce-critical-artifacts`` is a
+``command`` hook, not an agent-prompt hook: it enforces the same
+question-pending silence in code (``ensure_graduation_artifacts.py --stop-hook``
+does nothing while ``config/.question_pending`` exists), so it is excluded from
+the prompt-text properties below. The assertions are written to hold for ALL of
+the real agent-prompt Stop hooks.
 
 **Validates: Requirements 2.4**
 """
@@ -38,12 +42,12 @@ HOOKS_DIR: Path = Path(__file__).resolve().parent.parent / "senzing-bootcamp" / 
 # The exact path token every agentStop guard must reference.
 QUESTION_PENDING_REF: str = "config/.question_pending"
 
-# The five agentStop hook ids (grounded fact from requirements/design).
-# enforce-critical-artifacts was added by the guaranteed-graduation-artifacts
-# spec; it opens with the same "produce no output at all — defer to
-# ask-bootcamper" guard clause as the other enforcement hooks. The stop-hook-ux
-# bugfix folded the former ``module-recap-append`` Stop hook into
-# ``ask-bootcamper`` (Phase 0), so it is no longer a separate agentStop hook.
+# The five Stop-trigger hook ids (grounded fact from requirements/design). The
+# stop-hook-ux bugfix folded the former ``module-recap-append`` Stop hook into
+# ``ask-bootcamper`` (Phase 0). ``enforce-critical-artifacts`` is a Stop hook but
+# a ``command`` hook (not an agent-prompt hook): its question-pending guard lives
+# in ``ensure_graduation_artifacts.py --stop-hook``, so it is a member of the
+# Stop-trigger set below but is excluded from the prompt-text properties.
 EXPECTED_AGENTSTOP_IDS: set[str] = {
     "ask-bootcamper",
     "module-completion-celebration",
@@ -51,6 +55,9 @@ EXPECTED_AGENTSTOP_IDS: set[str] = {
     "enforce-visualization-offers",
     "enforce-critical-artifacts",
 }
+
+# The command-type Stop hooks whose silence guard lives in code, not a prompt.
+_COMMAND_STOP_HOOK_IDS: set[str] = {"enforce-critical-artifacts"}
 
 # Silence / no-output / defer indicators (matched case-insensitively).
 #
@@ -100,8 +107,16 @@ def load_prompt(path: Path) -> str:
     return _load_hook(path)["action"]["prompt"]
 
 
-# The five real agentStop hook files, discovered once at import time.
+# The five real Stop-trigger hook files, discovered once at import time.
 AGENTSTOP_HOOK_FILES: list[Path] = discover_agentstop_hook_files()
+
+# The agent-prompt subset — command Stop hooks (whose guard lives in code) are
+# excluded, since the prompt-text properties below only apply to agent hooks.
+AGENT_PROMPT_HOOK_FILES: list[Path] = [
+    p
+    for p in AGENTSTOP_HOOK_FILES
+    if p.name.replace(".json", "") not in _COMMAND_STOP_HOOK_IDS
+]
 
 
 # ---------------------------------------------------------------------------
@@ -110,8 +125,12 @@ AGENTSTOP_HOOK_FILES: list[Path] = discover_agentstop_hook_files()
 
 
 def st_agentstop_hook_files() -> st.SearchStrategy[Path]:
-    """Strategy sampling over the real agentStop hook files."""
-    return st.sampled_from(AGENTSTOP_HOOK_FILES)
+    """Strategy sampling over the real agent-prompt Stop hook files.
+
+    Command Stop hooks (``enforce-critical-artifacts``) are excluded: their
+    question-pending guard lives in code, not a prompt.
+    """
+    return st.sampled_from(AGENT_PROMPT_HOOK_FILES)
 
 
 # ---------------------------------------------------------------------------

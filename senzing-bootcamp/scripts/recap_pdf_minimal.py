@@ -101,6 +101,7 @@ LABEL_QUESTIONS_RESPONSES = "Questions & Responses"
 LABEL_ACTIONS_TAKEN = "Actions Taken"
 LABEL_DURATION = "Duration"
 LABEL_JOURNAL = "Journal"
+LABEL_ADDITIONAL_NOTES = "Additional Notes"
 
 _EMPTY_PLACEHOLDER = "None"
 
@@ -304,9 +305,10 @@ def _render_section(canvas: _PdfCanvas, section: RecapSection) -> None:
 
     Emits the module heading, an optional completion timestamp, and the labeled
     subsections in a fixed order: Information Shared, Questions & Responses,
-    Actions Taken, Duration, and Journal. Journal carries the section's
-    Generic_Content (prose/notes the strict parser did not map to a known
-    subsection) so nothing authored under a module is dropped.
+    Actions Taken, Duration, Journal, and (when present) Additional Notes.
+    Journal renders the parsed ``### Journal`` narrative fields; Additional Notes
+    carries any Generic_Content (prose/notes the strict parser did not map to a
+    known subsection) so nothing authored under a module is dropped.
 
     Args:
         canvas: The canvas to draw into.
@@ -328,13 +330,20 @@ def _render_section(canvas: _PdfCanvas, section: RecapSection) -> None:
     canvas.body(section.duration or "N/A")
 
     canvas.subheading(LABEL_JOURNAL)
+    if section.journal:
+        for line in section.journal:
+            canvas.body(line)
+    else:
+        canvas.body(_EMPTY_PLACEHOLDER)
+
+    # Additional Notes — content the strict parser did not map to a known
+    # subsection. Rendered only when present, matching the rich renderer.
     if section.generic_content:
+        canvas.subheading(LABEL_ADDITIONAL_NOTES)
         for block in section.generic_content:
             for line in block.splitlines():
                 if line.strip():
                     canvas.body(line)
-    else:
-        canvas.body(_EMPTY_PLACEHOLDER)
 
 
 def _render_raw_body(canvas: _PdfCanvas, body_text: str) -> None:
@@ -371,8 +380,9 @@ def render_minimal_pdf(
     """Render a :class:`RecapDocument` to a valid PDF 1.4 using stdlib only.
 
     Draws a title and header, then one labeled section per module (Information
-    Shared, Questions & Responses, Actions Taken, Duration, Journal) with word
-    wrapping and automatic multi-page overflow. When the document has no parsed
+    Shared, Questions & Responses, Actions Taken, Duration, Journal, and
+    Additional Notes when present) with word wrapping and automatic multi-page
+    overflow. When the document has no parsed
     sections but ``body_text`` is supplied, the raw Markdown body is rendered
     instead so no content is dropped. The output is written atomically to
     ``out_path`` as a structurally valid PDF (header, object tree, cross-

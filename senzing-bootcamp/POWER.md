@@ -70,6 +70,8 @@ Module 2 (SDK Setup) is inserted automatically before any module that needs it.
 
 After completing any track, the agent offers a **graduation workflow** that transitions your bootcamp project into a production-ready codebase — clean directory structure, production configs, CI/CD pipeline, and a migration checklist. Say "run graduation" or "graduate" at any time to start it manually.
 
+**Your bootcamp recap "trophy":** completing a track always produces `docs/bootcamp_recap.pdf` — a shareable PDF that opens with a summary page and then devotes a page to each module you completed, capturing its **Information Shared**, **Questions & Responses**, **Actions Taken**, and **Journal**. It's the record of everything you built and learned, to keep and share with your team. The recap is generated automatically and is guaranteed at every track-completion / graduation stopping point by the `enforce-critical-artifacts` hook (a valid PDF is produced even without the optional `fpdf2` package).
+
 **Experienced users:** Skip to Module 5 (have Senzing Generic Entity Specification (SGES) data), Module 6 (SDK + data ready), or Module 7 (data loaded).
 
 ## Relationship to Senzing Power
@@ -124,8 +126,8 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `environment-setup.md` | 658 | medium |
 | `feedback-workflow.md` | 1274 | medium |
 | `file-placement.md` | 515 | medium |
-| `graduation.md` | 11664 | large |
-| `hook-architecture.md` | 2418 | large |
+| `graduation.md` | 11812 | large |
+| `hook-architecture.md` | 2598 | large |
 | `hook-registry-critical.md` | 14312 | large |
 | `hook-registry-module-01.md` | 434 | small |
 | `hook-registry-module-02.md` | 269 | small |
@@ -138,8 +140,8 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `hook-registry-module-09.md` | 276 | small |
 | `hook-registry-module-10.md` | 288 | small |
 | `hook-registry-module-11.md` | 412 | small |
-| `hook-registry-module-any.md` | 2003 | large |
-| `hook-registry.md` | 850 | medium |
+| `hook-registry-module-any.md` | 1420 | medium |
+| `hook-registry.md` | 852 | medium |
 | `inline-status.md` | 461 | small |
 | `lang-csharp.md` | 1642 | medium |
 | `lang-java.md` | 1688 | medium |
@@ -189,7 +191,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-completion-artifacts.md` | 3551 | large |
 | `module-completion-error-handling.md` | 637 | medium |
 | `module-completion-next-steps.md` | 705 | medium |
-| `module-completion-track.md` | 4090 | large |
+| `module-completion-track.md` | 4282 | large |
 | `module-completion.md` | 2432 | large |
 | `module-prerequisites.md` | 1395 | medium |
 | `module-transitions.md` | 2106 | large |
@@ -219,7 +221,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 230741 tokens
+**Total budget:** 230680 tokens
 
 <!-- END GENERATED: steering-files -->
 

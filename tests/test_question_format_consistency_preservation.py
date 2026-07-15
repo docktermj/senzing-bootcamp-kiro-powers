@@ -452,7 +452,10 @@ class TestTargetFileNonTargetSectionsPreserved:
             "## Graduation Report",
             "## Mandatory Closing Step: Guaranteed Recap & Post-Graduation Announcement",
             "python scripts/ensure_graduation_artifacts.py",
-            "📗 **Your recap is ready.**",
+            # The recap announcement example was reworded by the guaranteed-recap-pdf
+            # notification work to emphasize the PDF's keepsake value; the closing
+            # announcement itself is preserved.
+            "🏆 **Here's your bootcamp trophy.**",
         ):
             assert anchor in content, (
                 f"graduation.md lost preserved non-closing content: {anchor!r}"

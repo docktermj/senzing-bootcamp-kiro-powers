@@ -20,9 +20,9 @@ files in ``tmp_path``:
                            file and exits 0 iff every artifact is satisfied.
     error paths preserve   recap source unavailable leaves an existing recap
                            unchanged (Req 3.3); an absent/empty recap source
-                           yields no rendered recap plus an error (Req 4.7); a
-                           failure in one artifact never suppresses the others
-                           (Req 6.3).
+                           still yields the no-data floor recap PDF so the
+                           trophy always exists; a failure in one artifact never
+                           suppresses the others (Req 6.3).
 
 All fixtures use synthetic, PII-free content; no secret-looking strings appear
 in the generated data.
@@ -530,65 +530,84 @@ class TestErrorPathsPreserveArtifacts:
         # The prior recap bytes are untouched (Req 3.3).
         assert Path(paths.recap).read_text(encoding="utf-8") == original
 
-    def test_rendered_recap_source_empty_produces_nothing_with_error(
-        self, tmp_path: Path, capsys
+    def test_rendered_recap_source_empty_produces_floor_pdf(
+        self, tmp_path: Path
     ) -> None:
-        """An empty recap source yields no rendered recap plus an error (Req 4.7)."""
+        """An empty recap source yields the no-data floor PDF, not a skip.
+
+        The recap PDF is the "trophy" and must ALWAYS exist; when the recap
+        Markdown source is empty the no-data floor supplies a minimal but valid
+        PDF rather than skipping with an error.
+        """
         paths = _paths(tmp_path)
         _mkdirs(paths)
         Path(paths.recap).write_text("   \n", encoding="utf-8")
 
         status = ega.ensure_rendered_recap(paths.recap, paths.pdf, paths.html)
 
-        assert status.error is not None
-        assert status.exists is False
-        assert status.non_empty is False
-        assert not Path(paths.pdf).exists()
-        assert not Path(paths.html).exists()
-        assert "recap source unavailable" in capsys.readouterr().out.lower()
+        assert status.error is None
+        assert status.exists is True
+        assert status.non_empty is True
+        assert status.regenerated is True
+        # The guaranteed artifact is always the canonical PDF path.
+        assert Path(paths.pdf).exists()
+        assert ega.is_non_empty(Path(paths.pdf), min_body=True)
 
-    def test_rendered_recap_source_absent_produces_nothing_with_error(
-        self, tmp_path: Path, capsys
+    def test_rendered_recap_source_absent_produces_floor_pdf(
+        self, tmp_path: Path
     ) -> None:
-        """An absent recap source yields no rendered recap plus an error (Req 4.7)."""
+        """An absent recap source yields the no-data floor PDF, not a skip."""
         paths = _paths(tmp_path)
         _mkdirs(paths)
         assert not Path(paths.recap).exists()
 
         status = ega.ensure_rendered_recap(paths.recap, paths.pdf, paths.html)
 
-        assert status.error is not None
-        assert status.exists is False
-        assert not Path(paths.pdf).exists()
-        assert not Path(paths.html).exists()
-        assert "recap source unavailable" in capsys.readouterr().out.lower()
+        assert status.error is None
+        assert status.exists is True
+        assert status.non_empty is True
+        assert status.regenerated is True
+        assert Path(paths.pdf).exists()
+        assert ega.is_non_empty(Path(paths.pdf), min_body=True)
 
     def test_one_artifact_failure_does_not_suppress_the_others(
         self, tmp_path: Path
     ) -> None:
-        """A failing recap does not suppress transcript generation (Req 6.3)."""
+        """A failing recap does not suppress transcript or rendered recap (Req 6.3).
+
+        With no sources at all, the recap Markdown cannot be reconstructed and
+        fails — but failure isolation means the transcript still gets its "no
+        Q&A history" placeholder, and the rendered recap PDF is still produced
+        via the no-data floor (the trophy always exists).
+        """
         paths = _paths(tmp_path)
         _mkdirs(paths)
-        # No progress, no recap, no module artifacts: recap and rendered recap
-        # cannot be produced, but the transcript still gets its "no Q&A history"
-        # placeholder from ensure mode.
+        # No progress, no recap, no module artifacts: the recap Markdown cannot
+        # be produced, but the transcript placeholder and the floor recap PDF
+        # are still generated.
         report = ega.ensure_all(paths)
         by_key = {status.key: status for status in report.artifacts}
 
-        # The recap and rendered recap fail (their sources are unavailable)...
+        # The recap Markdown fails (its sources are unavailable)...
         assert by_key["recap_md"].error is not None
         assert by_key["recap_md"].non_empty is False
-        assert by_key["rendered_recap"].error is not None
-        assert by_key["rendered_recap"].non_empty is False
 
-        # ...yet the transcript is still generated (failure isolation, Req 6.3).
+        # ...yet the transcript is still generated (failure isolation, Req 6.3)...
         assert by_key["transcript"].exists is True
         assert by_key["transcript"].non_empty is True
         assert Path(paths.transcript).exists()
 
+        # ...and the rendered recap PDF is still produced via the no-data floor.
+        assert by_key["rendered_recap"].exists is True
+        assert by_key["rendered_recap"].non_empty is True
+        assert by_key["rendered_recap"].error is None
+        assert Path(paths.pdf).exists()
+
+        # all_satisfied is still False because the recap Markdown is missing,
+        # but the rendered recap and transcript are present.
         assert report.all_satisfied is False
         assert "recap_md" in report.missing
-        assert "rendered_recap" in report.missing
+        assert "rendered_recap" not in report.missing
         assert "transcript" not in report.missing
 
 

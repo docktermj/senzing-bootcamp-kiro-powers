@@ -63,4 +63,4 @@ agentstop_order:
     rationale: "Lowest-stakes nudge; offers missed visualizations only when nothing higher fired."
   - id: enforce-critical-artifacts
     order: 5
-    rationale: "Runs last so its blocking output appears only after higher-priority gate output clears; runs after ask-bootcamper (which now handles recap at Phase 0, so the recap section exists to reconstruct/verify from) and after the celebration/gate hooks."
+    rationale: "Deterministic command hook (not agent): runs ensure_graduation_artifacts.py --stop-hook on every Stop and emits no agent output, so it never competes for the single-winner slot; listed last only nominally to keep agentstop_order equal to the Stop-trigger set."

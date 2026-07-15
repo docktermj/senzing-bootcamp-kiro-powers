@@ -213,10 +213,10 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 
 ### 26. Enforce Critical Artifacts (`enforce-critical-artifacts.json`)
 
-**Trigger:** When the agent finishes working (`Stop`) at a track-completion or graduation stopping point
+**Trigger:** When the agent finishes working (`Stop`)
 **Matcher:** none (unscoped trigger)
-**Action:** Runs `ensure_graduation_artifacts.py` to guarantee the three crown-jewel artifacts (Q&A transcript, recap Markdown, rendered recap) exist and are non-empty, blocking the "done" state until all three are present; silent when the invariant already holds
-**Use case:** Makes the transcript, recap, and rendered recap an enforced completion invariant that cannot be silently skipped
+**Action:** A deterministic `command` hook that runs `python3 senzing-bootcamp/scripts/ensure_graduation_artifacts.py --stop-hook`. The script gates itself — it does nothing while `config/.question_pending` exists and no-ops away from a track-end stopping point (module 7 or 11 completed) — then regenerates any absent, empty, or stale crown-jewel artifact (Q&A transcript, recap Markdown, and the rendered recap PDF). The recap PDF has a stdlib tier and a no-data floor, so a valid `docs/bootcamp_recap.pdf` is produced even offline and even with no captured module data. It always exits 0 and never blocks the stop.
+**Use case:** Guarantees the transcript, recap, and rendered recap "trophy" PDF are produced by the runtime itself — not left to the agent to remember — so the completion artifacts can never be silently skipped
 
 ## Manual Hooks (now slash commands)
 

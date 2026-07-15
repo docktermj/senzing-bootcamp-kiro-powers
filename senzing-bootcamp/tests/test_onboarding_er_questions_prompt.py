@@ -47,7 +47,6 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from count_leading_questions import (  # noqa: E402
-    HARD_GATE_MARKER,
     POINTER_INDICATOR,
     STOP_MARKER,
     count_leading_questions,

@@ -119,7 +119,15 @@ _BASELINE_COMPLETION_TRACK_SHA256: str = (
     # Completion Celebration, so a bootcamper who declines graduation still sees
     # it. That edit is unrelated to the module-sequencing-order fix this suite
     # guards, so the baseline is moved observation-first to the current contents.
-    "fe9eb07a4548f253c0dff6e5c3ac8f90a6911e519a6f4d3e2c9a3c951982d17c"
+    #
+    # Re-baselined again observation-first for the guaranteed-recap-pdf
+    # notification work: the "Shareable Deliverables" recap-PDF success message
+    # now emphasizes the PDF's keepsake value, and the "enforced guarantee" note
+    # was rewritten to describe the deterministic `command` hook (the former
+    # agent hook that "blocked done"). That edit is unrelated to the
+    # module-sequencing-order fix this suite guards, so the baseline is moved
+    # observation-first to the current file contents.
+    "c55e57b45725e7dd574a1bac57d778eb7ceef689d072ed954b2660909cae13ac"
 )
 
 

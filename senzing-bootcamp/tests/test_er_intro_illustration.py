@@ -197,7 +197,7 @@ class TestIllustrationOffer:
         )
 
     def test_offer_is_about_two_record_match_and_non_match(self) -> None:
-        """The ILLUSTRATION_OFFER directive proposes a two-record match / non-match example (Req 3.1).
+        """The ILLUSTRATION_OFFER proposes a two-record match / non-match example (Req 3.1).
 
         Per the onboarding-er-questions-prompt reordering, the two-record
         match / non-match wording no longer lives on the rendered closing 👉

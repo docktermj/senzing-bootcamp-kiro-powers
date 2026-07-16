@@ -8,10 +8,10 @@ Hooks are created automatically during onboarding. The agent reads the V1 hook d
 - **matcher:** a single regular expression that scopes the hook — a file-path regex for file triggers or a tool-name regex such as `fs_write|str_replace|fs_append` for tool triggers. Unscoped triggers (`Stop`, `UserPromptSubmit`, `PostTaskExec`) omit the matcher.
 - **action:** either `{"type": "agent", "prompt": "..."}` or `{"type": "command", "command": "..."}`.
 
-The shipped set is 26 hooks:
+The shipped set is 27 hooks:
 
 - **Critical Hooks** (4) are created during initial setup.
-- **Module Hooks** (22) are created when you reach the relevant module.
+- **Module Hooks** (23) are created when you reach the relevant module.
 
 No files are copied. The `createHook` tool creates hooks programmatically, so hooks work whether the power was installed via Kiro's power system or cloned from the source repository.
 
@@ -27,7 +27,7 @@ The agent will read the Hook Registry (`hook-registry.md`) and recreate all Crit
 
 ## What Gets Installed
 
-26 pre-configured V1 hooks, shipped as `.json` files under `senzing-bootcamp/hooks/`.
+27 pre-configured V1 hooks, shipped as `.json` files under `senzing-bootcamp/hooks/`.
 
 ### Critical Hooks (created during onboarding)
 

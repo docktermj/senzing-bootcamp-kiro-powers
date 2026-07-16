@@ -1,0 +1,23 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "to record the pending question on the Q&A cadence",
+      "trigger": "Stop",
+      "action": {
+        "type": "command",
+        "command": "if [ -f config/.question_pending ]; then if [ -f senzing-bootcamp/scripts/log_qa_event.py ]; then python3 senzing-bootcamp/scripts/log_qa_event.py record-question; fi; fi"
+      },
+      "timeout": 10
+    },
+    {
+      "name": "to record the bootcamper's answer on the Q&A cadence",
+      "trigger": "UserPromptSubmit",
+      "action": {
+        "type": "command",
+        "command": "if [ -f senzing-bootcamp/scripts/log_qa_event.py ]; then python3 senzing-bootcamp/scripts/log_qa_event.py record-answer; fi"
+      },
+      "timeout": 10
+    }
+  ]
+}

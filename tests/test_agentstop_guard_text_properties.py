@@ -42,22 +42,31 @@ HOOKS_DIR: Path = Path(__file__).resolve().parent.parent / "senzing-bootcamp" / 
 # The exact path token every agentStop guard must reference.
 QUESTION_PENDING_REF: str = "config/.question_pending"
 
-# The five Stop-trigger hook ids (grounded fact from requirements/design). The
+# The six Stop-trigger hook ids (grounded fact from requirements/design). The
 # stop-hook-ux bugfix folded the former ``module-recap-append`` Stop hook into
-# ``ask-bootcamper`` (Phase 0). ``enforce-critical-artifacts`` is a Stop hook but
-# a ``command`` hook (not an agent-prompt hook): its question-pending guard lives
-# in ``ensure_graduation_artifacts.py --stop-hook``, so it is a member of the
-# Stop-trigger set below but is excluded from the prompt-text properties.
+# ``ask-bootcamper`` (Phase 0). ``enforce-critical-artifacts`` and
+# ``capture-qa-events`` are Stop hooks but ``command`` hooks (not agent-prompt
+# hooks): their question-pending guards live in code / the shell command, so they
+# are members of the Stop-trigger set below but are excluded from the prompt-text
+# properties.
 EXPECTED_AGENTSTOP_IDS: set[str] = {
     "ask-bootcamper",
     "module-completion-celebration",
     "enforce-gate-on-stop",
     "enforce-visualization-offers",
     "enforce-critical-artifacts",
+    "capture-qa-events",
 }
 
 # The command-type Stop hooks whose silence guard lives in code, not a prompt.
-_COMMAND_STOP_HOOK_IDS: set[str] = {"enforce-critical-artifacts"}
+# ``capture-qa-events`` is a ``command`` Stop hook whose question-pending guard
+# lives in its shell command (``record-question`` only runs when
+# ``config/.question_pending`` exists), so it is excluded from the prompt-text
+# properties below alongside ``enforce-critical-artifacts``.
+_COMMAND_STOP_HOOK_IDS: set[str] = {
+    "enforce-critical-artifacts",
+    "capture-qa-events",
+}
 
 # Silence / no-output / defer indicators (matched case-insensitively).
 #

@@ -1,0 +1,404 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test for durable capture": {
+      "status": "passed",
+      "failingExample": "Falsifying example (Property 1 - Durable Write-Through Capture):\n    test_every_cadence_event_is_durably_persisted(cadence=[(1, '0', '0')])\n    expected questions ['0'], got [] — nothing persisted to config/session_log.jsonl.\n\nDeterministic example counterexamples on UNFIXED wiring:\n- TestAgentSkipCaptureExploration: expected 'What is entity resolution?' in config/session_log.jsonl, found questions=[] (no durable question/answer event).\n- TestCrossSessionLossExploration: Module 1 Q&A lost across the session boundary — 'What business problem are you solving?' absent from config/session_log.jsonl; found questions=[].\n\nRoot cause confirmed: no command-backed capture hook (senzing-bootcamp/hooks/capture-qa-events.json) exists, so the deterministic capture never runs and every Q&A cadence event is lost — capture rode on the agent-voluntary type:agent hooks.",
+      "lastRunTimestamp": 1784216120248
+    },
+    "2. Write bug condition exploration test for loud graduation validation": {
+      "status": "passed",
+      "failingExample": "Falsifying example: test_any_gap_module_halts_graduation(state=([1], [1]), question='0', answer='0')\n\nThe exploration property FAILED on unfixed code exactly as intended (this confirms the bug). For a completed module ([1]) with no real Q&A, graduation did NOT halt — GraduationResult(halted=False, missing_modules=[], reported_success=True) — and the recap was silently backfilled with the placeholder \"N/A (section backfilled at track completion; original session content unavailable)\". Deterministic example (Module 2 gap) failed identically. This proves the missing pre-render completeness gate (Requirements 1.3, 1.4).",
+      "lastRunTimestamp": 1784216428875
+    },
+    "3. Write preservation property tests for existing capture semantics (BEFORE implementing fix)": {
+      "status": "passed",
+      "lastRunTimestamp": 1784216617922
+    },
+    "4. Write preservation property tests for idempotency, pairing/self-heal, and append-around (BEFORE implementing fix)": {
+      "status": "passed",
+      "lastRunTimestamp": 1784216771235
+    },
+    "5. Write preservation tests for real-Q&A rendering and stdlib-only (BEFORE implementing fix)": {
+      "status": "passed",
+      "lastRunTimestamp": 1784217005792
+    },
+    "6.7 Verify durable-capture exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1784219862622
+    },
+    "6.8 Verify graduation-gate exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1784219925853
+    },
+    "11. Write property-based tests for the two bug-condition properties": {
+      "status": "passed",
+      "lastRunTimestamp": 1784220685895
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test for durable capture": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215720510
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215730669
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784216139688
+      }
+    ],
+    "2. Write bug condition exploration test for loud graduation validation": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215720661
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784216142453
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784216457980
+      }
+    ],
+    "3. Write preservation property tests for existing capture semantics (BEFORE implementing fix)": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215720696
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784216464921
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784216632823
+      }
+    ],
+    "4. Write preservation property tests for idempotency, pairing/self-heal, and append-around (BEFORE implementing fix)": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215720759
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784216635976
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784216789084
+      }
+    ],
+    "5. Write preservation tests for real-Q&A rendering and stdlib-only (BEFORE implementing fix)": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215720798
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784216792086
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784217025168
+      }
+    ],
+    "6.1 Add the durable, command-backed Q&A capture hook": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215720851
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784217028024
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784217092540
+      }
+    ],
+    "6.2 Demote the agent-voluntary Q&A logging to a redundant backstop": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215720925
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784217095783
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784217275769
+      }
+    ],
+    "6.3 (Optional) Harden `log_qa_event.py` stdin handling for command-hook invocation": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215720951
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784217278725
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784217327729
+      }
+    ],
+    "6.4 Implement the graduation Q&A completeness validator": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215720985
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784217331750
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784217920710
+      }
+    ],
+    "6.5 Wire the validator into the graduation path before recap rendering": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215721016
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784217925507
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784221856636
+      }
+    ],
+    "6.6 Register the new hook in the repo's hook inventory": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215721061
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784218785946
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784219808414
+      }
+    ],
+    "6.7 Verify durable-capture exploration test now passes": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215721093
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784219811470
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784219873179
+      }
+    ],
+    "6.8 Verify graduation-gate exploration test now passes": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215721127
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784219876434
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784219938165
+      }
+    ],
+    "6.9 Verify preservation tests still pass (no regressions)": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215721152
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784219941524
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784219997146
+      }
+    ],
+    "7. Write unit tests for `log_qa_event.py` under command-hook invocation": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215721207
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784220009304
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784220093461
+      }
+    ],
+    "8. Write unit tests for `validate_qa_capture.py`": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215721236
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784220096762
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784220282225
+      }
+    ],
+    "9. Write hook-JSON schema validation test for the new capture hook": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215721274
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784220285644
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784220352146
+      }
+    ],
+    "10. Write hook-prompt validation tests for the demoted agent hooks": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215721301
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784220355682
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784220505617
+      }
+    ],
+    "11. Write property-based tests for the two bug-condition properties": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215721335
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784220508903
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784220704193
+      }
+    ],
+    "12. Write integration tests for end-to-end durability and the graduation gate": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215721367
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784220707405
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784220998864
+      }
+    ],
+    "13. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784215721402
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784221002439
+      },
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784221826774
+      }
+    ],
+    "6. Fix for lost Q&A capture and silent graduation backfill": [
+      {
+        "executionId": "10d86d41-9a9b-4e70-8fd6-7b10d64cfdb4",
+        "chatSessionId": "sess_7e2ece3a-f2b0-4ef7-b266-39920faeee7e",
+        "timestamp": 1784221841438
+      }
+    ]
+  }
+}

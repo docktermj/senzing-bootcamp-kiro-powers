@@ -54,8 +54,10 @@ REAL_HOOKS_DIR: Path = (
 )
 
 # The migration shipped 27 non-manual v1 hooks; the stop-hook-ux bugfix folded
-# ``module-recap-append`` into ``ask-bootcamper`` (Phase 0), leaving 26 (Req 1.1).
-EXPECTED_MIGRATED_COUNT = 26
+# ``module-recap-append`` into ``ask-bootcamper`` (Phase 0), leaving 26; the
+# durable-qa-capture bugfix then added ``capture-qa-events``, bringing the shipped
+# set back to 27 (Req 1.1).
+EXPECTED_MIGRATED_COUNT = 27
 
 # The three former manual hooks, now slash commands — never installed (Req 9.4).
 MANUAL_HOOK_IDS = {

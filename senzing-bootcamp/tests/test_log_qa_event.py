@@ -128,6 +128,19 @@ def read_sidecar(root: Path) -> dict | None:
         return None
 
 
+class _TtyStdin(io.StringIO):
+    """A stdin stand-in that reports ``isatty() == True`` (no piped input).
+
+    Mirrors the command-hook case where ``record-answer`` is invoked with a
+    terminal (or otherwise-interactive) stdin and no data is piped in, so the
+    helper must treat the answer as empty rather than block on ``read()``.
+    """
+
+    def isatty(self) -> bool:
+        """Report an interactive terminal so the helper reads no answer."""
+        return True
+
+
 def run_main(argv: list[str], stdin_text: str | None = None) -> int:
     """Invoke ``log_qa_event.main`` with an optional stdin payload.
 
@@ -143,6 +156,23 @@ def run_main(argv: list[str], stdin_text: str | None = None) -> int:
     old_stdin = sys.stdin
     if stdin_text is not None:
         sys.stdin = io.StringIO(stdin_text)
+    try:
+        return log_qa_event.main(argv)
+    finally:
+        sys.stdin = old_stdin
+
+
+def run_main_no_stdin(argv: list[str]) -> int:
+    """Invoke ``log_qa_event.main`` with a tty-like stdin (no piped answer).
+
+    Args:
+        argv: The argument vector (e.g. ``["record-answer"]``).
+
+    Returns:
+        The helper's exit code (always 0 by contract).
+    """
+    old_stdin = sys.stdin
+    sys.stdin = _TtyStdin()
     try:
         return log_qa_event.main(argv)
     finally:
@@ -408,6 +438,120 @@ class TestNonBlocking:
             # Nothing was persisted and no sidecar was left behind.
             assert read_events(root) == []
             assert read_sidecar(root) is None
+
+
+class TestCommandHookInvocation:
+    """The CLI, as a command-backed hook runs it, always exits 0.
+
+    These exercise ``main`` through its argv/stdin surface (the way the
+    ``capture-qa-events`` command hook invokes it) rather than the module
+    functions directly, asserting exit code 0 on every path and the correct
+    event shape whenever a question or answer is captured.
+
+    **Validates: Requirements 2.1, 3.2, 3.3, 3.4**
+    """
+
+    def test_record_question_with_pending_exits_zero_and_logs_shape(self) -> None:
+        """record-question with a pending marker: exit 0, one shaped question."""
+        with isolated_workspace() as root:
+            write_progress(root, 3)
+            write_pending(root, "What data sources will you load?")
+
+            assert run_main(["record-question"]) == 0
+
+            events = read_events(root)
+            assert [e["event_type"] for e in events] == ["question"]
+            question = events[0]
+            # Event shape: module + data.{text, question_id}.
+            assert question["module"] == 3
+            assert question["data"]["text"] == "What data sources will you load?"
+            assert question["data"]["question_id"]
+            # A sidecar is written so a later answer can pair to this question.
+            sidecar = read_sidecar(root)
+            assert sidecar is not None
+            assert sidecar["question_id"] == question["data"]["question_id"]
+
+    def test_record_question_without_pending_exits_zero_and_logs_nothing(self) -> None:
+        """record-question with no pending marker: exit 0, no event, no sidecar."""
+        with isolated_workspace() as root:
+            assert run_main(["record-question"]) == 0
+
+            assert read_events(root) == []
+            assert read_sidecar(root) is None
+
+    def test_record_answer_with_sidecar_pairs_to_logged_question(self) -> None:
+        """record-answer via stdin with an existing sidecar pairs to its id."""
+        with isolated_workspace() as root:
+            write_progress(root, 4)
+            write_pending(root, "Which entity type matters most?")
+            # Log the question first so a sidecar (with question_id) exists.
+            assert run_main(["record-question"]) == 0
+            sidecar = read_sidecar(root)
+            assert sidecar is not None
+            expected_qid = sidecar["question_id"]
+
+            assert run_main(["record-answer"], stdin_text="PERSON records") == 0
+
+            events = read_events(root)
+            assert [e["event_type"] for e in events] == ["question", "answer"]
+            answer = events[1]
+            # The answer pairs to the sidecar's question_id and is shaped right.
+            assert answer["data"]["question_id"] == expected_qid
+            assert answer["data"]["text"] == "PERSON records"
+            assert answer["module"] == 4
+            # The sidecar is cleared once the pair is recorded.
+            assert read_sidecar(root) is None
+
+    def test_record_answer_without_sidecar_self_heals(self) -> None:
+        """record-answer via stdin, no sidecar: log the question first, then pair."""
+        with isolated_workspace() as root:
+            write_pending(root, "Why capture Q&A durably?")
+            assert read_sidecar(root) is None  # question was never logged
+
+            assert (
+                run_main(["record-answer"], stdin_text="So the recap is complete")
+                == 0
+            )
+
+            events = read_events(root)
+            # Self-heal logs the question first, then the paired answer.
+            assert [e["event_type"] for e in events] == ["question", "answer"]
+            assert (
+                events[0]["data"]["question_id"] == events[1]["data"]["question_id"]
+            )
+            assert events[0]["data"]["text"] == "Why capture Q&A durably?"
+            assert events[1]["data"]["text"] == "So the recap is complete"
+            assert read_sidecar(root) is None
+
+    def test_record_answer_empty_stdin_exits_zero_and_logs_nothing(self) -> None:
+        """record-answer with empty piped stdin: exit 0, no answer event."""
+        with isolated_workspace() as root:
+            write_pending(root, "An open question awaiting a real answer?")
+            assert run_main(["record-question"]) == 0
+            sidecar_before = read_sidecar(root)
+
+            assert run_main(["record-answer"], stdin_text="") == 0
+
+            events = read_events(root)
+            # Only the question is logged; the empty answer is a no-op.
+            assert [e["event_type"] for e in events] == ["question"]
+            # The sidecar is preserved so a later real answer can still pair.
+            assert read_sidecar(root) == sidecar_before
+
+    def test_record_answer_no_stdin_tty_exits_zero_without_crash(self) -> None:
+        """record-answer with a tty stdin (no piped input): exit 0, no crash."""
+        with isolated_workspace() as root:
+            write_pending(root, "A question with no answer piped in?")
+            assert run_main(["record-question"]) == 0
+            sidecar_before = read_sidecar(root)
+
+            # A tty stdin means no answer was piped: the helper must not block
+            # on read() and must treat the answer as empty.
+            assert run_main_no_stdin(["record-answer"]) == 0
+
+            events = read_events(root)
+            assert [e["event_type"] for e in events] == ["question"]
+            assert read_sidecar(root) == sidecar_before
 
 
 # ---------------------------------------------------------------------------

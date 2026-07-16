@@ -8,10 +8,10 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 291
+- implemented: 292
 - superseded: 1
 - abandoned: 0
-- unknown: 1
+- unknown: 0
 
 ## Specs
 
@@ -404,7 +404,7 @@
 
 ### durable-qa-capture
 
-- Status: unknown
+- Status: implemented
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/durable-qa-capture/](.kiro/specs/durable-qa-capture/)

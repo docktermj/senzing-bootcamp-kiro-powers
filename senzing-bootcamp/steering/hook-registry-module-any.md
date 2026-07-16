@@ -11,6 +11,13 @@ For critical hooks (created during onboarding), see `hook-registry-critical.md`.
 
 ## any module Hooks
 
+**capture-qa-events** (Stop → command)
+
+- id: `capture-qa-events`
+- name: `to record the pending question on the Q&A cadence`
+- trigger: `Stop`
+- action: `command`
+
 **enforce-critical-artifacts** (Stop → command)
 
 - id: `enforce-critical-artifacts`

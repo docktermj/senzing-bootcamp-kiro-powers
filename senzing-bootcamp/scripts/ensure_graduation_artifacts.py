@@ -65,6 +65,7 @@ import generate_transcript  # noqa: E402  (path manipulated above)
 import pdf_render_strategy  # noqa: E402  (path manipulated above)
 import recap_pdf_render  # noqa: E402  (path manipulated above)
 import reconcile_transcript  # noqa: E402  (path manipulated above)
+import validate_qa_capture  # noqa: E402  (path manipulated above)
 
 # The three crown-jewel deliverables this orchestrator guarantees, in report
 # order: the Q&A transcript, the recap Markdown, and the rendered recap.
@@ -875,6 +876,83 @@ def check_all(paths: ArtifactPaths) -> GuaranteeReport:
 
 
 # ---------------------------------------------------------------------------
+# Pre-render Q&A completeness gate (graduation path)
+# ---------------------------------------------------------------------------
+
+
+def qa_completeness_gate(
+    paths: ArtifactPaths,
+) -> validate_qa_capture.ValidationReport | None:
+    """Run the pre-render Q&A completeness gate for the graduation path.
+
+    Reuses :func:`validate_qa_capture.build_report` in-process (no shelling out,
+    matching the sibling-import convention this module already uses) to verify
+    that every module in ``config/bootcamp_progress.json``'s
+    ``modules_completed`` has real captured Q&A in ``config/session_log.jsonl``
+    — or an explicit "no substantive questions" marker. Callers run this BEFORE
+    any recap rendering or backfill so a genuine capture gap halts graduation
+    and names the offending module(s) instead of being silently masked by
+    :func:`completion_artifacts.render_backfill_section`'s ``N/A`` placeholder.
+
+    The gate only applies when the session log exists. With no session log at
+    all there is no captured history to validate: the
+    guaranteed-graduation-artifacts no-data floor governs instead (the recap
+    "trophy" is still produced from whatever always-present sources exist), so
+    the gate is skipped and ``None`` is returned. A completed module that
+    legitimately posed no substantive questions carries a marker, so it is not a
+    gap and passes the gate through to the (legitimate) placeholder path.
+
+    Args:
+        paths: The resolved, overridable canonical artifact paths.
+
+    Returns:
+        The :class:`validate_qa_capture.ValidationReport` when the session log
+        exists (the caller halts on ``not report.ok`` and reports
+        ``report.missing_modules``), or ``None`` when no session log is present
+        and the gate does not apply.
+    """
+    if not Path(paths.log).is_file():
+        return None
+    return validate_qa_capture.build_report(paths.progress, paths.log)
+
+
+def _report_qa_gap(
+    report: validate_qa_capture.ValidationReport, *, as_json: bool
+) -> None:
+    """Surface a Q&A capture gap loudly without rendering any recap content.
+
+    Names each completed module that lacks real captured Q&A on stderr (and, in
+    ``--json`` mode, as a machine-readable halt object on stdout) so the
+    bootcamper can capture the missing Q&A — or record a "no substantive
+    questions" marker — before graduating. No recap rendering or backfill has
+    run at this point, so no placeholder text is emitted for the gap.
+
+    Args:
+        report: The failing completeness report (``report.ok`` is ``False``).
+        as_json: When ``True``, also emit a JSON halt object on stdout.
+    """
+    if as_json:
+        print(
+            json.dumps(
+                {
+                    "halted": True,
+                    "reason": "qa_incomplete",
+                    "missing_modules": report.missing_modules,
+                },
+                indent=2,
+            )
+        )
+    named = ", ".join(f"Module {module}" for module in report.missing_modules)
+    print(
+        "Graduation halted: the following completed module(s) have no captured "
+        f"Q&A: {named}. Recap rendering was NOT run, so no placeholder text was "
+        "emitted for the gap. Capture the missing Q&A (or record a 'no "
+        "substantive questions' marker) before graduating.",
+        file=sys.stderr,
+    )
+
+
+# ---------------------------------------------------------------------------
 # Stop-hook gating
 # ---------------------------------------------------------------------------
 
@@ -1138,6 +1216,18 @@ def main(argv: list[str] | None = None) -> int:
     if args.check:
         report = check_all(paths)
     else:
+        # Pre-render Q&A completeness gate (graduation path). A genuine capture
+        # gap — a completed module with no real Q&A and no "no substantive
+        # questions" marker — halts graduation and names the missing module(s)
+        # BEFORE any recap rendering/backfill runs, so
+        # completion_artifacts.render_backfill_section's placeholder is never a
+        # silent mask for a real gap. Only a legitimately question-free module
+        # (marker present) passes the gate through to the placeholder path. The
+        # gate is skipped when no session log exists (the no-data floor governs).
+        gate = qa_completeness_gate(paths)
+        if gate is not None and not gate.ok:
+            _report_qa_gap(gate, as_json=args.json)
+            return 1
         report = ensure_all(paths)
 
     if args.json:

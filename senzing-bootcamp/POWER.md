@@ -128,7 +128,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `file-placement.md` | 515 | medium |
 | `graduation.md` | 11812 | large |
 | `hook-architecture.md` | 2598 | large |
-| `hook-registry-critical.md` | 14654 | large |
+| `hook-registry-critical.md` | 14880 | large |
 | `hook-registry-module-01.md` | 434 | small |
 | `hook-registry-module-02.md` | 269 | small |
 | `hook-registry-module-03.md` | 2124 | large |
@@ -140,8 +140,8 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `hook-registry-module-09.md` | 276 | small |
 | `hook-registry-module-10.md` | 288 | small |
 | `hook-registry-module-11.md` | 412 | small |
-| `hook-registry-module-any.md` | 1420 | medium |
-| `hook-registry.md` | 852 | medium |
+| `hook-registry-module-any.md` | 1462 | medium |
+| `hook-registry.md` | 876 | medium |
 | `inline-status.md` | 461 | small |
 | `lang-csharp.md` | 1642 | medium |
 | `lang-java.md` | 1688 | medium |
@@ -221,7 +221,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 231570 tokens
+**Total budget:** 231862 tokens
 
 <!-- END GENERATED: steering-files -->
 
@@ -361,7 +361,7 @@ Or manually copy hook files into `.kiro/hooks/`.
 
 <!-- BEGIN GENERATED: hooks -->
 
-Available (26 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `data-quality-check`, `deployment-phase-gate`, `enforce-critical-artifacts`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `module-completion-celebration`, `run-tests-after-change`, `security-scan-on-save`, `session-log-events`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
+Available (27 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `capture-qa-events`, `data-quality-check`, `deployment-phase-gate`, `enforce-critical-artifacts`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `module-completion-celebration`, `run-tests-after-change`, `security-scan-on-save`, `session-log-events`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
 
 <!-- END GENERATED: hooks -->
 

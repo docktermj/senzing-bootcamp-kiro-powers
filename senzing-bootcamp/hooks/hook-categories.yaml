@@ -43,6 +43,7 @@ modules:
   11:
     - deployment-phase-gate
   any:
+    - capture-qa-events
     - enforce-critical-artifacts
     - error-recovery-context
     - module-completion-celebration
@@ -64,3 +65,6 @@ agentstop_order:
   - id: enforce-critical-artifacts
     order: 5
     rationale: "Deterministic command hook (not agent): runs ensure_graduation_artifacts.py --stop-hook on every Stop and emits no agent output, so it never competes for the single-winner slot; listed last only nominally to keep agentstop_order equal to the Stop-trigger set."
+  - id: capture-qa-events
+    order: 6
+    rationale: "Deterministic command hook (not agent): runs log_qa_event.py record-question on every Stop when config/.question_pending exists and emits no agent output, so it never competes for the single-winner slot; listed only to keep agentstop_order equal to the Stop-trigger set."

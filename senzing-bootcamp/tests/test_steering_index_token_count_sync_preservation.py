@@ -668,7 +668,15 @@ _BASELINE_HASHES: dict[str, str] = {
     # file_metadata counts). Only the budget block changed (solely the
     # total_tokens line); keywords/languages/deployment/root_step_range are
     # byte-identical.
-    "budget": "86f4a034262528c2b2e740f7ed37073b188b87a5a40fb259097a99caa66934d6",
+    # Re-baselined once more (231570 -> 231862) for the durable-qa-capture bugfix:
+    # the new ``capture-qa-events`` command hook plus the demoted ask-bootcamper /
+    # review-bootcamper-input Q&A-logging prompt edits regenerated the hook-registry
+    # slices (hook-registry.md, hook-registry-critical.md, hook-registry-module-any.md),
+    # which measure_steering.py recomputed into file_metadata and the budget total
+    # (231862 = sum of file_metadata counts). Only the budget block changed (solely
+    # the total_tokens line); keywords/languages/deployment/root_step_range are
+    # byte-identical.
+    "budget": "fd2616e89ff9c94fdb2ab26fbadccbb72478cc714e35aa83cfed505c587bb51b",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -1160,8 +1168,14 @@ class TestNonPhaseBlocksBytePreserved:
         # / Phase 1.5 inline-transition-prompt recognition, all recomputed by
         # measure_steering.py into file_metadata and the budget total (231570 =
         # live sum of file_metadata counts).
+        # Aggregate re-synced 231570 -> 231862 for the durable-qa-capture bugfix:
+        # the new capture-qa-events command hook plus the demoted ask-bootcamper /
+        # review-bootcamper-input Q&A-logging prompt edits regenerated the
+        # hook-registry slices, recomputed by measure_steering.py into
+        # file_metadata and the budget total (231862 = live sum of file_metadata
+        # counts).
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 231570" in budget_block
+        assert "total_tokens: 231862" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

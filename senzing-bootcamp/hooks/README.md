@@ -1,6 +1,6 @@
 # Senzing Bootcamp Hooks
 
-This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 26 hooks total, all in the Kiro 1.0 `v1` JSON schema.
+This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 27 hooks total, all in the Kiro 1.0 `v1` JSON schema.
 
 Each hook ships as a `.json` file whose top-level object is the `v1` wrapper:
 
@@ -218,6 +218,13 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 **Action:** A deterministic `command` hook that runs `python3 senzing-bootcamp/scripts/ensure_graduation_artifacts.py --stop-hook`. The script gates itself — it does nothing while `config/.question_pending` exists and no-ops away from a track-end stopping point (module 7 or 11 completed) — then regenerates any absent, empty, or stale crown-jewel artifact (Q&A transcript, recap Markdown, and the rendered recap PDF). The recap PDF has a stdlib tier and a no-data floor, so a valid `docs/bootcamp_recap.pdf` is produced even offline and even with no captured module data. It always exits 0 and never blocks the stop.
 **Use case:** Guarantees the transcript, recap, and rendered recap "trophy" PDF are produced by the runtime itself — not left to the agent to remember — so the completion artifacts can never be silently skipped
 
+### 27. Capture Q&A Events (`capture-qa-events.json`)
+
+**Trigger:** When the agent finishes working (`Stop`) and on every message submission (`UserPromptSubmit`)
+**Matcher:** none (unscoped triggers)
+**Action:** A deterministic `command` hook with two entries: on `Stop`, when `config/.question_pending` exists, it runs `python3 senzing-bootcamp/scripts/log_qa_event.py record-question`; on `UserPromptSubmit`, it pipes the bootcamper's message to `python3 senzing-bootcamp/scripts/log_qa_event.py record-answer`. Both commands degrade gracefully when the script is absent and are non-blocking (10-second timeout).
+**Use case:** Durably captures every Q&A cadence event (question and answer) at ask/answer time so they survive turn boundaries, compaction, and session restarts — the durability guarantee no longer rides on the agent voluntarily invoking the helper
+
 ## Manual Hooks (now slash commands)
 
 Kiro 1.0 removed the manual (`userTriggered`) hook trigger, so the three former manual hooks no longer ship as hook files. They are now manual-invocation steering files (slash commands) under `senzing-bootcamp/steering/`. Invoke each by name:
@@ -313,6 +320,7 @@ You can customize any hook by editing the `.json` file:
 - ✅ Module Completion Celebration
 - ✅ Session Log Events
 - ✅ Enforce Critical Artifacts
+- ✅ Capture Q&A Events
 
 The former `backup-project-on-request`, `git-commit-reminder`, and `commonmark-validation` hooks are now the `/backup-project`, `/git-commit`, and `/commonmark-validation` slash commands — invoke them by name instead of installing them.
 

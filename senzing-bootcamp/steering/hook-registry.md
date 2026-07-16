@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-26 bootcamp hooks organized by category. Load `hook-registry-critical.md` for full prompt text when creating hooks.
+27 bootcamp hooks organized by category. Load `hook-registry-critical.md` for full prompt text when creating hooks.
 
 ## Critical Hooks (created during onboarding)
 
@@ -37,6 +37,7 @@ inclusion: manual
 | security-scan-on-save | 9 | PostFileSave → agent | to run a security scan |
 | validate-alert-config | 10 | PostFileCreate → agent | to validate alert configuration |
 | deployment-phase-gate | 11 | PostTaskExec → agent | to check the deployment phase gate |
+| capture-qa-events | any | Stop → command | to record the pending question on the Q&A cadence |
 | enforce-critical-artifacts | any | Stop → command | to guarantee critical graduation artifacts on agent stop |
 | error-recovery-context | any | PostToolUse → agent | to help recover from errors |
 | module-completion-celebration | any | Stop → agent | to celebrate module completion |

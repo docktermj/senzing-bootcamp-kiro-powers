@@ -48,9 +48,10 @@ SYNC_SCRIPT: Path = _REPO_ROOT / "senzing-bootcamp" / "scripts" / "sync_hook_reg
 LOCKFILE_PATH: Path = _REPO_ROOT / "senzing-bootcamp" / "hooks" / "hooks.lock.yaml"
 
 #: The migration converted 27 Non_Manual_Hooks; the stop-hook-ux bugfix then
-#: folded ``module-recap-append`` into ``ask-bootcamper`` (Phase 0), leaving 26
-#: shipped hooks in the lockfile (Requirement 7 / 7.5).
-EXPECTED_HOOK_COUNT = 26
+#: folded ``module-recap-append`` into ``ask-bootcamper`` (Phase 0), leaving 26;
+#: the durable-qa-capture bugfix then added ``capture-qa-events``, bringing the
+#: lockfile back to 27 shipped hooks (Requirement 7 / 7.5).
+EXPECTED_HOOK_COUNT = 27
 
 
 def _parse_lockfile_entries(path: Path) -> list[dict[str, str]]:

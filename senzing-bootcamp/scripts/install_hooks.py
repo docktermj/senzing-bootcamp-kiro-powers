@@ -146,6 +146,9 @@ HOOK_METADATA: dict[str, str] = {
     "session-log-events.json":
         "Logs file create/modify/delete and MCP tool calls to the session log "
         "after write operations",
+    "capture-qa-events.json":
+        "Durably records each Q&A cadence event (question at Stop, answer at "
+        "message submission) so they survive boundaries, compaction, and restarts",
 }
 
 

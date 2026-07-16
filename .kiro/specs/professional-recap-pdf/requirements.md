@@ -2,127 +2,149 @@
 
 ## Introduction
 
-The `bootcamp_recap.pdf` is the culminating "trophy" deliverable of the Senzing Bootcamp. This feature guarantees that the PDF is always generated at bootcamp completion, contains complete per-module content (Information Shared, Questions & Responses, Actions Taken), and presents a polished, professional appearance. The feature addresses reported issues where the PDF was sometimes skipped, rendered without styling, contained "N/A" stubs for modules 3–6, or used incorrect subsection headings.
+The bootcamp graduation recap PDF (`docs/bootcamp_recap.pdf`) is the bootcamper's "trophy" — a keepsake to keep and share with their team. Today, even when the professional fpdf2 renderer runs, the output reads as a basic fpdf2 layout rather than a genuinely designed document, and there is no automated loop that verifies or improves the PDF's *visual* quality (unlike the D3 entity-graph visualization, which has an image-review loop that renders, inspects, and refines). Separately, the graduation-time Markdown normalization pass routes free-form recap lines into a generic `## Unmapped Content` catch-all, which then leaks into the shareable trophy.
+
+This feature focuses on three things:
+
+1. Upgrade the fpdf2 "rich" renderer to a single, standardized, professionally designed template (cover page, consistent typography, section styling, spacing, branding) so every generated PDF is a guaranteed polished production rather than a variable per-run layout.
+2. Add a visual review-and-refine loop to recap PDF generation (render → inspect → improve layout), mirroring the visualization guide's image-review loop.
+3. Keep the `## Unmapped Content` catch-all out of the shareable PDF (or fold its lines into the correct sections) so normalization artifacts never surface in the trophy.
+
+Scope boundaries: The recap Markdown (`docs/bootcamp_recap.md`) remains the source of truth; the PDF is the polished shareable rendering. Q&A data-loss durability (missing captured questions/responses) is out of scope here — it is covered by the separate `durable-qa-capture` spec. This spec addresses PDF look-and-feel, the visual review loop, and keeping normalization artifacts out of the PDF.
 
 ## Glossary
 
-- **Recap_PDF**: The generated `docs/bootcamp_recap.pdf` file produced by `generate_recap_pdf.py`
-- **Generator**: The `senzing-bootcamp/scripts/generate_recap_pdf.py` script responsible for parsing the recap Markdown and rendering the PDF
-- **Shared_Renderer**: The `senzing-bootcamp/scripts/recap_pdf_render.py` module providing canonical PDF rendering primitives
-- **Recap_Markdown**: The source file `docs/bootcamp_recap.md` containing per-module recap content
-- **Module_Section**: A `## Module N: <name>` section within the Recap_Markdown, containing subsections for that module's content
-- **Required_Subsections**: The three mandatory subsections within each Module_Section: "Information Shared", "Questions & Responses", "Actions Taken"
-- **QR_Pair**: A question/response pair formatted as `- **Q:** ...` followed by indented `    - **R:** ...`
-- **Backfill_Stub**: Placeholder content such as "N/A" or "backfilled at track completion" inserted when real content was unavailable
-- **Stop_Hook**: The Phase 0 module-boundary hook that captures recap content at module completion
-- **Verification_Pass**: The post-generation step that extracts PDF text and confirms all expected content is present
-- **Cover_Page**: The first page of the Recap_PDF containing title, metadata, and headline results
-- **Content_Page**: Any page after the Cover_Page containing per-module recap content
-- **Color_Palette**: The defined set of colors used throughout the PDF: primary blue (31,78,121), accent (13,110,168), ink (33,37,41), muted (110,110,110)
-- **Track_Completion**: The point at which all modules in the bootcamper's selected track have been completed
-- **Graduation**: The optional workflow that follows Track_Completion to produce production-ready artifacts
+- **Recap_PDF**: The generated `docs/bootcamp_recap.pdf`, the shareable "trophy" rendering.
+- **Recap_Markdown**: The source file `docs/bootcamp_recap.md`, the authoritative source of recap content.
+- **Generator**: The `senzing-bootcamp/scripts/generate_recap_pdf.py` script that parses the Recap_Markdown and renders the Recap_PDF.
+- **Rich_Renderer**: The fpdf2-based renderer (`generate_recap_pdf.render_pdf` plus the primitives in `recap_pdf_render.py`) used at Tier 1 of the Tier_Strategy when fpdf2 is importable.
+- **Shared_Renderer_Module**: The `senzing-bootcamp/scripts/recap_pdf_render.py` module providing the canonical Markdown-to-PDF rendering primitives and layout constants.
+- **Tier_Strategy**: The `senzing-bootcamp/scripts/pdf_render_strategy.py` module (`ensure_recap_pdf`) that guarantees a valid PDF via Tier 1 (Rich_Renderer), Tier 2 (best-effort fpdf2 autoinstall), or Tier 3 (Stdlib_Writer).
+- **Stdlib_Writer**: The `senzing-bootcamp/scripts/recap_pdf_minimal.py` stdlib-only Tier 3 fallback writer.
+- **Designed_Template**: The single, standardized, professionally designed layout the Rich_Renderer applies to every Recap_PDF: cover page, defined Color_Palette, defined typography scale, section styling, spacing, and page footers.
+- **Color_Palette**: The fixed set of colors used throughout the Designed_Template: primary blue `(31,78,121)` for the cover banner, accent blue `(0,90,156)` for headings, and body ink `(40,40,40)` for body text.
+- **Typography_Scale**: The fixed set of font sizes used by the Designed_Template: title 32pt, subtitle 16pt, bootcamper name 20pt, module heading 18pt, subsection heading 14pt, body 11pt, code 10pt, footer 9pt.
+- **Cover_Page**: The first page of the Recap_PDF, carrying the banner, title, subtitle, bootcamper name, optional metadata fields, and module-count headline.
+- **Content_Page**: Any page after the Cover_Page carrying per-module recap content.
+- **Module_Section**: A `## Module N: <name>` section in the Recap_Markdown, rendered as one or more Content_Pages.
+- **Recap_Review_Loop**: The steering-driven render → inspect → refine loop, executed at recap PDF generation, that renders the Recap_PDF, inspects it against the Visual_Quality_Checklist, and refines the layout until the checklist passes or the iteration bound is reached.
+- **Page_Image**: A rendered raster image of a single Recap_PDF page, produced for visual inspection during the Recap_Review_Loop.
+- **Visual_Quality_Checklist**: The fixed set of pass/fail visual criteria the Recap_Review_Loop evaluates against each Page_Image.
+- **Normalization_Pass**: The `senzing-bootcamp/scripts/normalize_markdown.py` graduation-time pass that rewrites the Recap_Markdown toward the recap Consumer_Schema.
+- **Unmapped_Content_Section**: The `## Unmapped Content` section (and its accompanying HTML-comment marker) the Normalization_Pass appends for recap lines it cannot map to a recognized subsection.
+- **Bootcamper**: The developer completing the bootcamp who receives the Recap_PDF.
 
 ## Requirements
 
-### Requirement 1: Guaranteed PDF Generation at Bootcamp Completion
+### Requirement 1: Single Standardized Professional Template
 
-**User Story:** As a bootcamper, I want the recap PDF to always be generated when I complete the bootcamp, so that I always receive my trophy deliverable without manual intervention.
-
-#### Acceptance Criteria
-
-1. WHEN Track_Completion occurs, THE Generator SHALL produce the Recap_PDF at `docs/bootcamp_recap.pdf`
-2. WHEN Graduation runs, THE Generator SHALL produce the Recap_PDF at `docs/bootcamp_recap.pdf`
-3. IF the Generator exits with a non-zero code, THEN THE orchestrating workflow SHALL report the specific failure reason to the bootcamper
-4. IF the Recap_Markdown file does not exist at generation time, THEN THE Generator SHALL exit with code 1 and report "Recap file not found" to stderr
-5. IF the Recap_Markdown file is empty at generation time, THEN THE Generator SHALL exit with code 1 and report "Recap file is empty" to stderr
-6. WHEN generation succeeds, THE Generator SHALL verify the output file exists and is non-empty before reporting success
-
-### Requirement 2: Professional Cover Page Presentation
-
-**User Story:** As a bootcamper, I want the recap PDF to have a professional cover page, so that the document looks polished and suitable for sharing with colleagues.
+**User Story:** As a bootcamper, I want the recap PDF to use one professionally designed template, so that my trophy always looks polished and consistent rather than varying from run to run.
 
 #### Acceptance Criteria
 
-1. THE Cover_Page SHALL display a colored banner area using primary blue (31,78,121)
-2. THE Cover_Page SHALL display the title "Senzing Bootcamp" in accent color (13,110,168) at 32pt bold
-3. THE Cover_Page SHALL display the subtitle "Completion Recap" at 16pt below the title
-4. WHEN the Recap_Markdown contains a Bootcamper field, THE Cover_Page SHALL display the bootcamper name at 20pt centered below the subtitle
-5. WHEN the Recap_Markdown contains a Started field, THE Cover_Page SHALL display "Started: {value}" centered below the bootcamper name
-6. WHEN the Recap_Markdown contains a Total Duration field, THE Cover_Page SHALL display "Total Duration: {value}" centered below the Started field
-7. THE Cover_Page SHALL display a "Headline Results" card showing the count of completed modules
-8. THE Cover_Page SHALL suppress the page footer (no page number on the cover)
+1. WHEN the Rich_Renderer renders the Recap_PDF, THE Rich_Renderer SHALL apply the Designed_Template as the single template with no alternate template selection.
+2. THE Rich_Renderer SHALL apply the Color_Palette to every rendered Recap_PDF.
+3. THE Rich_Renderer SHALL apply the Typography_Scale to every rendered Recap_PDF.
+4. WHEN the Rich_Renderer renders the same Recap_Markdown input twice with the same Rich_Renderer version and the same rendering configuration, THE Rich_Renderer SHALL produce Recap_PDF content that is byte-for-byte identical.
+5. THE Rich_Renderer SHALL apply 20-millimeter margins on all four sides of every page.
+6. THE Rich_Renderer SHALL render each Module_Section beginning at the top of a new page such that no two Module_Sections share a page.
 
-### Requirement 3: Per-Module Professional Styling
+### Requirement 2: Professional Cover Page
 
-**User Story:** As a bootcamper, I want each module section to be visually distinct and professionally styled, so that the document is easy to navigate and read.
+**User Story:** As a bootcamper, I want a designed cover page, so that the first impression of my trophy is polished and identifies the document.
 
 #### Acceptance Criteria
 
-1. WHEN rendering a Module_Section, THE Shared_Renderer SHALL start the module on a new page
-2. WHEN rendering a Module_Section heading, THE Shared_Renderer SHALL display it in accent color (0,90,156) at 18pt bold
-3. WHEN rendering a Required_Subsection heading, THE Shared_Renderer SHALL display it in accent color (0,90,156) at 14pt bold
-4. THE Shared_Renderer SHALL use ink color (40,40,40) for all body text at 11pt
-5. THE Shared_Renderer SHALL use Courier at 10pt for code blocks and inline code spans
-6. WHEN rendering Content_Pages, THE Shared_Renderer SHALL display a centered "Page N" footer at 9pt
-7. THE Shared_Renderer SHALL apply 20mm margins on all sides of every page
-8. THE Color_Palette SHALL remain consistent throughout the entire document
+1. THE Cover_Page SHALL render a full-width banner in primary blue `(31,78,121)` anchored at the top edge of the page.
+2. THE Cover_Page SHALL render the title "Senzing Bootcamp Recap" in accent blue `(0,90,156)` at 32-point bold, positioned below the banner.
+3. THE Cover_Page SHALL render the subtitle "Bootcamp Completion Recap" at 16-point positioned below the title.
+4. WHERE the Recap_Markdown provides a non-empty bootcamper name, THE Cover_Page SHALL render the bootcamper name at 20-point centered below the subtitle.
+5. IF the Recap_Markdown provides an empty or absent bootcamper name, THEN THE Cover_Page SHALL omit the bootcamper name line and render the next present field in its position.
+6. WHERE the Recap_Markdown provides a non-empty Started value, THE Cover_Page SHALL render "Started: {value}" centered below the bootcamper name.
+7. WHERE the Recap_Markdown provides a non-empty Total Duration value, THE Cover_Page SHALL render "Total Duration: {value}" centered below the Started value.
+8. THE Cover_Page SHALL render a headline line stating the count of Module_Sections present in the Recap_Markdown, rendering a count of 0 when no Module_Sections are present.
+9. IF rendering an individual optional Cover_Page metadata field (bootcamper name, Started value, or Total Duration value) raises an error, THEN THE Rich_Renderer SHALL skip that field, continue rendering the remaining Cover_Page content, and produce no error output that halts Cover_Page rendering.
+10. THE Rich_Renderer SHALL suppress the page footer on the Cover_Page.
 
-### Requirement 4: Content Completeness Enforcement
+### Requirement 3: Consistent Typography and Section Styling
 
-**User Story:** As a bootcamper, I want every completed module to have its full content in the PDF, so that none of my bootcamp work is lost or represented by placeholder stubs.
-
-#### Acceptance Criteria
-
-1. WHEN a Module_Section is rendered, THE Generator SHALL include all three Required_Subsections: "Information Shared", "Questions & Responses", "Actions Taken"
-2. THE Generator SHALL use the heading "### Questions & Responses" for the Q&R subsection
-3. THE Generator SHALL format QR_Pairs as `- **Q:** ...` on one line followed by `    - **R:** ...` indented on the next line
-4. IF a Module_Section contains a "Questions Asked" or "Answers Given" heading, THEN THE Generator SHALL merge them into a single "Questions & Responses" rendering
-5. THE Recap_PDF SHALL contain zero instances of "N/A" stub text or "backfilled at track completion" placeholder text in any module's Required_Subsections
-6. WHEN the source Recap_Markdown contains substantive content for a module, THE Generator SHALL preserve that content verbatim (Latin-1-safe) in the rendered PDF
-
-### Requirement 5: Post-Generation Self-Verification
-
-**User Story:** As a bootcamper, I want the system to verify the PDF after generation, so that incomplete or corrupted output is caught before being presented to me.
+**User Story:** As a bootcamper, I want consistent headings, spacing, and page numbering, so that the document is easy to read and navigate.
 
 #### Acceptance Criteria
 
-1. WHEN the Recap_PDF is generated, THE Generator SHALL extract text from the PDF and verify all N module section headings are present
-2. WHEN the Recap_PDF is generated, THE Generator SHALL verify that the extracted text contains distinctive tokens from the source body lines
-3. IF verification detects a missing module section, THEN THE Generator SHALL report which module(s) are missing and exit with code 1
-4. IF verification detects fewer than 3 surviving body lines (when the source has at least 3), THEN THE Generator SHALL report the content-loss failure and exit with code 1
-5. THE Generator SHALL verify the PDF contains no "backfilled at track completion" text strings
-6. THE Generator SHALL verify the PDF contains no "Questions Asked" or "Answers Given" heading text (only "Questions & Responses" or the merged "Questions and responses" label)
-7. IF any verification check fails, THEN THE Generator SHALL remove the temporary PDF file and leave the previous output unchanged
+1. WHEN the Shared_Renderer_Module renders a module heading, THE Shared_Renderer_Module SHALL render it in accent blue `(0,90,156)` at 18-point bold.
+2. WHEN the Shared_Renderer_Module renders a subsection heading, THE Shared_Renderer_Module SHALL render it in accent blue `(0,90,156)` at 14-point bold.
+3. THE Shared_Renderer_Module SHALL render body text in body ink `(40,40,40)` at 11-point.
+4. THE Shared_Renderer_Module SHALL render code blocks and inline code spans in a monospace font at 10-point.
+5. WHEN the Shared_Renderer_Module renders a Content_Page, THE Shared_Renderer_Module SHALL render a centered footer displaying "Page" followed by the page's sequential number at 9-point, where the number starts at 1 for the first Content_Page and increments by 1 for each subsequent Content_Page.
+6. THE Shared_Renderer_Module SHALL render body text so that no line extends beyond the 20-millimeter page margins.
+7. THE Shared_Renderer_Module SHALL render list items and question/response pairs with indentation that increases by 5 millimeters for each additional nesting level, up to a maximum of 5 nesting levels.
+8. IF a code block or inline code span line's rendered width would extend beyond the 20-millimeter page margins, THEN THE Shared_Renderer_Module SHALL wrap the line so that no character extends beyond the margins.
 
-### Requirement 6: Real-Time Content Capture at Module Boundaries
+### Requirement 4: Visual Review-and-Refine Loop
 
-**User Story:** As a bootcamper, I want my recap content captured at each module completion, so that the final PDF contains real session content rather than lossy backfill stubs.
-
-#### Acceptance Criteria
-
-1. WHEN a module completes, THE Stop_Hook SHALL append the module's "Information Shared", "Questions & Responses", and "Actions Taken" content to the Recap_Markdown
-2. THE Stop_Hook SHALL write each QR_Pair using the canonical format: `- **Q:** ...` followed by `    - **R:** ...`
-3. WHEN the Stop_Hook fires, THE system SHALL verify the appended Module_Section contains all three Required_Subsections before reporting success
-4. IF the Stop_Hook cannot capture content for a module (session boundary loss), THEN THE system SHALL record an explicit note indicating the reason rather than inserting a generic "N/A" stub
-5. THE backfill reconciliation pass (completion_artifacts.py) SHALL serve only as a safety net for modules missed by the Stop_Hook, appending sections that do not yet exist without rewriting sections that already persisted
-
-### Requirement 7: Graceful Degradation When fpdf2 Is Absent
-
-**User Story:** As a bootcamper, I want the system to handle a missing fpdf2 dependency gracefully, so that I still retain my recap content in Markdown form even when a PDF cannot be produced.
+**User Story:** As a bootcamper, I want the system to inspect the generated PDF and improve its layout, so that visual defects are caught and fixed before I receive the trophy, just like the entity-graph visualization loop.
 
 #### Acceptance Criteria
 
-1. IF fpdf2 is not installed, THEN THE Generator SHALL print "fpdf2 is required. Install with: pip install fpdf2" to stderr and exit with code 1
-2. IF fpdf2 is not installed, THEN THE Generator SHALL leave the Recap_Markdown file unchanged and accessible to the bootcamper
-3. WHEN fpdf2 is absent, THE orchestrating workflow SHALL inform the bootcamper that the Markdown recap is available at `docs/bootcamp_recap.md` as an alternative
+1. WHEN the Recap_PDF is generated during graduation, THE Recap_Review_Loop SHALL render each page of the Recap_PDF to a corresponding Page_Image.
+2. WHEN Page_Images are available, THE Recap_Review_Loop SHALL evaluate each Page_Image against every item of the Visual_Quality_Checklist and record a pass or fail result per checklist item per page.
+3. WHILE at least one Visual_Quality_Checklist item fails AND the iteration count is below the maximum of 3, THE Recap_Review_Loop SHALL adjust the layout inputs and regenerate the Recap_PDF, incrementing the iteration count by 1.
+4. WHEN every Visual_Quality_Checklist item passes on all Page_Images, THE Recap_Review_Loop SHALL stop and retain the current Recap_PDF as the final trophy.
+5. IF the iteration count reaches the maximum of 3 while one or more Visual_Quality_Checklist items still fail, THEN THE Recap_Review_Loop SHALL retain the best Recap_PDF, defined as the iteration whose Recap_PDF has the fewest failing Visual_Quality_Checklist items with ties resolved in favor of the earliest such iteration, and report to the bootcamper each remaining failing item together with the page on which it failed.
+6. WHEN the Recap_Review_Loop adjusts layout inputs between iterations, THE Recap_Review_Loop SHALL preserve the Color_Palette and Typography_Scale of the Designed_Template.
+7. IF a page-image rendering capability is not available in the environment, THEN THE Recap_Review_Loop SHALL fall back to the text-and-structure verification of the Generator, retain the generated Recap_PDF, and report to the bootcamper that visual inspection was skipped.
 
-### Requirement 8: Atomic Output and Failure Safety
+### Requirement 5: Visual Quality Criteria
 
-**User Story:** As a bootcamper, I want the PDF generation to be atomic, so that a failed generation never leaves a corrupted or incomplete file in place of a valid previous output.
+**User Story:** As a bootcamper, I want the review loop to check for concrete layout problems, so that "professional" is verified against specific criteria rather than left to chance.
 
 #### Acceptance Criteria
 
-1. THE Generator SHALL render the PDF to a temporary file in the same directory as the output path before moving it into place
-2. WHEN rendering and verification both succeed, THE Generator SHALL atomically replace the output file using `os.replace`
-3. IF rendering fails or verification fails, THEN THE Generator SHALL remove the temporary file and leave any existing output file unchanged
-4. IF the temporary file cannot be created (missing directory, permissions), THEN THE Generator SHALL report the OS error and exit with code 1
+1. THE Visual_Quality_Checklist SHALL include a pass/fail criterion that no rendered text on any page extends beyond the defined top, bottom, left, or right page margins.
+2. THE Visual_Quality_Checklist SHALL include a pass/fail criterion that no Content_Page is blank, where blank means the page contains no rendered text and no rendered visual elements.
+3. THE Visual_Quality_Checklist SHALL include a pass/fail criterion that the Cover_Page renders all three of the title, subtitle, and module-count headline.
+4. THE Visual_Quality_Checklist SHALL include a pass/fail criterion that each Module_Section begins at the top of a new page.
+5. THE Visual_Quality_Checklist SHALL include a pass/fail criterion that no rendered page displays the Unmapped_Content_Section heading or its marker text.
+6. THE Visual_Quality_Checklist SHALL include a pass/fail criterion that every module heading and subsection heading renders in the accent-blue heading color defined by the Color_Palette.
+
+### Requirement 6: Exclude Normalization Artifacts From the Shareable PDF
+
+**User Story:** As a bootcamper, I want normalization artifacts kept out of my trophy, so that a generic "Unmapped Content" dump never appears in the shareable document.
+
+#### Acceptance Criteria
+
+1. WHEN the Generator renders the Recap_PDF, THE Generator SHALL exclude the Unmapped_Content_Section heading from the rendered output.
+2. WHEN the Generator renders the Recap_PDF, THE Generator SHALL exclude the Unmapped_Content_Section marker comment from the rendered output.
+3. WHERE a free-form Recap_Markdown line maps to a recognized Required_Subsection, THE Normalization_Pass SHALL route that line into the recognized subsection rather than into the Unmapped_Content_Section.
+4. WHEN the Normalization_Pass appends an Unmapped_Content_Section containing one or more unmapped lines to the Recap_Markdown, THE Normalization_Pass SHALL emit a warning to stderr stating the exact integer count of unmapped lines.
+5. IF the Normalization_Pass detects zero unmapped lines, THEN THE Normalization_Pass SHALL NOT append an Unmapped_Content_Section to the Recap_Markdown and SHALL NOT emit an unmapped-line warning.
+6. THE rendered Recap_PDF SHALL contain zero occurrences, under case-insensitive matching, of the text "Unmapped Content".
+
+### Requirement 7: Optional Dependency and Graceful Degradation
+
+**User Story:** As a bootcamper, I want the recap generation to behave predictably whether or not the optional PDF library is present, so that I never lose my recap content.
+
+#### Acceptance Criteria
+
+1. THE Generator SHALL import fpdf2 only within rendering functions at call time and SHALL NOT reference or import fpdf2 at module top level.
+2. WHEN fpdf2 is importable, THE Tier_Strategy SHALL render the Recap_PDF with the Rich_Renderer and its Designed_Template, producing a Recap_PDF that is a non-empty file openable by a standard PDF reader and containing every recap content section present in the Recap_Markdown.
+3. IF fpdf2 is absent and autoinstall is disabled or fails, THEN THE Tier_Strategy SHALL render a Recap_PDF with the Stdlib_Writer that is a non-empty file openable by a standard PDF reader and containing every recap content section present in the Recap_Markdown.
+4. WHEN fpdf2 is absent, THE Generator SHALL leave the Recap_Markdown byte-for-byte identical to its pre-generation state and available at `docs/bootcamp_recap.md`.
+5. IF the Rich_Renderer raises an error during rendering, THEN THE Tier_Strategy SHALL discard any partial Rich_Renderer output, render the Recap_PDF with the Stdlib_Writer, and complete graduation without aborting.
+6. IF both the Rich_Renderer and the Stdlib_Writer fail to produce a Recap_PDF, THEN THE Generator SHALL leave the Recap_Markdown byte-for-byte identical to its pre-generation state, complete graduation, and return an indication that Recap_PDF generation failed while the Recap_Markdown was preserved.
+
+### Requirement 8: Distribution and Source-of-Truth Integrity
+
+**User Story:** As a power author, I want all changes to ship cleanly to users with the Markdown recap as the source of truth, so that the distributed power stays consistent and free of dev-only artifacts.
+
+#### Acceptance Criteria
+
+1. THE feature SHALL derive all Recap_PDF content from the Recap_Markdown, such that no recap content appears in the Recap_PDF that is not present in the Recap_Markdown.
+2. WHEN the Generator renders the Recap_PDF, THE Generator SHALL leave the Recap_Markdown file byte-for-byte identical to its state immediately before rendering.
+3. THE feature SHALL place all runtime files required for recap generation under the `senzing-bootcamp/` directory.
+4. THE feature SHALL exclude from the distributed power all dev-only files and all test fixtures that contain non-synthetic (real) data.
+5. THE Recap_Review_Loop steering SHALL reside as a Markdown file with a `.md` extension under `senzing-bootcamp/steering/`.
+6. THE feature SHALL restrict runtime third-party imports to fpdf2 and SHALL otherwise import only modules from the Python standard library.
+7. THE Generator SHALL NOT import fpdf2 at module top level, importing it only at the point where Recap_PDF generation is invoked.
+8. IF fpdf2 is unavailable when Recap_PDF generation is invoked, THEN THE Generator SHALL retain the Recap_Markdown output, produce no Recap_PDF, and return an indication that PDF generation was skipped due to the missing optional dependency.

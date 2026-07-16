@@ -11,7 +11,7 @@
 - implemented: 291
 - superseded: 1
 - abandoned: 0
-- unknown: 0
+- unknown: 1
 
 ## Specs
 
@@ -401,6 +401,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/documentation-guides/](.kiro/specs/documentation-guides/)
+
+### durable-qa-capture
+
+- Status: unknown
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/durable-qa-capture/](.kiro/specs/durable-qa-capture/)
 
 ### early-fpdf2-hint
 
